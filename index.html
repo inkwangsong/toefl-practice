@@ -1171,6 +1171,30 @@ body.navmin main{max-width:1500px}
 .hmfrom{display:inline-flex;align-items:center;gap:6px;color:var(--mute)}.hmfrom input{font:inherit;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .plstart{gap:12px;align-items:center;flex-wrap:wrap}.plstart input{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 @media (max-width:720px){.plopts{grid-template-columns:1fr 1fr}.plsj{width:auto}.plsj .nm,.plitems .gotx{display:none}.plitems li{gap:6px;padding:8px}.plitems label{gap:8px}}
+
+/* plan block: same scale as the other home panels */
+.hmplan h2{font-size:18px}.plhead p{font-size:14.5px}
+.plsel h3{font-size:16px;margin:4px 0 8px}
+.plitems{gap:5px}.plitems li{padding:6px 10px;border-radius:9px}
+.plt{font-size:15.5px;line-height:1.4}.plt small{font-size:13px}.plsj{font-size:13.5px;width:108px}
+.plitems input{width:18px;height:18px}.plitems .btn.sm{font-size:14px;padding:4px 10px}
+.plday{width:34px;height:34px;font-size:13px;border-radius:9px}
+.plprog .small,.hmfrom{font-size:14px}
+.plopt b{font-size:19px}.plopt span{font-size:13px}
+.hmplan>.plsel>p.small{font-size:13.5px}
+@media (max-width:720px){.plt{font-size:15px}.plday{width:32px;height:32px}}
+
+.plfold{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font:inherit;color:inherit;border-radius:6px}
+.plfold:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.plcar{display:inline-block;font-size:13px;color:var(--mute);transition:transform .15s}
+.hmplan.fold .plcar{transform:rotate(-90deg)}
+.hmplan.fold .pldays,.hmplan.fold .plsel{display:none}.hmplan.fold .plhead{margin-bottom:0}
+
+.plst{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;font-size:13px;font-weight:800;color:var(--mute);border:1.5px solid color-mix(in srgb,var(--ink) 25%,transparent)}
+.plst.part{border-color:var(--sc);background:linear-gradient(90deg,var(--sc) 50%,transparent 50%)}.plst.ok{background:var(--sc);border-color:var(--sc);color:#fff}
+.plitems li.auto label{cursor:default}
+.pltag{flex:none;font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+@media (max-width:720px){.pltag{display:none}}
 </style>
 </head>
 <body>
@@ -4665,7 +4689,7 @@ function plIds(it){const ids=it.ids||[];try{
   if(it.s==='r'||it.s==='l')return ids.filter(id=>RLH.hist.some(h=>h.set===id)).length;
   if(it.s==='s')return ids.filter(id=>S.best[id]).length;
   if(it.s==='w')return ids.filter(id=>W.best[id]).length}catch(e){}return 0}
-function plDone(it,key,chk){if(chk[key]===1)return true;if(chk[key]===0)return false;if(it.m)return false;
+function plDone(it,key,chk){if(it.m)return chk[key]===1;
   if(it.vd)return it.vd.every(d=>{const ws=vcDay(d);return ws.length&&ws.filter(w=>VCP[w.id]).length>=ws.length*.9});
   return !!(it.ids&&it.ids.length&&plIds(it)===it.ids.length)}
 function plState(){const p=plGet();if(!p||!window.PLAN)return null;const D=plDays(p.n);if(!D)return null;
@@ -4684,20 +4708,23 @@ function hmPlanHTML(){const P=plState();
   const dd=new Date(st);dd.setDate(dd.getDate()+sel-1);
   const items=D[sel-1],S_=Object.fromEntries(HM_SUBJ.map(s=>[s.k,s]));
   const head=cur<1?`시작까지 ${1-cur}일`:cur>L?'플랜 기간 끝 · 남은 항목을 마무리해요':`오늘은 <b>Day ${cur}</b> / ${L}`;
-  return `<section class="panel ph hmplan">
-    <div class="plhead"><div><h2>📅 ${L}일 완성 플랜</h2><p class="small muted" style="margin:2px 0 0">${md(st)} – ${md(end)} · ${head}</p></div>
+  const fold=store.get('plfold',false);
+  return `<section class="panel ph hmplan ${fold?'fold':''}">
+    <div class="plhead"><div><h2><button type="button" class="plfold" id="plfold" aria-expanded="${!fold}" title="${fold?'펼치기':'접기'}">📅 ${L}일 완성 플랜 <span class="plcar" aria-hidden="true">▾</span></button></h2><p class="small muted" style="margin:2px 0 0">${md(st)} – ${md(end)} · ${head}</p></div>
       <div class="plprog"><div class="bar"><i style="width:${total?done/total*100:0}%"></i></div><span class="small"><b class="mono">${done}</b> / ${total} 완료${behind?` · <span class="plbehind">밀린 항목 ${behind}개</span>`:''}</span></div>
       <label class="small hmfrom">시작일 <input type="date" id="plst2" value="${p.start}"></label><button class="btn sm quiet" id="plreset">플랜 바꾸기</button></div>
     <div class="pldays" role="tablist" aria-label="플랜 날짜">${D.map((_,i)=>{const n=i+1,a=stat[i],k=a.filter(Boolean).length,cls=k===a.length?'full':k?'part':n<cur?'miss':'';
       return `<button type="button" role="tab" class="plday ${cls} ${n===cur?'today':''}" aria-selected="${n===sel}" data-d="${n}" title="Day ${n} · ${k}/${a.length}">${n}</button>`}).join('')}</div>
     <div class="plsel"><h3>Day ${sel} <span class="small muted">${md(dd)}${sel===cur?' · 오늘':''} · ${stat[sel-1].filter(Boolean).length}/${items.length}</span></h3>
       <ul class="plitems">${items.map((it,j)=>{const key=sel+':'+j,ok=stat[sel-1][j],sj=S_[it.s],part=it.ids&&it.ids.length>1?`<span class="small muted mono">${plIds(it)}/${it.ids.length}</span>`:'';
-        return `<li class="${ok?'ok':''}" style="--sc:${sj.c}"><label><input type="checkbox" data-k="${key}" ${ok?'checked':''}><span class="plsj" title="${sj.name}">${sj.ic}<span class="nm"> ${sj.name}</span></span><span class="plt">${it.bk?'📕 ':''}${esc(it.t)}${it.note?` <small class="muted">${esc(it.note)}</small>`:''}</span>${part}</label>${it.h?`<a class="btn sm quiet" href="${it.h}" aria-label="${esc(it.t)} 하러 가기"><span class="gotx">하러 가기 </span>→</a>`:''}</li>`}).join('')}</ul>
-      <p class="small muted" style="margin:8px 0 0">세트를 풀면 자동으로 체크돼요. 복습·📕교재(부록) 항목은 직접 체크하세요. 그날 분량을 못 끝내면 진도를 나가되, 일주일이 지나기 전에 그 주 분량을 끝내요(교재 학습플랜 활용법).</p></div>
+        const auto=!it.m,n=auto&&it.ids?plIds(it):0,mark=auto?`<span class="plst ${ok?'ok':n?'part':''}" role="img" aria-label="${ok?'완료 (자동)':'자동으로 체크돼요'}" title="${ok?'완료 · 자동 체크':'풀면 자동으로 체크돼요'}">${ok?'✓':''}</span>`:`<input type="checkbox" data-k="${key}" ${ok?'checked':''} title="직접 체크">`;
+        return `<li class="${ok?'ok':''} ${auto?'auto':'man'}" style="--sc:${sj.c}"><label>${mark}<span class="plsj" title="${sj.name}">${sj.ic}<span class="nm"> ${sj.name}</span></span><span class="plt">${it.bk?'📕 ':''}${esc(it.t)}${it.note?` <small class="muted">${esc(it.note)}</small>`:''}</span>${auto?part:'<span class="pltag">직접 체크</span>'}</label>${it.h?`<a class="btn sm quiet" href="${it.h}" aria-label="${esc(it.t)} 하러 가기"><span class="gotx">하러 가기 </span>→</a>`:''}</li>`}).join('')}</ul>
+      <p class="small muted" style="margin:8px 0 0">동그라미 항목은 앱에서 풀면 자동으로 ✓가 돼요(반만 찬 동그라미 = 일부 완료). 체크 박스는 복습·📕교재 부록처럼 앱이 알 수 없는 항목이라 직접 체크해요. 그날 분량을 못 끝내면 진도를 나가되, 일주일이 지나기 전에 그 주 분량을 끝내요(교재 학습플랜 활용법).</p></div>
   </section>`}
 function hmPlanWire(){const box=$('.hmplan');if(!box)return;
   $$('.plopt',box).forEach(b=>b.onclick=()=>{$$('.plopt',box).forEach(x=>x.setAttribute('aria-checked',String(x===b)))});
   const go=$('#plgo');if(go)go.onclick=()=>{const n=+($('.plopt[aria-checked="true"]',box)||{}).dataset.n||20,st=$('#plst').value||hmKey(new Date());plSet({n,start:st,chk:{}});HMSEL=null;renderHome()};
+  const fb=$('#plfold');if(fb)fb.onclick=()=>{const f=!box.classList.contains('fold');box.classList.toggle('fold',f);fb.setAttribute('aria-expanded',String(!f));fb.title=f?'펼치기':'접기';store.set('plfold',f)};
   const rs=$('#plreset');if(rs)rs.onclick=()=>{if(confirm('지금 플랜을 그만두고 새로 정할까요? (체크 기록은 지워져요. 풀이 기록은 그대로예요)')){plSet(null);HMSEL=null;renderHome()}};
   const s2=$('#plst2');if(s2)s2.onchange=()=>{if(!s2.value)return;const p=plGet();p.start=s2.value;plSet(p);HMSEL=null;const y=scrollY;renderHome();scrollTo(0,y)};
   $$('.plday',box).forEach(b=>b.onclick=()=>{HMSEL=+b.dataset.d;const y=scrollY;renderHome();scrollTo(0,y)});
