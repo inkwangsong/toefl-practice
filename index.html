@@ -1117,6 +1117,40 @@ body.navmin main{max-width:1500px}
 .rlbar.seek i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .rlcount{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:10px 0;font-size:16px;color:#333}.rlcount b{font-size:34px;color:#1d4ed8;min-width:28px;text-align:center}
 .rlbar.seek{overflow:visible}
+
+/* ---------- landing (home.js) ---------- */
+.hmbtn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;text-decoration:none;font-size:20px;color:var(--ink);border:1px solid var(--line);background:var(--surface);flex:none;margin-right:6px}
+.hmbtn:hover{border-color:var(--accent);color:var(--accent)}
+.hm{display:grid;gap:18px}
+.hmhero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:26px 28px}
+.hmk{margin:0;color:var(--mute);font-weight:600}.hmhero h1{margin:4px 0 6px;font-size:30px;letter-spacing:-.01em}.hmsub{margin:0 0 14px;color:var(--mute)}
+.hmrec{display:inline-flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:14px;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--sc) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--sc) 35%,transparent);max-width:100%}
+.hmrec:hover{border-color:var(--sc)}.hmrec-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:color-mix(in srgb,var(--sc) 18%,transparent);font-size:21px;flex:none}
+.hmrec small{display:block;color:var(--mute);font-size:14.5px}.hmgo{margin-left:6px;color:var(--sc);font-weight:800;font-size:20px}
+.hmstats{display:grid;grid-template-columns:repeat(3,auto);gap:10px}
+.hmstats div{display:grid;justify-items:center;gap:2px;padding:14px 18px;border-radius:14px;background:var(--paper);border:1px solid var(--line);min-width:96px}
+.hmstats b{font-size:30px;line-height:1.1}.hmstats b small{font-size:16px;color:var(--mute)}.hmstats span{font-size:14px;color:var(--mute)}
+.hmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.hmcard{position:relative;display:grid;gap:14px;padding:18px 18px 16px;border-top:4px solid var(--sc);transition:transform .15s,box-shadow .15s}
+.hmcard:hover{transform:translateY(-2px);box-shadow:0 10px 28px -14px color-mix(in srgb,var(--sc) 70%,transparent)}
+.hmcard-hit{position:absolute;inset:0;z-index:0;border-radius:inherit}
+.hmcard header,.hmcard footer,.hmcard .hmmid,.hmcard .hmsp{position:relative;z-index:1;pointer-events:none}.hmcard footer a{pointer-events:auto}
+.hmcard header{display:flex;align-items:center;gap:10px}.hmcard h2{margin:0;font-size:20px}
+.hmic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;font-size:22px;background:color-mix(in srgb,var(--sc) 15%,transparent);flex:none}
+.hmtoday{margin-left:auto;font-size:13px;font-weight:700;color:var(--sc);background:color-mix(in srgb,var(--sc) 12%,transparent);padding:3px 8px;border-radius:999px}
+.hmmid{display:flex;align-items:center;gap:14px}.hmring{width:76px;height:76px;flex:none;color:var(--ink)}.hmring text{font:700 14px var(--mono,ui-monospace,monospace);fill:currentColor}
+.hmkpi{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;flex:1;min-width:0}.hmkpi>div{display:grid}.hmkpi b{font-size:22px;line-height:1.15}.hmkpi b small{font-size:13px;color:var(--mute)}.hmkpi span{font-size:13.5px;color:var(--mute)}
+.hmkpi>.hmprog{display:block;grid-column:1/-1;font-size:14px;color:var(--mute)}.hmprog .mono{color:var(--ink);font-weight:700}
+.hmsp{display:grid;gap:4px}.hmspark{width:100%;height:42px;display:block}.hmspark.empty{height:42px;display:grid;place-items:center;font-size:13.5px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
+.hmcard footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hmnext{background:var(--sc)!important;color:#fff!important;border-color:transparent!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hmact{overflow-x:auto}.hmtbl{display:grid;gap:5px;min-width:620px}
+.hmrow{display:grid;grid-template-columns:130px repeat(21,1fr);gap:5px;align-items:center}
+.hmrow>span:first-child{font-size:15px;font-weight:600;white-space:nowrap}
+.hmhead span{font-size:12px;color:var(--mute);text-align:center}.hmhead .sun{color:#e5484d}.hmhead .hmtd{color:var(--accent);font-weight:800}
+.hmc{height:22px;border-radius:6px;background:color-mix(in srgb,var(--ink) 6%,transparent)}.hmc.on{background:var(--sc)}
+@media (max-width:860px){.hmhero{grid-template-columns:1fr;padding:20px}.hmstats{grid-template-columns:repeat(3,1fr)}.hmstats div{min-width:0;padding:10px}.hmhero h1{font-size:24px}}
+@media (max-width:520px){.hmgrid{grid-template-columns:1fr}.hmrow{grid-template-columns:96px repeat(21,1fr)}}
 </style>
 </head>
 <body>
@@ -4536,6 +4570,110 @@ function vcBackup(){setCrumb(['Vocab','기록 옮기기']);
     let b;try{b=JSON.parse(m[1])}catch(e){$('#vcimpr').textContent='코드가 잘린 것 같아요. 처음부터 끝까지 다시 복사해 주세요.';return}let n=0;
     for(const [kind,dst] of [['words',VCP],['spell',VCSP]]){const src=(b&&b[kind])||{};for(const k in src){const r=src[k];if(!r||typeof r!=='object')continue;if(kind==='words'&&!vcById(k))continue;const l=dst[k];if(!l||(r.t||0)>(l.t||0)){dst[k]=r;n++}}}
     vcSave();$('#vcimpr').textContent=`${n}개 기록을 가져왔어요.`;toast(`${n}개 기록을 가져왔어요`)}}
+
+/* ---------- 첫 화면 (landing): 5과목 진행 상황 + 과목 선택 ---------- */
+const HM_SUBJ=[
+  {k:'r',name:'Reading',ko:'리딩',ic:'📖',href:'#rd',c:'#4f7cff'},
+  {k:'l',name:'Listening',ko:'리스닝',ic:'🎧',href:'#ls',c:'#10a99a'},
+  {k:'s',name:'Speaking',ko:'스피킹',ic:'🎙️',href:'#home',c:'#ff7a33'},
+  {k:'w',name:'Writing',ko:'라이팅',ic:'✍️',href:'#w',c:'#9b5cff'},
+  {k:'v',name:'Vocab',ko:'단어',ic:'🔤',href:'#vc',c:'#e0a800'}];
+const hmKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function hmAgo(ts){if(!ts)return '아직 안 했어요';const a=new Date();a.setHours(0,0,0,0);const b=new Date(ts);b.setHours(0,0,0,0);const d=Math.round((a-b)/864e5);
+  return d<=0?'오늘':d===1?'어제':d<7?d+'일 전':d<30?Math.floor(d/7)+'주 전':Math.floor(d/30)+'달 전'}
+/* every study event as {k, ts} so the page can show which subject was studied when */
+function hmEvents(){const E=[],add=(k,ts,n=1)=>{if(ts)E.push({k,ts,n})};
+  try{RLH.hist.forEach(h=>add(h.sec,h.ts))}catch(_){}
+  try{S.hist.forEach(h=>add('s',h.ts))}catch(_){}
+  try{W.hist.forEach(h=>add('w',h.ts));store.get('wplog',[]).forEach(l=>add('w',l.ts));store.get('wtylog',[]).forEach(l=>add('w',l.ts))}catch(_){}
+  try{const L=store.get('vclog',{});Object.entries(L).forEach(([d,n])=>{if(n){const [y,m,dd]=d.split('-').map(Number);add('v',new Date(y,m-1,dd,12).getTime(),n)}})}catch(_){}
+  return E}
+function hmStat(k){
+  const sp=(vals)=>vals.filter(v=>v!=null).slice(-12);
+  if(k==='r'||k==='l'){const H=RLH.hist.filter(x=>x.sec===k),sets=rlSets(k),P=RLSEC[k].pre,
+      best=id=>H.some(x=>x.set===id),done=sets.filter(s=>best(s.id)).length,nx=sets.find(s=>!best(s.id)),bands=H.map(x=>rlBand(x.ok/x.n)),last=H[H.length-1];
+    return {done,total:sets.length,unit:'세트',last:last&&last.ts,recent:last?rlBand(last.ok/last.n):null,best:bands.length?Math.max(...bands):null,spark:sp(bands),
+      next:nx?{href:`#${P}-s-${nx.id}`,t:nx.title.replace(/ · Hackers .*/,'')}:null,n:H.length}}
+  if(k==='s'){const H=S.hist,bands=H.map(h=>h.band||null),last=H[H.length-1],nx=nextSet(),b=bands.filter(Boolean);
+    return {done:Object.keys(S.best).filter(x=>!x.includes('+')).length,total:SETS.length,unit:'세트',last:last&&last.ts,recent:last&&last.band||null,best:b.length?Math.max(...b):null,spark:sp(bands),
+      next:nx?{href:'#home',t:setLabel(nx)}:null,n:H.length}}
+  if(k==='w'){const H=W.hist,all=WCATS.flatMap(c=>c.sets),nx=all.find(s=>!W.best[s.id]),bands=H.map(h=>h.band||null),b=bands.filter(Boolean),last=H[H.length-1];
+    const ty=store.get('wtylog',[]),lt=Math.max(last?last.ts:0,ty[0]?ty[0].ts:0,(store.get('wplog',[])[0]||{}).ts||0);
+    return {done:all.filter(s=>W.best[s.id]).length,total:all.length,unit:'세트',last:lt||null,recent:last&&last.band||null,best:b.length?Math.max(...b):null,spark:sp(bands),
+      next:nx?{href:'#w',t:wSetName(nx)}:null,n:H.length,extra:ty.length?`따라 쓰기 ${ty.length}회`:''}}
+  if(k==='v'){const total=VC.data.length,known=VC.data.filter(w=>vcSt(w)==='known').length,due=vcDue().length,L=store.get('vclog',{}),days=Object.keys(L).filter(d=>L[d]).sort();
+    const nd=Array.from({length:30},(_,i)=>i+1).find(d=>vcDay(d).some(w=>vcSt(w)!=='known'))||1;
+    const spark=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);spark.push(L[hmKey(d)]||0)}
+    const ld=days[days.length-1];
+    return {done:known,total,unit:'단어',last:ld?new Date(ld+'T12:00').getTime():null,due,streak:vcStreak(),spark,vocab:true,
+      next:due?{href:'#vc-rev',t:`오늘의 복습 ${due}단어`}:{href:`#vc-d-${nd}`,t:`Day ${nd}`},n:days.length}}
+}
+function hmSpark(vals,c,vocab){if(!vals.length||vals.every(v=>!v))return `<div class="hmspark empty">${vocab?'최근 2주 기록 없음':'풀면 점수가 쌓여요'}</div>`;
+  const W_=160,H_=40,max=vocab?Math.max(...vals,1):6,min=vocab?0:1;
+  if(vocab){const bw=W_/vals.length;return `<svg class="hmspark" viewBox="0 0 ${W_} ${H_}" preserveAspectRatio="none" aria-hidden="true">${vals.map((v,i)=>{const h=v?Math.max(3,(v/max)*(H_-4)):1.5;return `<rect x="${i*bw+1.5}" y="${H_-h}" width="${bw-3}" height="${h}" rx="2" fill="${c}" opacity="${v?.85:.18}"/>`}).join('')}</svg>`}
+  const pts=vals.map((v,i)=>[vals.length===1?W_/2:i*(W_-8)/(vals.length-1)+4,H_-4-((v-min)/(max-min))*(H_-8)]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `<svg class="hmspark" viewBox="0 0 ${W_} ${H_}" preserveAspectRatio="none" aria-hidden="true"><path d="${d} L${pts[pts.length-1][0]} ${H_} L${pts[0][0]} ${H_} Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="2.4" fill="${c}"/>`).slice(-1).join('')}</svg>`}
+function hmRing(p,c){const r=26,C=2*Math.PI*r;return `<svg class="hmring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".1" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle">${Math.round(p*100)}%</text></svg>`}
+function renderHome(){
+  setCrumb(['홈']);store.set('sec','');
+  const E=hmEvents(),today=hmKey(new Date()),byDay={};E.forEach(e=>{const k=hmKey(new Date(e.ts));(byDay[k]=byDay[k]||{})[e.k]=(byDay[k][e.k]||0)+e.n});
+  let streak=0;{const d=new Date();if(!byDay[hmKey(d)])d.setDate(d.getDate()-1);while(byDay[hmKey(d)]){streak++;d.setDate(d.getDate()-1)}}
+  const week=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return byDay[hmKey(d)]?1:0}).reduce((a,b)=>a+b,0);
+  const ST={};HM_SUBJ.forEach(s=>{try{ST[s.k]=hmStat(s.k)}catch(e){ST[s.k]=null}});
+  const todayDone=HM_SUBJ.filter(s=>byDay[today]&&byDay[today][s.k]);
+  // recommendation: vocab review first if due, otherwise the subject left alone the longest
+  const ranked=HM_SUBJ.filter(s=>s.k!=='v'&&ST[s.k]).sort((a,b)=>(ST[a.k].last||0)-(ST[b.k].last||0));
+  const rec=ST.v&&ST.v.due>=10&&!(byDay[today]||{}).v?{s:HM_SUBJ[4],why:`복습할 단어가 ${ST.v.due}개 쌓였어요`}:ranked[0]?{s:ranked[0],why:ST[ranked[0].k].last?`${hmAgo(ST[ranked[0].k].last)} 마지막으로 했어요 · 가장 오래 쉰 과목`:'아직 한 번도 안 해 본 과목이에요'}:null;
+  const hr=new Date().getHours(),hi=hr<6?'늦은 밤에도 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
+  const N=21,days=Array.from({length:N},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(N-1-i));return d});
+  view.innerHTML=`<div class="hm">
+    <section class="hmhero panel">
+      <div class="hmhi"><p class="hmk">${hi} 👋</p><h1>오늘은 어떤 과목부터 할까요?</h1>
+        <p class="hmsub">${todayDone.length?`오늘 <b>${todayDone.map(s=>s.name).join(' · ')}</b> 공부했어요.`:'오늘은 아직 공부 기록이 없어요.'}</p>
+        ${rec?`<a class="hmrec" href="${rec.s.href}" style="--sc:${rec.s.c}"><span class="hmrec-ic">${rec.s.ic}</span><span><b>추천 · ${rec.s.name}</b><small>${esc(rec.why)}</small></span><span class="hmgo">→</span></a>`:''}</div>
+      <div class="hmstats">
+        <div><b class="mono">${streak}</b><span>연속 학습일</span></div>
+        <div><b class="mono">${week}<small>/7</small></b><span>이번 주 학습일</span></div>
+        <div><b class="mono">${Object.keys(byDay).length}</b><span>총 학습일</span></div>
+      </div>
+    </section>
+    <section class="hmgrid">${HM_SUBJ.map(s=>{const t=ST[s.k];if(!t)return '';const p=t.total?t.done/t.total:0;
+      const kp=t.vocab?`<div><b class="mono">${t.due}</b><span>복습 대기</span></div><div><b class="mono">${t.streak}<small>일</small></b><span>연속</span></div>`
+        :`<div><b class="mono">${t.recent!=null?t.recent.toFixed(1):'–'}</b><span>최근 밴드</span></div><div><b class="mono">${t.best!=null?t.best.toFixed(1):'–'}</b><span>최고 밴드</span></div>`;
+      return `<article class="hmcard panel" style="--sc:${s.c}">
+        <a class="hmcard-hit" href="${s.href}" aria-label="${s.name} 대시보드로 가기"></a>
+        <header><span class="hmic">${s.ic}</span><div><h2>${s.name}</h2><span class="small muted">${s.ko} · ${hmAgo(t.last)}</span></div>${(byDay[today]||{})[s.k]?'<span class="hmtoday">오늘 ✓</span>':''}</header>
+        <div class="hmmid">${hmRing(p,s.c)}<div class="hmkpi">${kp}<div class="hmprog"><span class="mono">${t.done}</span> / ${t.total} ${t.unit} ${t.vocab?'외움':'완료'}${t.extra?` · ${esc(t.extra)}`:''}</div></div></div>
+        <div class="hmsp"><span class="small muted">${t.vocab?'최근 2주 학습량':'점수 흐름'}</span>${hmSpark(t.spark,s.c,t.vocab)}</div>
+        <footer>${t.next?`<a class="btn sm hmnext" href="${t.next.href}">▶ ${esc(t.next.t)}</a>`:'<span class="small muted">모든 세트 완료 🎉</span>'}<a class="btn sm quiet" href="${s.href}">대시보드</a></footer>
+      </article>`}).join('')}</section>
+    <section class="panel ph hmact"><h2>최근 3주 학습 기록 <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2>
+      <div class="hmtbl" role="table" aria-label="최근 3주 과목별 학습 기록">
+        <div class="hmrow hmhead" role="row"><span role="columnheader"></span>${days.map(d=>`<span role="columnheader" class="${hmKey(d)===today?'hmtd':''}${d.getDay()===0?' sun':''}">${d.getDate()===1||d===days[0]?(d.getMonth()+1)+'/':''}${d.getDate()}</span>`).join('')}</div>
+        ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader">${s.ic} ${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
+      </div></section>
+  </div>`;
+  const a=$('.hmact');if(a)a.scrollLeft=a.scrollWidth;
+}
+/* landing route: empty hash or #start; the brand logo in every menu goes here */
+{const _routeV=route;
+ route=function(){if(RUN.active||document.body.classList.contains('testing'))return;
+  const h=location.hash.slice(1);
+  if(h===''||h==='start'){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}
+    $('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>Hackers Intermediate</small></span></a>${secSwitch('')}
+      <a class="nl" href="#start" aria-current="page"><span class="ic" aria-hidden="true">⌂</span><span>홈</span></a>
+      <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true">${s.ic}</span><span>${s.name}</span></a>`).join('')}</div>
+      <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">⚙</span><span>설정</span></a></div>`;
+    $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
+    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.map(s=>`<a href="${s.href}"><span aria-hidden="true">${s.ic}</span>${s.name}</a>`).join('');
+    const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>5과목 한눈에 보기</span>'}
+    renderHome();window.scrollTo(0,0);hmMsec();return}
+  _routeV();const b=$('#lnb .brand');if(b)b.setAttribute('href','#start');hmMsec()};
+ window.removeEventListener('hashchange',_routeV);window.addEventListener('hashchange',route)}
+function hmMsec(){const h=location.hash.slice(1);if(h===''||h==='start')$$('#msecsw a').forEach(a=>a.setAttribute('aria-selected','false'))}
+/* a home button in the top bar */
+try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="홈으로" title="홈 (5과목 한눈에 보기)">⌂</a>')}catch(e){}
 
 /* ---------- boot ---------- */
 route();
