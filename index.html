@@ -1334,7 +1334,7 @@ function iconSVG(id, size){
     try{const db=await open();const meta=await tx(db,'meta','readonly',st=>st.get('pack'));
       if(!meta){showImport();return}
       const files=await getAll(db);
-      if(window.PACKSTAMP&&meta.stamp!==window.PACKSTAMP){showImport(()=>boot(meta,files));return}
+      if(window.PACKSTAMP&&(meta.stamp!==window.PACKSTAMP||!meta.gkey)){showImport(()=>boot(meta,files));return}
       boot(meta,files);
     }catch(e){showImport()}
   });
