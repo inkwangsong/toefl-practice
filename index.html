@@ -1292,14 +1292,14 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="8331807da5ad";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="b9a162685cce";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
   const tx=(db,st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out instanceof IDBRequest?out.result:out);t.onerror=()=>rej(t.error)});
   const getAll=db=>new Promise((res,rej)=>{const t=db.transaction('files');const st=t.objectStore('files'),out={};const c=st.openCursor();c.onsuccess=()=>{const k=c.result;if(k){out[k.key]=k.value;k.continue()}else res(out)};c.onerror=()=>rej(c.error)});
   function boot(meta,files){
-    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};window.PACKURL={};window.PACKBLOB={};
+    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PACKURL={};window.PACKBLOB={};
     for(const [name,blob] of Object.entries(files)){if(name.startsWith('images/'))PACKURL[name.slice(7)]=URL.createObjectURL(blob);else PACKBLOB[name]=blob}
     const s=document.createElement('script');s.text=document.getElementById('appjs').textContent;document.body.appendChild(s);
   }
@@ -1312,7 +1312,7 @@ function iconSVG(id, size){
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
-    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
+    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600);
   }
