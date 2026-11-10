@@ -1329,7 +1329,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="06a297927bc9";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="b7e402dbfedd";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -3763,7 +3763,7 @@ function rlSpeakP(u){return new Promise(res=>{let done=false,started=false,poll=
     try{speechSynthesis.cancel()}catch(e){}
     setTimeout(()=>{if(done)return;try{speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){return fin()}
       poll=setInterval(()=>{const sp=speechSynthesis.speaking||speechSynthesis.pending;if(sp)started=true;else if(started)fin()},300);
-      setTimeout(()=>{if(!started&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin()},2500);to=setTimeout(fin,lim)},80)}catch(e){fin()}})}
+      setTimeout(()=>{if(done||started||speechSynthesis.speaking||speechSynthesis.pending)return;try{speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}setTimeout(()=>{if(!started&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin()},1600)},1100);to=setTimeout(fin,lim)},80)}catch(e){fin()}})}
 function rlSpeakU(t,rate){const acc=rlAcc(),u=new SpeechSynthesisUtterance(t);u.lang=RLACC[acc].lang;const v=rlVoice(acc);if(v){u.voice=v;u.lang=v.lang}u.rate=rate;return u}
 function rlTtsBar(lbl='지문 듣기'){const acc=rlAcc();return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
   <span class="rlrate rlacc" role="group" aria-label="발음">${Object.entries(RLACC).map(([k,v])=>`<button type="button" data-acc="${k}" aria-pressed="${k===acc}">${v.f} ${v.k}</button>`).join('')}</span>
@@ -3875,14 +3875,20 @@ function rlVoiceWire(bar,test){if(!bar)return;const key=bar.dataset.key,ui=()=>r
   $('.rlvtest',bar).onclick=t;
   try{speechSynthesis.addEventListener('voiceschanged',()=>{if(document.body.contains(bar))ui()})}catch(e){}}
 /* speak a short English text with the chosen engine (ai → Gemini, else device). Returns a promise that resolves when done. */
+window.RLSAYSEQ=0;
 function rlSayE(text,eng,rate,opt={}){eng=eng||store.get('rlvceng','dev');rate=rate||rlRate();const t=String(text||'').replace(/<[^>]+>/g,'').trim();if(!t)return Promise.resolve();
   try{speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}
   const dev=()=>{try{if(opt.ko){const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}return rlSpeakP(rlSpeakU(t,rate))}catch(e){return Promise.resolve()}};
+  const seq=++window.RLSAYSEQ;
   if(eng!=='ai'||Date.now()<(window.RLAIOFF||0))return dev();
   const fresh=!RLAIC.has((opt.ko?'KO':rlAcc())+'|'+rlAiVoice()+'|'+t);if(fresh)rlHint('⏳ AI 목소리 요청 중…');
-  return rlAiAudio(t,opt).then(url=>new Promise(res0=>{let d=false;const res=()=>{if(!d){d=true;clearTimeout(wd);res0()}},wd=setTimeout(res,4000+t.length*160/rate);const a=rlAiEl(url);RLAIA=a;a.playbackRate=opt.ko?1:rate;a.onended=()=>res();a.onerror=()=>res();a.onpause=()=>{if(!a.ended)setTimeout(()=>{if(a.paused)res()},200)};
-      a.play().then(()=>{if(fresh)rlHint('✅ AI 목소리 재생 중 ('+esc(store.get('rlttsmodel',''))+') · 들은 문장은 이 기기에 저장돼요')}).catch(er=>{rlHint('⚠️ 브라우저가 소리 재생을 막았어요('+esc(er.name||er.message)+'). 화면을 한 번 누른 뒤 다시 들어 보세요.');dev().then(res)})}))
-    .catch(e=>{window.RLAIOFF=Date.now()+6e5;rlHint('⚠️ '+esc(rlAiErr(e))+' · 10분 동안 기기 음성으로 대신 읽어요.');toast(rlAiErr(e));return dev()})}
+  // an uncached short clip that takes longer than 2.5s is read by the device voice now; the AI clip is still saved for next time
+  let slow=false;const sh=t.split(/\s+/).length<=14;
+  const ai=rlAiAudio(t,opt),race=fresh&&sh?Promise.race([ai,new Promise(r=>setTimeout(()=>{slow=true;r(null)},2500))]):ai;
+  ai.catch(()=>{});
+  return race.then(url=>{if(seq!==window.RLSAYSEQ)return;if(!url){rlHint('⏳ AI 목소리가 늦어서 이번엔 기기 음성으로 읽어요 · 다음부터는 바로 AI로 나와요');return dev()}return new Promise(res0=>{let d=false;const res=()=>{if(!d){d=true;clearTimeout(wd);res0()}},wd=setTimeout(res,4000+t.length*160/rate);const a=rlAiEl(url);RLAIA=a;a.playbackRate=opt.ko?1:rate;a.onended=()=>res();a.onerror=()=>res();a.onpause=()=>{if(!a.ended)setTimeout(()=>{if(a.paused)res()},200)};
+      a.play().then(()=>{if(fresh)rlHint('✅ AI 목소리 재생 중 ('+esc(store.get('rlttsmodel',''))+') · 들은 문장은 이 기기에 저장돼요')}).catch(er=>{rlHint('⚠️ 브라우저가 소리 재생을 막았어요('+esc(er.name||er.message)+'). 화면을 한 번 누른 뒤 다시 들어 보세요.');dev().then(res)})})})
+    .catch(e=>{if(seq!==window.RLSAYSEQ)return;window.RLAIOFF=Date.now()+6e5;rlHint('⚠️ '+esc(rlAiErr(e))+' · 10분 동안 기기 음성으로 대신 읽어요.');toast(rlAiErr(e));return dev()})}
 /* ---- dashboard / set ---- */
 let RLCAL=null;
 function rlCalendar(sec){const S_=RLSEC[sec],P=S_.pre,box=el('<div class="cal"></div>'),now=new Date();RLCAL=RLCAL||{y:now.getFullYear(),m:now.getMonth()};
@@ -4073,7 +4079,7 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
 function set_i(st){return st.i}
 /* voice for reading directions/questions in the listening test: AI voice when it works, else the device voice */
 function rlQVoice(){try{return rlAiOK()&&store.get('vceng','orig')!=='dev'?'ai':'dev'}catch(e){return 'dev'}}
-function rlStopSpeak(){try{speechSynthesis.cancel();if(RLAIA)RLAIA.pause()}catch(e){}}
+function rlStopSpeak(){window.RLSAYSEQ++;try{speechSynthesis.cancel();if(RLAIA)RLAIA.pause()}catch(e){}}
 /* leaving mid-way: keep a score for only the answered questions, leave without a record, or keep going */
 async function rlExitAsk(set,st,kind){const qs=rlQs(set),a=qs.filter(q=>st.ans[q.n]!=null&&st.ans[q.n]!=='').length;
   if(!a){return confirm(kind+' 그만둘까요? 아직 답한 문항이 없어서 기록은 남지 않아요.')?'drop':'cancel'}
@@ -4252,6 +4258,9 @@ const _envRL=envState;envState=function(){const s=rlSec(location.hash.slice(1)||
 
 const rlAiOK=()=>!!(S.cfg&&S.cfg.geminiKey)&&Date.now()>=(window.RLAIOFF||0);
 
+/* iOS Safari mutes speechSynthesis started outside a tap until it has spoken once inside one */
+{const un=()=>{try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}removeEventListener('pointerdown',un,true);removeEventListener('keydown',un,true)};addEventListener('pointerdown',un,true);addEventListener('keydown',un,true)}
+
 /* ================= Vocab · VocaDay (Hackers TOEFL Vocabulary, 30 Days) =================
    Word data is injected at build time as window.VOCA (never stored in this repo).
    Progress uses the same shape as the VocaDay app ({status, box, due, misses, t}) so the
@@ -4284,7 +4293,7 @@ const vcTx=s=>String(s||'').replace(/<(?!\/?b>)[^>]+>/g,'');
 /* ---------- audio: book recording (sprite per Day) · AI · device ---------- */
 const vcEng=()=>{const e=store.get('vceng','orig');return e==='ai'&&!(S.cfg&&S.cfg.geminiKey)?'orig':e};
 let VCA=null,VCAT=null,VCRES=null,VCGEN=0;try{VCA=rlUnlockEl(new Audio())}catch(e){}
-function vcStop(){try{if(VCRES){const r=VCRES;VCRES=null;r(false)}if(VCA){VCA.pause()}clearTimeout(VCAT);speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}}
+function vcStop(){window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;try{if(VCRES){const r=VCRES;VCRES=null;r(false)}if(VCA){VCA.pause()}clearTimeout(VCAT);speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}}
 function vcKoSay(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=1;const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}catch(e){return Promise.resolve()}}
 const VCSRC={};
 function vcSrc(day){const k=String(day).padStart(2,'0');if(VCSRC[k])return VCSRC[k];const pb=window.PACKBLOB&&PACKBLOB['vcaud/g'+k+'.mp3'];if(pb)return VCSRC[k]=URL.createObjectURL(pb);const el=document.getElementById('vca-'+k);
