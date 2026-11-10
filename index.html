@@ -1148,7 +1148,7 @@ body.navmin main{max-width:1500px}
 .hmrow{display:grid;grid-template-columns:130px repeat(var(--n,21),minmax(22px,1fr));gap:5px;align-items:center}
 .hmrow>span:first-child{font-size:15px;font-weight:600;white-space:nowrap}
 .hmhead span{font-size:12px;color:var(--mute);text-align:center}.hmhead .sun{color:#e5484d}.hmhead .hmtd{color:var(--accent);font-weight:800}
-.hmc{height:22px;border-radius:6px;background:color-mix(in srgb,var(--ink) 6%,transparent)}.hmc.on{background:var(--sc)}
+.hmc{height:22px;border-radius:6px;background:color-mix(in srgb,var(--ink) 6%,transparent)}.hmc.on{background:var(--sc)}.hmc.fut{background:transparent;border:1px dashed color-mix(in srgb,var(--ink) 14%,transparent)}.hmc.tdc:not(.on){box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}.hmhead .fut{opacity:.55}
 @media (max-width:860px){.hmhero{grid-template-columns:1fr;padding:20px}.hmstats{grid-template-columns:repeat(3,1fr)}.hmstats div{min-width:0;padding:10px}.hmhero h1{font-size:24px}}
 @media (max-width:520px){.hmgrid{grid-template-columns:1fr}.hmrow{grid-template-columns:96px repeat(var(--n,21),minmax(22px,1fr))}}
 
@@ -4715,8 +4715,10 @@ function renderHome(){
   let rec=ST.v&&ST.v.due>=10&&!(byDay[today]||{}).v?{s:HM_SUBJ[4],why:`복습할 단어가 ${ST.v.due}개 쌓였어요`}:ranked[0]?{s:ranked[0],why:ST[ranked[0].k].last?`${hmAgo(ST[ranked[0].k].last)} 마지막으로 했어요 · 가장 오래 쉰 과목`:'아직 한 번도 안 해 본 과목이에요'}:null;
   {const P=plState();if(P&&P.cur>=1&&P.cur<=P.p.n){const D=P.D[P.cur-1],j=P.stat[P.cur-1].findIndex(x=>!x);if(j>=0){const it=D[j],sj=HM_SUBJ.find(x=>x.k===it.s);rec={s:Object.assign({},sj,{href:it.h||sj.href}),why:`오늘 플랜 · ${it.t}`,plan:1}}}}
   const hr=new Date().getHours(),hi=hr<6?'늦은 밤에도 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
-  const pg=plGet(),hf=store.get('hmfrom',''),from=hf?plDate(hf):pg&&pg.start?plDate(pg.start):new Date(HM_FROM),t0=new Date();t0.setHours(0,0,0,0);if(from>t0)from.setTime(t0.getTime());
-  const N=Math.max(1,Math.round((t0-from)/864e5)+1),days=Array.from({length:N},(_,i)=>{const d=new Date(from);d.setDate(d.getDate()+i);return d});
+  const pg=plGet(),hf=store.get('hmfrom',''),from=hf?plDate(hf):pg&&pg.start?plDate(pg.start):new Date(HM_FROM),t0=new Date();t0.setHours(0,0,0,0);
+  const pend=pg&&pg.start?(()=>{const e=plDate(pg.start);e.setDate(e.getDate()+pg.n-1);return e})():null,fend=new Date(from);fend.setDate(fend.getDate()+29);
+  const until=new Date(Math.max(t0.getTime(),pend?pend.getTime():fend.getTime()));
+  const N=Math.max(1,Math.round((until-from)/864e5)+1),days=Array.from({length:N},(_,i)=>{const d=new Date(from);d.setDate(d.getDate()+i);return d});
   view.innerHTML=`<div class="hm">
     <section class="hmhero panel">
       <div class="hmhi"><p class="hmk">${hi} 👋</p><h1>오늘은 어떤 과목부터 할까요?</h1>
@@ -4739,13 +4741,13 @@ function renderHome(){
         <div class="hmsp"><span class="small muted">${t.vocab?'최근 2주 학습량':'점수 흐름'}</span>${hmSpark(t.spark,s.c,t.vocab)}</div>
         <footer>${t.next?`<a class="btn sm hmnext" href="${t.next.href}">▶ ${esc(t.next.t)}</a>`:'<span class="small muted">모든 세트 완료 🎉</span>'}<a class="btn sm quiet" href="${s.href}">대시보드</a></footer>
       </article>`}).join('')}</section>
-    <section class="panel ph hmact"><div class="plhead" style="margin-bottom:8px"><h2 style="flex:1">${days[0].getMonth()+1}월 ${days[0].getDate()}일부터 학습 기록 <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2><label class="small hmfrom">시작일 <input type="date" id="hmfrom" value="${hmKey(days[0])}" max="${hmKey(t0)}"></label></div>
+    <section class="panel ph hmact"><div class="plhead" style="margin-bottom:8px"><h2 style="flex:1">학습 기록 · ${days[0].getMonth()+1}/${days[0].getDate()} – ${days[N-1].getMonth()+1}/${days[N-1].getDate()} <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2><label class="small hmfrom">시작일 <input type="date" id="hmfrom" value="${hmKey(days[0])}"></label></div>
       <div class="hmtbl" role="table" aria-label="과목별 학습 기록" style="--n:${N}">
-        <div class="hmrow hmhead" role="row"><span role="columnheader"></span>${days.map(d=>`<span role="columnheader" class="${hmKey(d)===today?'hmtd':''}${d.getDay()===0?' sun':''}">${d.getDate()===1||d===days[0]?(d.getMonth()+1)+'/':''}${d.getDate()}</span>`).join('')}</div>
-        ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader">${s.ic} ${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
+        <div class="hmrow hmhead" role="row"><span role="columnheader"></span>${days.map(d=>`<span role="columnheader" class="${hmKey(d)===today?'hmtd':''}${d.getDay()===0?' sun':''}${d>t0?' fut':''}">${d.getDate()===1||d===days[0]?(d.getMonth()+1)+'/':''}${d.getDate()}</span>`).join('')}</div>
+        ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader">${s.ic} ${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''} ${d>t0?'fut':''} ${hmKey(d)===today?'tdc':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
       </div></section>
   </div>`;
-  const a=$('.hmact');if(a)a.scrollLeft=a.scrollWidth;
+  const a=$('.hmact'),tc=a&&$('.hmhead .hmtd',a);if(a&&tc)a.scrollLeft=Math.max(0,tc.offsetLeft-a.clientWidth*.6);
   hmPlanWire();
   const hfi=$('#hmfrom');if(hfi)hfi.onchange=()=>{if(hfi.value){store.set('hmfrom',hfi.value);const y=scrollY;renderHome();scrollTo(0,y)}};
 }
