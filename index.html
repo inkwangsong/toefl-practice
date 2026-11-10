@@ -556,6 +556,9 @@ body.testing .shell{display:none}
 .wprog{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.wpc{display:grid;gap:4px;text-decoration:none;color:inherit}
 .tybox{display:grid;gap:10px}.tyhead{display:flex;justify-content:space-between;align-items:center}
 .tytgt{font:500 21.5px/1.65 var(--mono,ui-monospace,Menlo,monospace);letter-spacing:.01em;padding:12px 14px;border-radius:10px;background:var(--bg2,rgba(127,127,127,.08));word-break:break-word}
+.tyko{margin:8px 2px 0;font-size:16.5px;line-height:1.6;color:var(--muted,#777);padding-left:10px;border-left:3px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.tyqt{white-space:pre-line;line-height:1.65;margin:8px 0 0}.tyq summary{cursor:pointer}
+.tyall-ko{font-size:.88em;color:var(--muted,#888);margin:2px 0 4px}#tyall.noko .tyall-ko{display:none}
 .tytgt .ok{color:var(--accent)}.tytgt .bad{color:#d33;background:rgba(221,51,51,.12);border-radius:2px}.tytgt .cur{border-bottom:2px solid var(--accent)}.tytgt .hid{color:var(--muted,#888)}
 #tyin{position:relative;z-index:1;width:100%;font:19px/1.5 var(--mono,ui-monospace,Menlo,monospace);padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card,transparent);color:inherit;resize:vertical}
 .tyctl{gap:8px;flex-wrap:wrap}.tylist{margin-top:14px}.tylist ol,.tyrl{padding-left:22px;display:grid;gap:6px;margin:6px 0}.tylist li{color:var(--muted,#888)}.tylist li.on{color:inherit;font-weight:600}
@@ -1292,7 +1295,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="b9a162685cce";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="06a297927bc9";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -3578,24 +3581,24 @@ function tyLcs(a,b){const m=a.length,n=b.length,D=Array.from({length:m+1},()=>ne
 function renderWType(){
   setCrumb(['Writing','따라 쓰기']);const P=store.get('wtype',{});
   view.innerHTML=`<div class="cathead"><div><span class="badge">Task 2 · 3 템플릿</span><h1>따라 쓰기 (템플릿 필사)</h1>
-    <p>선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 한 문장씩 그대로 쳐 보는 연습이에요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
+    <p>선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 한 문장씩 그대로 쳐 보는 연습이에요. 에세이·이메일 답안은 <b>문제</b>와 함께, 모든 문장은 <b>한글 직역</b>과 함께 나와서 뜻을 생각하며 쓸 수 있어요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
     ${WTYPE.length?WTYPE.map(g=>`<section class="section"><h2>${esc(g.title)} <span class="small muted">Task ${g.task} · ${g.drills.length}세트</span></h2><p class="small muted" style="margin:-4px 0 8px">${esc(g.desc)}</p><div class="panel list">${g.drills.map(d=>{const p=P[d.id];
       return `<div class="li wli"><div class="lmain"><b>${esc(tyName(d.title))}</b><span class="small muted">${d.lines.length}문장${p?` · 최고 정확도 <b style="color:var(--accent)">${p.acc}%</b> · ${p.wpm} WPM · ${p.n}회${p.blind?' · 가리고 쓰기 ✓':''}`:''}</span></div><div class="lside"><a class="btn sm" href="#w-ty-${d.id}">보고 쓰기</a><a class="btn sm quiet" href="#w-ty-${d.id}~b">가리고 쓰기</a></div></div>`}).join('')}</div></section>`).join('')
       :'<div class="empty">따라 쓰기 데이터가 없어요. 설정 → 교재 데이터에서 새 데이터 팩을 다시 가져와 주세요.</div>'}`;
 }
 function renderWTypeRun(id,blind){
   const f=tyFind(id);if(!f){view.innerHTML='<div class="empty">세트를 찾을 수 없어요.</div>';return}
-  const {g,d}=f,L=d.lines.map(l=>({k:l.k,t:tyN(tyName(l.t))}));
+  const {g,d}=f,L=d.lines.map(l=>({k:l.k,t:tyN(tyName(l.t)),ko:tyName(l.ko||'')}));
   setCrumb(['Writing','따라 쓰기',tyName(d.title)]);
-  const st={i:0,blind,t0:0,typed:0,res:[],peek:false,gh:blind?false:store.get('tyghost',true)};
+  const st={i:0,blind,t0:0,typed:0,res:[],peek:false,gh:blind?false:store.get('tyghost',true),ko:store.get('tyko',true)};
   view.innerHTML=`<div class="cathead"><div><a href="#w-type" class="small">← 따라 쓰기 목록</a><h1 style="margin-top:6px">${esc(tyName(d.title))}</h1><p class="small muted">${esc(g.title)}</p></div>
     <div class="row"><div class="secsw tymode" role="tablist"><a href="#w-ty-${id}" role="tab" aria-selected="${!blind}">보고 쓰기</a><a href="#w-ty-${id}~b" role="tab" aria-selected="${blind}">가리고 쓰기</a></div></div></div>
-    ${d.q?`<details class="panel ph tyq"><summary><b>문제 보기</b></summary><p>${esc(d.q)}</p></details>`:''}
+    ${d.q?`<details class="panel ph tyq" ${store.get('tyqopen',true)?'open':''}><summary><b>📝 문제</b> <span class="small muted">이 문제에 대한 답안이에요 · 눌러서 접기/펼치기</span></summary><p class="tyqt">${esc(tyName(d.q))}</p></details>`:''}
     <div class="panel ph tybox"><div class="tyhead"><span class="mtag book sm" id="tyk"></span><span class="small muted" id="typ"></span></div>
-      <div class="tytgt" id="tyt" aria-live="polite"></div>
+      <div class="tytgt" id="tyt" aria-live="polite"></div><div class="tyko" id="tyko"></div>
       <div class="tywrap"><div class="tyghost" id="tygh" aria-hidden="true"></div><textarea id="tyin" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder=""></textarea></div>
-      <div class="row tyctl"><button class="btn sm quiet" id="tyhint">${blind?'잠깐 보기 (힌트)':'첫 글자만 보기'}</button><button class="btn sm quiet" id="tyghbtn"></button><button class="btn sm quiet" id="tyskip">건너뛰기</button><span class="small muted" id="tylive"></span><span style="flex:1"></span><button class="btn sm primary" id="tynext">다음 문장 ⏎</button></div></div>
-    <div class="panel ph tylist"><h4>전체 문장</h4><ol id="tyall">${L.map((l,i)=>`<li data-i="${i}"><span class="tsn">${esc(l.k)}</span> <span class="tyall-t">${blind?'<i class="muted">가리고 쓰기 중</i>':esc(l.t)}</span></li>`).join('')}</ol></div>`;
+      <div class="row tyctl"><button class="btn sm quiet" id="tyhint">${blind?'잠깐 보기 (힌트)':'첫 글자만 보기'}</button><button class="btn sm quiet" id="tyghbtn"></button><button class="btn sm quiet" id="tykobtn"></button><button class="btn sm quiet" id="tyskip">건너뛰기</button><span class="small muted" id="tylive"></span><span style="flex:1"></span><button class="btn sm primary" id="tynext">다음 문장 ⏎</button></div></div>
+    <div class="panel ph tylist"><h4>전체 문장</h4><ol id="tyall">${L.map((l,i)=>`<li data-i="${i}"><span class="tsn">${esc(l.k)}</span> <span class="tyall-t">${blind?'<i class="muted">가리고 쓰기 중</i>':esc(l.t)}</span>${l.ko?`<div class="tyall-ko">${esc(l.ko)}</div>`:''}</li>`).join('')}</ol></div>`;
   const inp=$('#tyin'),tgt=$('#tyt');
   const hintOf=t=>t.replace(/([A-Za-z])([A-Za-z'’-]*)/g,(m,a,b)=>a+b.replace(/./g,'_'));
   function ghost(){const t=L[st.i].t,v=inp.value,g=$('#tygh');$('#tyghbtn').textContent=st.gh?'🙈 입력창 템플릿 숨기기':'👁 입력창에 템플릿 보기';g.style.display=st.gh?'':'none';inp.classList.toggle('ghon',st.gh);inp.placeholder=st.gh?'':'여기에 그대로 쳐 보세요. Enter = 다음 문장';if(!st.gh)return;g.innerHTML=`<span class="tyg-done">${esc(t.slice(0,v.length))}</span>${esc(t.slice(v.length))}`}
@@ -3605,16 +3608,19 @@ function renderWTypeRun(id,blind){
       tgt.innerHTML=st.hint?h:words.map((w,i)=>i<typedW.length-1||(i===typedW.length-1&&v.endsWith(' '))?(tyN(typedW[i]).toLowerCase()===w.toLowerCase()?`<span class="ok">${esc(w)}</span>`:`<span class="bad">${esc(typedW[i])}</span>`):`<span class="hid">${'•'.repeat(Math.min(w.length,8))}</span>`).join(' ');return}
     let h='',bad=0;for(let i=0;i<t.length;i++){const c=t[i];if(i<v.length){const ok=tyN(v[i])===tyN(c)||(v[i]===' '&&c===' ');if(!ok)bad++;h+=`<span class="${ok?'ok':'bad'}">${esc(c)}</span>`}else h+=i===v.length?`<span class="cur">${esc(c)}</span>`:esc(st.hint&&!st.blind&&/[a-z]/i.test(c)&&t[i-1]&&t[i-1]!==' '?'·':c)}
     if(v.length>t.length)h+=`<span class="bad">${esc(v.slice(t.length))}</span>`;tgt.innerHTML=h;$('#tylive').textContent=bad?`오타 ${bad}자`:''}
-  function show(){const l=L[st.i];$('#tyk').textContent=l.k;$('#typ').textContent=`${st.i+1} / ${L.length}`;inp.value='';st.t0=0;st.peek=false;st.hint=false;$('#tylive').textContent='';
+  function kopaint(){const l=L[st.i],k=$('#tyko');k.textContent=l.ko?'뜻: '+l.ko:'';k.hidden=!st.ko||!l.ko;$('#tykobtn').hidden=!L.some(x=>x.ko);$('#tykobtn').textContent=st.ko?'🙈 한글 뜻 숨기기':'💬 한글 뜻 보기';$('#tyall').classList.toggle('noko',!st.ko)}
+  function show(){const l=L[st.i];kopaint();$('#tyk').textContent=l.k;$('#typ').textContent=`${st.i+1} / ${L.length}`;inp.value='';st.t0=0;st.peek=false;st.hint=false;$('#tylive').textContent='';
     $$('#tyall li').forEach(li=>li.classList.toggle('on',+li.dataset.i===st.i));paint();inp.focus()}
   function commit(skip){const l=L[st.i],v=tyN(inp.value);const a=tyWords(l.t),b=tyWords(v);const {hit,miss}=tyLcs(a,b);
-    const sec=st.t0?(Date.now()-st.t0)/1000:0;st.res.push({k:l.k,t:l.t,v,acc:skip?0:Math.round(hit/Math.max(a.length,b.length,1)*100),exact:v===l.t,miss:skip?a:miss,sec,words:b.length,skip});
+    const sec=st.t0?(Date.now()-st.t0)/1000:0;st.res.push({k:l.k,t:l.t,ko:l.ko,v,acc:skip?0:Math.round(hit/Math.max(a.length,b.length,1)*100),exact:v===l.t,miss:skip?a:miss,sec,words:b.length,skip});
     const li=$(`#tyall li[data-i="${st.i}"]`);if(li){li.classList.add(skip?'skip':v===l.t?'done':'part');if(st.blind)li.querySelector('.tyall-t').textContent=l.t}
     st.i++;if(st.i<L.length)show();else finish()}
   inp.addEventListener('input',()=>{if(!st.t0&&inp.value)st.t0=Date.now();paint();if(tyN(inp.value)===L[st.i].t&&!st.blind)setTimeout(()=>{if(tyN(inp.value)===L[st.i]?.t)commit(false)},250)});
   inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(inp.value.trim())commit(false)}});
   $('#tynext').onclick=()=>{if(inp.value.trim())commit(false);else inp.focus()};
   $('#tyskip').onclick=()=>commit(true);
+  $('#tykobtn').onclick=()=>{st.ko=!st.ko;store.set('tyko',st.ko);kopaint();inp.focus()};
+  {const q=$('.tyq');if(q)q.addEventListener('toggle',()=>store.set('tyqopen',q.open))}
   $('#tyghbtn').onclick=()=>{st.gh=!st.gh;if(!st.blind)store.set('tyghost',st.gh);paint();inp.focus()};
   inp.addEventListener('scroll',()=>{$('#tygh').scrollTop=inp.scrollTop});
   $('#tyhint').onclick=()=>{if(st.blind){st.peek=true;tgt.innerHTML=esc(L[st.i].t);setTimeout(()=>{st.peek=false;st.hint=true;paint();inp.focus()},2000)}else{st.hint=!st.hint;paint();inp.focus()}};
@@ -3624,7 +3630,7 @@ function renderWTypeRun(id,blind){
     $('.tybox').outerHTML=`<div class="panel ph tyres"><h2 style="margin:0 0 10px">끝! ${acc>=95?'완벽해요 👏':acc>=80?'잘했어요':'한 번 더 해 볼까요?'}</h2>
       <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>단어 정확도</span></div><div class="kpi"><b>${ex}/${R.length}</b><span>완벽히 일치한 문장</span></div><div class="kpi"><b>${wpm||'—'}</b><span>WPM (분당 단어)</span></div><div class="kpi"><b>${Math.round(sec)}초</b><span>걸린 시간</span></div></div>
       ${mw.length?`<h4>놓치거나 틀린 단어</h4><p class="tymiss">${mw.map(([w,n])=>`<span class="mtag sm">${esc(w)}${n>1?' ×'+n:''}</span>`).join(' ')}</p>`:''}
-      <h4>문장별 결과</h4><ol class="tyrl">${R.map(r=>`<li class="${r.exact?'done':r.skip?'skip':'part'}"><span class="tsn">${esc(r.k)}</span> <b>${r.skip?'건너뜀':r.acc+'%'}</b><div>${esc(r.t)}</div>${!r.exact&&!r.skip?`<div class="small muted">내 입력: ${esc(r.v)}</div>`:''}</li>`).join('')}</ol>
+      <h4>문장별 결과</h4><ol class="tyrl">${R.map(r=>`<li class="${r.exact?'done':r.skip?'skip':'part'}"><span class="tsn">${esc(r.k)}</span> <b>${r.skip?'건너뜀':r.acc+'%'}</b><div>${esc(r.t)}</div>${r.ko?`<div class="small muted">${esc(r.ko)}</div>`:''}${!r.exact&&!r.skip?`<div class="small muted">내 입력: ${esc(r.v)}</div>`:''}</li>`).join('')}</ol>
       <div class="row" style="margin-top:12px"><a class="btn primary" href="#w-ty-${id}${blind?'~b':''}" onclick="setTimeout(route,0)">다시 하기</a>${!blind?`<a class="btn" href="#w-ty-${id}~b">가리고 쓰기 도전</a>`:''}<a class="btn quiet" href="#w-type">목록으로</a></div></div>`;
     $$('#tyall li').forEach(li=>li.classList.remove('on'))}
   show();
