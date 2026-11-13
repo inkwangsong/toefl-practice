@@ -4621,7 +4621,7 @@ function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok
     ins[0]?.focus();$('[data-say]',host).onclick=()=>vcPlay(w,'w');
     $('#vcspimg',host).onchange=e=>{store.set('vcspimg',e.target.checked);const q=$('.vcq',host),a=$('.vcqart',host);if(e.target.checked&&!a){q.insertAdjacentHTML('afterbegin',`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`);q.classList.add('withimg')}else if(!e.target.checked&&a){a.remove();q.classList.remove('withimg')}(ins.find(x=>!x.value)||ins[0])?.focus()};
     const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;if(vcSt(w)==='known')vcMark(w,'meh')};
-    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
+    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
       x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#vcsn',host)?$('#vcsn',host).click():check()}else if(e.key==='Backspace'&&!x.value&&ins[j-1]){e.preventDefault();ins[j-1].focus();ins[j-1].value=ins[j-1].value.slice(0,-1)}}});
     $('#vchint',host).onclick=()=>{tries.n++;miss();vcSave();for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
     const check=()=>{const v=val().trim().toLowerCase(),good=v===ans.toLowerCase();
