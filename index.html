@@ -1195,6 +1195,11 @@ body.navmin main{max-width:1500px}
 .plitems li.auto label{cursor:default}
 .pltag{flex:none;font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
 @media (max-width:720px){.pltag{display:none}}
+
+.vcspw{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.vcspc{padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font-size:15px}
+
+.vcrx{margin-top:14px}.vcrxsrc{margin:-2px 0 10px}.linkbtn{all:unset;cursor:pointer;color:var(--accent);font-size:14px}.linkbtn:hover{text-decoration:underline}
+.vclx{margin-top:6px;font-size:15px;line-height:1.5;padding-left:8px;border-left:3px solid color-mix(in srgb,var(--accent) 35%,transparent)}.vclx b{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -1373,14 +1378,14 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="a2116672509d";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="b5e7f5e23250";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
   const tx=(db,st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out instanceof IDBRequest?out.result:out);t.onerror=()=>rej(t.error)});
   const getAll=db=>new Promise((res,rej)=>{const t=db.transaction('files');const st=t.objectStore('files'),out={};const c=st.openCursor();c.onsuccess=()=>{const k=c.result;if(k){out[k.key]=k.value;k.continue()}else res(out)};c.onerror=()=>rej(c.error)});
   function boot(meta,files){
-    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.PACKURL={};window.PACKBLOB={};
+    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.PACKURL={};window.PACKBLOB={};
     for(const [name,blob] of Object.entries(files)){if(name.startsWith('images/'))PACKURL[name.slice(7)]=URL.createObjectURL(blob);else PACKBLOB[name]=blob}
     const s=document.createElement('script');s.text=document.getElementById('appjs').textContent;document.body.appendChild(s);
   }
@@ -1393,7 +1398,7 @@ function iconSVG(id, size){
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
-    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
+    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600);
   }
@@ -3924,6 +3929,11 @@ function rlSayE(text,eng,rate,opt={}){eng=eng||store.get('rlvceng','dev');rate=r
   try{speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}
   const dev=()=>{try{if(opt.ko){const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}return rlSpeakP(rlSpeakU(t,rate))}catch(e){return Promise.resolve()}};
   const seq=++window.RLSAYSEQ;
+  // offline neural voice shipped in the pack (no AI quota, instant)
+  {const h=!opt.ko&&window.TTSIX&&TTSIX[t.replace(/\s+/g,' ')],b=h&&window.PACKBLOB&&PACKBLOB['tts/'+h+'.mp3'];
+   if(b){const u=(window.TTSURL=window.TTSURL||{})[h]||(TTSURL[h]=URL.createObjectURL(b));
+     return new Promise(res0=>{let d=false;const res=()=>{if(!d){d=true;clearTimeout(wd);res0()}},wd=setTimeout(res,3000+t.length*120/rate);const a=rlAiEl(u);RLAIA=a;a.playbackRate=rate;a.onended=()=>res();a.onerror=()=>{res()};a.onpause=()=>{if(!a.ended)setTimeout(()=>{if(a.paused)res()},200)};
+       a.play().catch(()=>{if(seq===window.RLSAYSEQ)dev().then(res);else res()})})}}
   if(eng!=='ai'||Date.now()<(window.RLAIOFF||0))return dev();
   const fresh=!RLAIC.has((opt.ko?'KO':rlAcc())+'|'+rlAiVoice()+'|'+t);if(fresh)rlHint('⏳ AI 목소리 요청 중…');
   // an uncached short clip that takes longer than 2.5s is read by the device voice now; the AI clip is still saved for next time
@@ -4315,6 +4325,16 @@ const VCBOX={1:1,2:3,3:7,4:14,5:30};
 const VCPOS={verb:'동사',noun:'명사',adj:'형용사',adv:'부사',phrase:'숙어',conj:'접속사',prep:'전치사','n.':'명사','v.':'동사','adj.':'형용사','adv.':'부사','phr.':'숙어','prep.':'전치사','conj.':'접속사'};
 let VCP=store.get('vcprog',{}),VCSP=store.get('vcspell',{});
 const vcSave=()=>{store.set('vcprog',VCP);store.set('vcspell',VCSP)};
+/* 철자 오답 노트: words missed in spelling until spelled right on the first try twice in a row */
+function vcSpMiss(){const out=[];for(const [id,p] of Object.entries(VCSP)){if(!p||!p.misses||(p.streak||0)>=2)continue;let w=null;
+    if(/^\d+$/.test(id))w=VC.data.find(x=>String(x.id)===id);else if(/^[rl]:/.test(id)&&typeof rlDeck==='function'){const v=rlDeck(id[0]).find(v=>v.key===id);if(v)w=rlVW(v)}
+    if(w)out.push(w)}
+  return out.sort((a,b)=>(VCSP[b.id].misses||0)-(VCSP[a.id].misses||0))}
+function vcSpPage(mode){mode=['spell','card','list'].includes(mode)?mode:'spell';const ws=vcSpMiss();setCrumb(['Vocab','철자 오답 노트']);
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">✍ 철자 오답 노트</h1><p>${ws.length}단어 · 철자 쓰기에서 틀리거나 힌트를 쓴 단어 (보카 + 리딩·리스닝). 두 번 연속 한 번에 맞히면 빠져요.</p></div></div>
+    <div class="secsw vtabs vcmodes" role="tablist">${[['spell','✍ 다시 쓰기'],['card','🃏 카드'],['list','📋 목록']].map(([k,t])=>`<a href="#vc-sp~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div><div id="vcbody"></div>`;
+  if(!ws.length){$('#vcbody').innerHTML='<div class="empty">철자 오답이 없어요 👍 Day별 ‘철자 쓰기’에서 연습해 보세요.</div>';return}
+  vcVoiceMount(ws[0]);const host=$('#vcbody');if(mode==='spell')vcSpell(host,ws);else if(mode==='card')vcCards(host,ws,{scope:'sp'});else vcList(host,ws)}
 const vcSec=h=>h==='vc'||h.startsWith('vc-');
 const vcDay=d=>VC.data.filter(w=>w.day===d);
 const vcById=id=>VC.data.find(w=>w.id===+id);
@@ -4338,7 +4358,7 @@ const vcTx=s=>String(s||'').replace(/<(?!\/?b>)[^>]+>/g,'');
 const vcEng=()=>{const e=store.get('vceng','orig');return e==='ai'&&!(S.cfg&&S.cfg.geminiKey)?'orig':e};
 const vcEngRL=()=>{const e=store.get('rlweng','');return e==='dev'?'dev':(S.cfg&&S.cfg.geminiKey)?'ai':'dev'};
 let VCA=null,VCAT=null,VCRES=null,VCGEN=0;try{VCA=rlUnlockEl(new Audio())}catch(e){}
-function vcStop(){window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;try{if(VCRES){const r=VCRES;VCRES=null;r(false)}if(VCA){VCA.pause()}clearTimeout(VCAT);speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}}
+function vcStop(){window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;window.VCPSEQ=(window.VCPSEQ||0)+1;try{if(VCRES){const r=VCRES;VCRES=null;r('stop')}if(VCA){VCA.pause()}clearTimeout(VCAT);speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}}
 function vcKoSay(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=1;const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}catch(e){return Promise.resolve()}}
 const VCSRC={};
 function vcSrc(day){const k=String(day).padStart(2,'0');if(VCSRC[k])return VCSRC[k];const pb=window.PACKBLOB&&PACKBLOB['vcaud/g'+k+'.mp3'];if(pb)return VCSRC[k]=URL.createObjectURL(pb);const el=document.getElementById('vca-'+k);
@@ -4351,7 +4371,7 @@ function vcClip(day,seg){return new Promise(res0=>{let fin=false;const res=v=>{i
       const tok={};a._tok=tok;const stop=()=>{if(a._tok!==tok)return;a.ontimeupdate=null;clearTimeout(VCAT);if(!a.paused)a.pause();res(true)};
       a.ontimeupdate=()=>{if(a.currentTime>=end-0.03)stop()};
       let pl=false;a.addEventListener('playing',()=>{if(a._tok!==tok)return;pl=true;clearTimeout(VCAT);VCAT=setTimeout(stop,Math.max(0,end-a.currentTime)*1000/r+80)},{once:true});
-      a.play().then(()=>{if(!pl){clearTimeout(VCAT);VCAT=setTimeout(stop,seg[1]*1000/r+1500)}}).catch(()=>{a.ontimeupdate=null;res(false)})}catch(e){res(false)}};
+      a.play().then(()=>{if(!pl){clearTimeout(VCAT);VCAT=setTimeout(stop,seg[1]*1000/r+1500)}}).catch(er=>{a.ontimeupdate=null;res(er&&er.name==='AbortError'?'stop':false)})}catch(e){res(false)}};
   if(a.readyState>=1)go();else{let done=false;const ok=()=>{if(done)return;done=true;go()};a.addEventListener('loadedmetadata',ok,{once:true});a.addEventListener('error',()=>{if(!done){done=true;res(false)}},{once:true});a.load();setTimeout(()=>{if(!done){done=true;res(false)}},8000)}})}
 const vcSyn=s=>String(s&&s.en||'').split(/\s*[,;]\s*/).map(x=>x.trim()).filter(Boolean);
 const vcSynAll=w=>[...new Set((w.senses||[]).flatMap(vcSyn))];
@@ -4360,11 +4380,16 @@ const vcSynHTML=(list,cls='')=>list.length?`<div class="vcsyn ${cls}"><span clas
 async function vcPlayK(w){const g=++VCGEN;const n=VC.am.ks?(w.senses||[]).length:1;for(let si=0;si<n;si++){if(g!==VCGEN)return;await vcPlay(w,'k',si);if(g!==VCGEN)return;await new Promise(r=>setTimeout(r,250))}}
 /* parts with no book recording (most R/L words, Korean meaning fallbacks, passage sentences) use the AI voice when it works,
    otherwise the device voice — so '교재 원음' never goes silent */
-async function vcPlay(w0,kind='w',si=0){vcStop();const w=w0.vref||w0,eng=w.day?vcEng():vcEngRL(),fb=eng==='orig'?(rlAiOK()?'ai':'dev'):eng;
+async function vcPlay(w0,kind='w',si=0){vcStop();const w=w0.vref||w0,eng=w.day?vcEng():vcEngRL();let fb=eng==='orig'?(rlAiOK()?'ai':'dev'):eng;
   if(kind==='c')return rlSayE(w0.ctx&&w0.ctx.c||'',fb);
+  if(kind==='x')return rlSayE(((w.rx||[])[si]||[])[0]||'',fb);
   const ko=()=>rlSayE(VC.am.ks||!w.day?((w.senses[si]||{}).kr||vcKr(w)):vcKr(w),fb,1,{ko:1});
-  if(eng==='orig'&&w.day){const m=VC.am[kind]&&VC.am[kind][w.day],seg=m&&(kind==='w'?m[w.id]:(m[w.id+'_'+si]||m[w.id]));
-    if(await vcClip(w.day,seg))return;}
+  const myseq=window.VCPSEQ;
+  if(eng!=='dev'&&w.day){const m=VC.am[kind]&&VC.am[kind][w.day],seg=m&&(kind==='w'?m[w.id]:(m[w.id+'_'+si]||m[w.id]));
+    if(seg){let r=await vcClip(w.day,seg);if(r===false&&myseq===window.VCPSEQ)r=await vcClip(w.day,seg);   // one retry
+      if(r||myseq!==window.VCPSEQ)return;
+      fb='dev'}}   // a word with a textbook recording never switches to the AI voice
+  if(myseq!==window.VCPSEQ)return;
   if(kind==='k')return ko();
   if(kind==='y'){const l=vcSyn(w.senses[si]);return l.length?rlSayE(l.join(', '),fb):undefined}
   const t=kind==='s'?(w.senses[si]||w.senses[0]||{}).ex:w.word;return rlSayE(t,fb)}
@@ -4375,7 +4400,7 @@ secSwitch=function(w){const cur=w===true?'w':w===false?'s':w;const a=(h,k,t)=>`<
 function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span><span>${label}</span>${extra}</a>`;
   const day=d=>{const ws=vcDay(d),k=ws.filter(w=>vcSt(w)==='known').length;return `<a class="nl sub" href="#vc-d-${d}" ${cur==='vc-d-'+d?'aria-current="page"':''}><span>Day ${String(d).padStart(2,'0')}<span class="sl">${ws.length}단어</span></span><span class="cnt ${k&&k===ws.length?'full':''}">${k}/${ws.length}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#vc"><span class="mk">iBT</span><span>TOEFL Practice<small>Vocab · Hackers TOEFL VOCA</small></span></a>${secSwitch('v')}
-   ${link('vc','◧','대시보드')}${link('vc-rev','↻','오늘의 복습',`<span class="cnt">${vcDue().length}</span>`)}${link('vc-miss','✕','모름 · 애매',`<span class="cnt">${VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure').length}</span>`)}${link('vc-find','⌕','단어 검색')}
+   ${link('vc','◧','대시보드')}${link('vc-rev','↻','오늘의 복습',`<span class="cnt">${vcDue().length}</span>`)}${link('vc-miss','✕','모름 · 애매',`<span class="cnt">${VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure').length}</span>`)}${link('vc-sp','✍','철자 오답 노트',`<span class="cnt">${vcSpMiss().length}</span>`)}${link('vc-find','⌕','단어 검색')}
    ${[[1,10],[11,20],[21,30]].map(([a,b])=>`<div class="navgrp"><div class="gh">Day ${a}–${b}</div>${Array.from({length:b-a+1},(_,i)=>day(a+i)).join('')}</div>`).join('')}
    <div class="navgrp"><div class="gh">내 학습</div>${link('vc-bk','💾','기록 옮기기 · 백업')}${link('settings','⚙','설정')}</div>
    <div class="lnbfoot">해커스 토플 보카 30일 · VocaDay 단어 데이터</div>`;
@@ -4386,10 +4411,10 @@ function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#$
   const h=location.hash.slice(1)||'home';
   if(!vcSec(h)){vcStop();_routeR();const s=$('#lnb .secsw');if(s&&!s.classList.contains('five'))s.outerHTML=secSwitch(h==='w'||h.startsWith('w-')?'w':h==='rd'||h.startsWith('rd-')?'r':h==='ls'||h.startsWith('ls-')?'l':'s');return}
   try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}vcStop();store.set('sec','v');
-  vcLnb(h.startsWith('vc-d-')?h.split('~')[0]:h);
+  vcLnb(h.startsWith('vc-d-')||h.startsWith('vc-sp')?h.split('~')[0]:h);
   if(!VC.data.length){setCrumb(['Vocab']);view.innerHTML='<div class="empty">단어 데이터가 없어요. 최신 TOEFL_Practice.html로 열어 주세요.</div>';return}
   if(h==='vc')vcDash();else if(/^vc-d-\d+/.test(h))vcDayPage(+h.slice(5).split('~')[0],h.split('~')[1]);
-  else if(h==='vc-rev')vcStudy('rev');else if(h==='vc-miss')vcStudy('miss');else if(h==='vc-find')vcFind();else if(h==='vc-bk')vcBackup();else vcDash();
+  else if(h==='vc-rev')vcStudy('rev');else if(h==='vc-miss')vcStudy('miss');else if(h==='vc-sp'||h.startsWith('vc-sp~'))vcSpPage(h.split('~')[1]);else if(h==='vc-find')vcFind();else if(h==='vc-bk')vcBackup();else vcDash();
   const c=$('#env');if(c){c.className='envchip';c.innerHTML=`<i></i><span>Vocab · ${VC.data.length}단어 · 음성 ${vcEng()==='orig'?'교재 원음':vcEng()==='ai'?'AI':'기기'}</span>`}
   window.scrollTo(0,0)};
  window.removeEventListener('hashchange',_routeR);window.addEventListener('hashchange',route)}
@@ -4481,6 +4506,7 @@ function vcCardHTML(w){const e=VC.ety[w.id];
    <div class="vcb" hidden>
      ${w.vref&&w.ctx&&w.ctx.c?`<div class="vcctx"><p class="small"><span class="vcctxl">📖 지문 속 문장</span> 이 지문에서는 <b>${esc(w.rlk)}</b></p><p class="vcex">${vcTx(w.ctx.c)} <button class="btn sm quiet" data-say="c" aria-label="지문 문장 듣기">🔊</button></p>${w.ctx.ck?`<p class="small muted">${esc(w.ctx.ck)}</p>`:''}<p class="small muted vcctxh">교재 단어장의 뜻 ↓</p></div>`:''}${w.rk?`<p class="vcpsg"><button type="button" class="btn sm" data-psg>📖 이 단어가 나온 지문 전체 보기</button></p>`:''}
      ${(w.senses||[]).map((s,i)=>`<div class="vcsense"><p class="vckr"><span class="mtag sm">${esc(s.tag||'')}</span> <b>${esc(s.kr)}</b>${VC.am.ks?` <button class="btn sm quiet" data-say="k" data-si="${i}" aria-label="뜻 듣기">🔊</button>`:''}</p>${vcSyn(s).length?vcSynHTML(vcSyn(s)).replace(/<\/div>$/,`<button class="btn sm quiet" data-say="y" data-si="${i}" aria-label="동의어 듣기">🔊</button></div>`):''}${s.ex?`<p class="vcex">${s.ctx?'<span class="vcctxl">📖 지문</span> ':''}${vcTx(s.ex)} <button class="btn sm quiet" data-say="s" data-si="${i}" aria-label="예문 ${i+1} 듣기">🔊</button></p><p class="small muted">${esc(s.exKr||'')}</p>`:''}</div>`).join('')}
+     ${!w.rk&&(w.rx||[]).length?`<div class="vcctx vcrx"><p class="small"><span class="vcctxl">📖 리딩·리스닝 지문에서</span> 교재 지문에 실제로 나온 문장이에요</p>${w.rx.map((x,xi)=>`<p class="vcex">${vcTx(x[0])} <button class="btn sm quiet" data-say="x" data-si="${xi}" aria-label="지문 문장 듣기">🔊</button></p><p class="small muted">${esc(x[1])}</p><p class="small vcrxsrc"><button type="button" class="linkbtn" data-rxp="${xi}">${x[2]==='r'?'Reading':'Listening'} · ${esc(String(x[5]).replace(/ · Hackers /,' · '))} → 지문 보기</button></p>`).join('')}</div>`:''}
      ${w.mnemonic?`<p class="vcmn">🧠 ${esc(w.mnemonic)}</p>`:''}
      ${e?`<details class="vcety"><summary>🌱 어원</summary><p>${(e.p||[]).map(([a,b])=>`<span class="mtag sm">${esc(a)}</span> ${esc(b)}`).join(' + ')}</p>${e.s?`<p>${esc(e.s)}</p>`:''}${e.o?`<p class="small muted">${esc(e.o)}</p>`:''}${(e.f||[]).length?`<p class="small">같은 뿌리: ${e.f.map(([a,b])=>`<b>${esc(a)}</b> ${esc(b)}`).join(' · ')}</p>`:''}</details>`:''}
      ${w.derived?`<p class="small">파생어 · ${esc(w.derived)}</p>`:''}${w.src?`<p class="small muted">출처 · ${esc(w.src)}${w.vref?` · 해커스 보카 Day ${w.vref.day}에도 있어요`:''}</p>`:''}${w.note?`<p class="vcnote">💡 ${esc(w.note)}</p>`:''}</div></div>`}
@@ -4504,6 +4530,7 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
     wireFilt();const card=$('.vccard',host),flip=()=>{const b=$('.vcb',card);if(b.hidden){b.hidden=false;card.classList.add('on');try{SFX.flip()}catch(e){}}};
     card.onclick=e=>{if(e.target.closest('[data-say]')||e.target.closest('details'))return;flip()};
     $('[data-psg]',host)?.addEventListener('click',e=>{e.stopPropagation();try{rlShowPassage(w)}catch(_){}});
+    $$('[data-rxp]',host).forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const x=(w.rx||[])[+b.dataset.rxp];if(x)try{rlShowBlock(x[2],x[3],x[4],w.word)}catch(_){}}));
     $$('[data-say]',host).forEach(b=>b.onclick=e=>{e.stopPropagation();b.dataset.say==='k'&&b.dataset.si==null?vcPlayK(w):vcPlay(w,b.dataset.say,+(b.dataset.si||0))});
     const mark=k=>{vcMark(w,k);k===true?okN++:k==='meh'?mehN++:noN++;try{k===true?SFX.ok():k==='meh'?SFX.flip():SFX.bad()}catch(e){}i++;draw()};
     $('#vcyes').onclick=()=>mark(true);$('#vcno').onclick=()=>mark(false);$('#vcmeh').onclick=()=>mark('meh');
@@ -4573,26 +4600,34 @@ function vcQuiz(host,ws){let dir=store.get('vcqdir','en');if(!VCQD[dir])dir='en'
   const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);order=mk();i=ok=0;draw()});
   draw()}
 
-function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok=0;
-  const draw=()=>{vcStop();if(i>=order.length){host.innerHTML=`<div class="panel ph vcdone"><h2>⌨ 끝!</h2><p>${order.length}단어 중 <b>${ok}</b>개를 한 번에 맞혔어요</p><button class="btn primary" id="vcsa">다시</button></div>`;$('#vcsa').onclick=()=>{order=ws.slice().sort(()=>Math.random()-.5);i=ok=0;draw()};return}
+function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok=0,wrong=[],round=1;
+  const start=list=>{order=list.slice().sort(()=>Math.random()-.5);i=ok=0;wrong=[];draw()};
+  const draw=()=>{vcStop();if(i>=order.length){const W=wrong;
+      host.innerHTML=`<div class="panel ph vcdone"><h2>⌨ 끝!${round>1?` <span class="small muted">· ${round}번째 도전</span>`:''}</h2><p>${order.length}단어 중 <b>${ok}</b>개를 한 번에 맞혔어요${W.length?` · 틀리거나 힌트를 쓴 단어 <b class="badc">${W.length}</b>개`:' · 모두 한 번에 맞혔어요 🎉'}</p>
+        ${W.length?`<div class="vcspw">${W.map(w=>`<span class="vcspc"><b>${esc(w.word)}</b> <span class="small muted">${esc(vcKr(w))}</span></span>`).join('')}</div>`:''}
+        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcsw">✍ 틀린 단어만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcsa">처음부터 다시</button><a class="btn quiet" href="#vc-sp">철자 오답 노트 →</a></div>
+        <p class="small muted" style="margin:10px 0 0">틀린 단어는 ‘철자 오답 노트’에 남아요. 두 번 연속 한 번에 맞히면 노트에서 빠져요. 카드에서 ‘안다’로 표시한 단어도 여기서 틀리면 ‘애매’로 바뀌어 다시 복습에 나와요.</p></div>`;
+      $('#vcsa').onclick=()=>{round=1;start(ws)};const b=$('#vcsw');if(b){b.onclick=()=>{round++;start(W)};b.focus()}return}
     const w=order[i],ans=w.word,tries={n:0};
     // reveal 1–3 leading letters depending on word length (always leaves at least 2 blanks in the first word)
     const L=ans.replace(/[^A-Za-z]/g,'').length,ft=(ans.split(/[ \-'’.]+/)[0]||ans),K=Math.max(1,Math.min(L<=5?1:L<=9?2:3,ft.length-2));
-    host.innerHTML=`<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span></div>
-      <div class="panel ph vcq"><p class="vcqw">${esc(vcKr(w))}</p><p class="small muted">${esc(vcPos(w))} · ${ans.length}글자 · 앞 ${K}글자 <b>${esc(ft.slice(0,K))}</b> <button class="btn sm quiet" data-say="w">🔊 발음 듣기</button></p>
+    host.innerHTML=`<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span><label class="small vcauto vcqimgt"><input type="checkbox" id="vcspimg" ${store.get('vcspimg',false)?'checked':''}> 🖼 그림 힌트</label></div>
+      <div class="panel ph vcq ${store.get('vcspimg',false)?'withimg':''}">${store.get('vcspimg',false)?`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`:''}<p class="vcqw">${esc(vcKr(w))}</p><p class="small muted">${esc(vcPos(w))} · ${ans.length}글자 · 앞 ${K}글자 <b>${esc(ft.slice(0,K))}</b> <button class="btn sm quiet" data-say="w">🔊 발음 듣기</button></p>
       <div class="vcspell" id="vcsp">${(()=>{let h='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){h+=`<span class="vcsep">${/^ +$/.test(t)?'&nbsp;':esc(t)}</span>`;return}
           if(first){first=false;h+=`<b class="vcfirst">${esc(t.slice(0,K))}</b>`;t=t.slice(K);if(!t)return}
           h+=`<input class="vcl" data-a="${esc(t)}" maxlength="${t.length}" style="--n:${t.length}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="${t.length}글자">`});return h})()}</div>
       <div class="row" style="margin-top:12px"><button class="btn primary" id="vcchk">확인</button><button class="btn quiet" id="vchint">힌트 (한 글자)</button><span class="small muted">밑줄 한 칸 = 한 글자</span></div><div id="vcsf"></div></div>`;
     const ins=$$('.vcl',host),val=()=>{let k=0,out='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){out+=t;return}if(first){first=false;out+=t.slice(0,K);if(t.length<=K)return}out+=(ins[k++]?.value||'')});return out};
     ins[0]?.focus();$('[data-say]',host).onclick=()=>vcPlay(w,'w');
+    $('#vcspimg',host).onchange=e=>{store.set('vcspimg',e.target.checked);const q=$('.vcq',host),a=$('.vcqart',host);if(e.target.checked&&!a){q.insertAdjacentHTML('afterbegin',`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`);q.classList.add('withimg')}else if(!e.target.checked&&a){a.remove();q.classList.remove('withimg')}(ins.find(x=>!x.value)||ins[0])?.focus()};
+    const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;if(vcSt(w)==='known')vcMark(w,'meh')};
     ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
       x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#vcsn',host)?$('#vcsn',host).click():check()}else if(e.key==='Backspace'&&!x.value&&ins[j-1]){e.preventDefault();ins[j-1].focus();ins[j-1].value=ins[j-1].value.slice(0,-1)}}});
-    $('#vchint',host).onclick=()=>{tries.n++;for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
+    $('#vchint',host).onclick=()=>{tries.n++;miss();vcSave();for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
     const check=()=>{const v=val().trim().toLowerCase(),good=v===ans.toLowerCase();
-      if(good){if(!tries.n)ok++;VCSP[w.id]={ok:(VCSP[w.id]?.ok||0)+1,misses:VCSP[w.id]?.misses||0,t:Date.now()};vcSave();vcLogAdd();try{SFX.ok()}catch(e){}ins.forEach(x=>x.classList.add('ok'));
+      if(good){if(!tries.n)ok++;VCSP[w.id]={ok:(VCSP[w.id]?.ok||0)+1,misses:VCSP[w.id]?.misses||0,streak:tries.n?0:(VCSP[w.id]?.streak||0)+1,t:Date.now()};vcSave();vcLogAdd();try{SFX.ok()}catch(e){}ins.forEach(x=>x.classList.add('ok'));
         $('#vcsf',host).innerHTML=`<p class="okc"><b>정답!</b> ${esc(ans)}</p><button class="btn primary" id="vcsn">다음 →</button>`;vcPlay(w,'w');$('#vcsn').onclick=()=>{i++;draw()};$('#vcsn').focus()}
-      else{tries.n++;VCSP[w.id]={ok:VCSP[w.id]?.ok||0,misses:(VCSP[w.id]?.misses||0)+1,t:Date.now()};vcSave();try{SFX.bad()}catch(e){}
+      else{tries.n++;VCSP[w.id]={ok:VCSP[w.id]?.ok||0,misses:(VCSP[w.id]?.misses||0)+1,streak:0,t:Date.now()};miss();vcSave();try{SFX.bad()}catch(e){}
         ins.forEach(x=>{const a=x.dataset.a.toLowerCase(),vv=x.value.toLowerCase();x.classList.toggle('bad',vv!==a);x.classList.toggle('ok',vv===a)});
         $('#vcsf',host).innerHTML=tries.n>=3?`<p class="badc">정답은 <b>${esc(ans)}</b></p><button class="btn" id="vcsn">다음 →</button>`:`<p class="badc">다시 해 보세요 (${3-tries.n}번 남음) · 빨간 칸이 틀렸어요</p>`;
         if(tries.n>=3){vcMark(w,false);$('#vcsn').onclick=()=>{i++;draw()};$('#vcsn').focus()}}};
@@ -4601,7 +4636,7 @@ function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok
 
 function vcList(host,ws,{showDay=false}={}){
   host.innerHTML=`<div class="panel vclist">${ws.map((w,ix)=>{const s=vcSt(w);return `<div class="vcrow"><button class="btn sm quiet" data-say="${ix}" aria-label="발음">🔊</button>
-    <div><b>${esc(w.word)}</b> <span class="small muted">${esc(vcPos(w))}${showDay?' · Day '+w.day:''}</span><div class="small">${esc(vcKr(w))}</div>${vcSynHTML(vcSynAll(w),'sm')}</div>
+    <div><b>${esc(w.word)}</b> <span class="small muted">${esc(vcPos(w))}${showDay?' · Day '+w.day:''}</span><div class="small">${esc(vcKr(w))}</div>${vcSynHTML(vcSynAll(w),'sm')}${(()=>{const c=w.rk?(w.ctx&&w.ctx.c?[w.ctx.c,w.ctx.ck]:null):(w.rx&&w.rx[0]);return c?`<div class="vclx"><span class="vcctxl">📖</span> ${vcTx(c[0])}${c[1]?`<div class="small muted">${esc(c[1])}</div>`:''}</div>`:''})()}</div>
     <span class="vcst ${s}">${s==='known'?'외움':s==='learning'?'모름':s==='unsure'?'애매':'새 단어'}</span></div>`}).join('')}</div>`;
   $$('[data-say]',host).forEach(b=>b.onclick=()=>vcPlay(ws[+b.dataset.say],'w'))}
 
