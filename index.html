@@ -1200,6 +1200,27 @@ body.navmin main{max-width:1500px}
 
 .vcrx{margin-top:14px}.vcrxsrc{margin:-2px 0 10px}.linkbtn{all:unset;cursor:pointer;color:var(--accent);font-size:14px}.linkbtn:hover{text-decoration:underline}
 .vclx{margin-top:6px;font-size:15px;line-height:1.5;padding-left:8px;border-left:3px solid color-mix(in srgb,var(--accent) 35%,transparent)}.vclx b{color:var(--accent)}
+
+/* 배경지식 */
+.hmbg{display:flex;align-items:center;gap:14px;padding:14px 18px;text-decoration:none;color:var(--ink)}.hmbg:hover{border-color:var(--accent)}
+.hmbgic{font-size:28px}.hmbg small{display:block;color:var(--mute);font-size:14px}.hmbgt{margin-left:auto;font-size:20px;letter-spacing:2px;white-space:nowrap;overflow:hidden}
+@media (max-width:720px){.hmbgt{display:none}}
+.bggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.bgtile{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:2px 12px;align-items:center;padding:16px;text-decoration:none;color:var(--ink);border-left:5px solid var(--sc)}
+.bgtile:hover{transform:translateY(-1px);border-color:var(--sc)}.bgic{grid-row:1/3;font-size:30px}.bgt b{font-size:17px}.bgt small{display:block;color:var(--mute);font-size:13px}.bgn{grid-column:2}
+.bgpage .cathead h1 .bgen{font-size:16px;font-weight:500;color:var(--mute);margin-left:6px}
+.bgnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:8px 0;margin-bottom:6px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px)}
+.bgnav a{padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px}.bgnav a:hover{border-color:var(--sc)}
+.bgpage section{margin-bottom:14px;scroll-margin-top:60px}.bgpage h2{margin:0 0 10px;font-size:18px}.bgpage h3{margin:0 0 6px;font-size:15px;color:var(--sc)}
+.bgov{display:grid;grid-template-columns:1fr 1fr;gap:18px}.bgov p{margin:0;line-height:1.75;font-size:15.5px}.bgoe{font-size:15px}
+.bgfig{color:var(--ink);overflow-x:auto}.bgsvg{width:100%;max-width:760px;height:auto;display:block;margin:0 auto}
+.bgcc{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.bgcard{padding:12px 14px;border-radius:12px;border:1px solid var(--line);border-top:3px solid var(--sc)}.bgcard p{margin:0;font-size:14.5px;line-height:1.6}.bgterm{font-weight:700;font-size:15.5px!important;margin-bottom:4px!important;color:var(--sc)}
+.bgvv{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px}.bgw{display:flex;align-items:center;gap:8px;font-size:15px}.bgw .muted{font-size:14px}
+.bgvid{margin:0;padding-left:4px;list-style:none;display:grid;gap:6px}.bgvid a{color:var(--accent);text-decoration:none}.bgvid a:hover{text-decoration:underline}
+.bgps{margin:0;padding-left:22px;display:grid;gap:6px}.bgpsb{all:unset;cursor:pointer;display:grid;gap:2px;padding:8px 10px;border-radius:10px;border:1px solid transparent;width:calc(100% - 20px)}.bgpsb:hover{border-color:var(--line);background:color-mix(in srgb,var(--sc) 6%,transparent)}
+.bgpsen{font-style:italic}.mtag.alt{background:color-mix(in srgb,#10a99a 18%,transparent);color:#0b7d72}
+@media (max-width:720px){.bgov{grid-template-columns:1fr}.bgsvg{min-width:600px}}
 </style>
 </head>
 <body>
@@ -1378,14 +1399,14 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="b5e7f5e23250";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="92c94ca1cff8";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
   const tx=(db,st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out instanceof IDBRequest?out.result:out);t.onerror=()=>rej(t.error)});
   const getAll=db=>new Promise((res,rej)=>{const t=db.transaction('files');const st=t.objectStore('files'),out={};const c=st.openCursor();c.onsuccess=()=>{const k=c.result;if(k){out[k.key]=k.value;k.continue()}else res(out)};c.onerror=()=>rej(c.error)});
   function boot(meta,files){
-    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.PACKURL={};window.PACKBLOB={};
+    window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.BG=meta.bg||null;window.PACKURL={};window.PACKBLOB={};
     for(const [name,blob] of Object.entries(files)){if(name.startsWith('images/'))PACKURL[name.slice(7)]=URL.createObjectURL(blob);else PACKBLOB[name]=blob}
     const s=document.createElement('script');s.text=document.getElementById('appjs').textContent;document.body.appendChild(s);
   }
@@ -1398,7 +1419,7 @@ function iconSVG(id, size){
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
-    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
+    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,bg:head.bg||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600);
   }
@@ -4793,6 +4814,7 @@ function renderHome(){
       </div>
     </section>
     ${hmPlanHTML()}
+    ${Array.isArray(window.BG)&&BG.length?`<a class="panel hmbg" href="#bg"><span class="hmbgic">📚</span><span><b>배경지식</b><small>리딩·리스닝 학술 지문 ${BG.reduce((a,t)=>a+t.ps.length,0)}개를 ${BG.length}개 주제로 정리 · 개요·그림·영상</small></span><span class="hmbgt">${BG.slice(0,8).map(t=>`<span title="${esc(t.ko)}">${t.ic}</span>`).join('')}</span><span class="hmgo">→</span></a>`:''}
     <section class="hmgrid">${HM_SUBJ.map(s=>{const t=ST[s.k];if(!t)return '';const p=t.total?t.done/t.total:0;
       const kp=t.vocab?`<div><b class="mono">${t.due}</b><span>복습 대기</span></div><div><b class="mono">${t.streak}<small>일</small></b><span>연속</span></div>`
         :`<div><b class="mono">${t.recent!=null?t.recent.toFixed(1):'–'}</b><span>최근 밴드</span></div><div><b class="mono">${t.best!=null?t.best.toFixed(1):'–'}</b><span>최고 밴드</span></div>`;
@@ -4828,9 +4850,66 @@ function renderHome(){
     renderHome();window.scrollTo(0,0);hmMsec();return}
   _routeV();const b=$('#lnb .brand');if(b)b.setAttribute('href','#start');hmMsec()};
  window.removeEventListener('hashchange',_routeV);window.addEventListener('hashchange',route)}
-function hmMsec(){const h=location.hash.slice(1);if(h===''||h==='start')$$('#msecsw a').forEach(a=>a.setAttribute('aria-selected','false'))}
+function hmMsec(){const h=location.hash.slice(1);if(h===''||h==='start'||h==='bg'||h.startsWith('bg-'))$$('#msecsw a').forEach(a=>a.setAttribute('aria-selected','false'))}
 /* a home button in the top bar */
 try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="홈으로" title="홈 (5과목 한눈에 보기)">⌂</a>')}catch(e){}
+
+/* ---------- 배경지식 (background knowledge for the Reading/Listening academic passages) ---------- */
+/* data: window.BG (from the private pack) — topics with overview (ko/en), concepts, vocab, a diagram spec, videos and passage refs */
+const bgData=()=>Array.isArray(window.BG)?window.BG:[];
+const bgSeen=()=>store.get('bgseen',{});
+function bgSVG(dg,c){const W=640,F='font-family="inherit"',T=(x,y,s,o='')=>`<text x="${x}" y="${y}" ${F} font-size="15" fill="currentColor" text-anchor="middle" ${o}>${esc(s)}</text>`;
+  const wrap=(s,n)=>{const w=String(s).split(' ');const out=[];let cur='';w.forEach(x=>{if((cur+' '+x).trim().length>n){if(cur)out.push(cur);cur=x}else cur=(cur+' '+x).trim()});if(cur)out.push(cur);return out};
+  const box=(x,y,w,h,s,fill)=>{const L=wrap(s,Math.max(8,Math.floor(w/15)));return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${fill||'color-mix(in srgb, '+c+' 12%, transparent)'}" stroke="${c}" stroke-width="1.5"/>`+L.map((l,i)=>T(x+w/2,y+h/2+(i-(L.length-1)/2)*18+5,l)).join('')};
+  const arrow=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="2" marker-end="url(#bga)"/>`;
+  const defs=`<defs><marker id="bga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker></defs>`;
+  let H=360,body='';const s=dg.s||[];
+  if(dg.k==='flow'){const h=54,g=22;H=s.length*(h+g)+10;body=s.map((t,i)=>box(60,8+i*(h+g),W-120,h,t)+(i<s.length-1?arrow(W/2,8+i*(h+g)+h+2,W/2,8+(i+1)*(h+g)-3):'')).join('')}
+  else if(dg.k==='cycle'){const n=s.length,rx=n>4?225:200,ry=n>4?165:130,cx=W/2,cy=n>4?205:170;H=n>4?420:350;const pts=s.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+rx*Math.cos(a),cy+ry*Math.sin(a)]});
+    body=pts.map(([x,y],i)=>{const [x2,y2]=pts[(i+1)%n],dx=x2-x,dy=y2-y,L=Math.hypot(dx,dy),k=Math.min(.42,(Math.abs(dx)>Math.abs(dy)*2.2?100:40)/L);return arrow(x+dx*k,y+dy*k,x2-dx*k,y2-dy*k)}).join('')+pts.map(([x,y],i)=>box(x-92,y-27,184,54,s[i])).join('')}
+  else if(dg.k==='layers'){H=360;const n=s.length,cx=150,cy=180;body=s.map((t,i)=>`<circle cx="${cx}" cy="${cy}" r="${150-i*34}" fill="color-mix(in srgb, ${c} ${10+i*16}%, transparent)" stroke="${c}"/>`).join('')+s.map((t,i)=>{const y=40+i*80;return `<line x1="${cx+150-i*34-8}" y1="${cy-(150-i*34)*0.4+i*20}" x2="330" y2="${y}" stroke="${c}" stroke-dasharray="3 3"/>`+`<text x="340" y="${y+5}" ${F} font-size="16" fill="currentColor">${esc(t)}</text>`}).join('')}
+  else if(dg.k==='rings'){H=360;const n=s.length,cx=170,cy=180;body=s.map((t,i)=>`<circle cx="${cx}" cy="${cy}" r="${165-i*33}" fill="color-mix(in srgb, ${c} ${8+i*14}%, var(--surface))" stroke="${c}"/>`).join('')+s.map((t,j)=>{const y=46+j*68;return `<text x="370" y="${y}" ${F} font-size="15" fill="currentColor"><tspan font-weight="700" fill="${c}">${j+1}</tspan> ${esc(t)}</text>`}).join('')+`<text x="${cx}" y="${cy+5}" ${F} font-size="13" text-anchor="middle" fill="currentColor">${esc(s[0])}</text>`}
+  else if(dg.k==='hub'){H=380;const cx=W/2,cy=190,P=[[cx,48],[cx-220,190],[cx+220,190],[cx,332]];body=P.map(([x,y],i)=>arrow(x+(cx-x)*0.25,y+(cy-y)*0.25,x+(cx-x)*0.62,y+(cy-y)*0.62)).join('')+box(cx-95,cy-34,190,68,dg.c,`color-mix(in srgb, ${c} 28%, transparent)`)+P.map(([x,y],i)=>box(x-95,y-28,190,56,s[i])).join('')}
+  else if(dg.k==='curve'){H=330;const x0=70,x1=W-40,y0=270,y1=40;body=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" stroke="currentColor" opacity=".5"/><line x1="${x0}" y1="${y0}" x2="${x0}" y2="${y1}" stroke="currentColor" opacity=".5"/>`+
+      `<path d="M${x0+10} ${y0-20} C ${x0+150} ${y0-30}, ${(x0+x1)/2-90} ${y1}, ${(x0+x1)/2} ${y1+10} S ${x1-150} ${y0-30}, ${x1-10} ${y0-20}" fill="none" stroke="${c}" stroke-width="4"/>`+
+      T((x0+x1)/2,y0+30,dg.x)+`<text x="${x0-12}" y="${(y0+y1)/2}" ${F} font-size="15" fill="currentColor" text-anchor="middle" transform="rotate(-90 ${x0-12} ${(y0+y1)/2})">${esc(dg.y)}</text>`+
+      (dg.lab||[]).map((l,i)=>T(x0+90+i*((x1-x0-180)/2),i===1?y1+40:y0-40,l,i===1?`font-weight="700" fill="${c}"`:'')).join('')}
+  else if(dg.k==='timeline'){const n=s.length,step=(W-80)/(n-1);H=230;body=`<line x1="40" y1="110" x2="${W-40}" y2="110" stroke="${c}" stroke-width="3"/>`+s.map(([yr,t],i)=>{const x=40+i*step,up=i%2===0,L=wrap(t,12);return `<circle cx="${x}" cy="110" r="7" fill="${c}"/><text x="${x}" y="${up?84:142}" ${F} font-size="13" font-weight="700" fill="${c}" text-anchor="middle">${esc(yr)}</text>`+L.map((l,j)=>T(x,(up?62-(L.length-1-j)*17:164+j*17),l,'font-size="13"')).join('')}).join('')}
+  return `<svg class="bgsvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(dg.t||'')}">${defs}${body}</svg>`}
+function bgIndex(){setCrumb(['배경지식']);const D=bgData(),seen=bgSeen();
+  if(!D.length){view.innerHTML='<div class="empty">배경지식 데이터가 없어요. 최신 toefl-pack.bin을 불러와 주세요.</div>';return}
+  const n=D.reduce((a,t)=>a+t.ps.length,0);
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#start">← 홈</a><h1 style="margin-top:6px">📚 배경지식</h1><p>리딩·리스닝 학술 지문 ${n}개를 주제별로 묶었어요. 주제마다 한글·영어 개요, 그림, 핵심 개념과 어휘, 영상, 교재 지문 목록이 있어요. 지문을 풀기 전에 훑어 두면 처음 보는 내용도 훨씬 빨리 읽혀요.</p></div></div>
+    <div class="bggrid">${D.map(t=>`<a class="bgtile panel" href="#bg-${t.id}" style="--sc:${t.c}"><span class="bgic">${t.ic}</span><span class="bgt"><b>${esc(t.ko)}</b><small>${esc(t.en)}</small></span><span class="bgn small muted">지문 ${t.ps.length}개${seen[t.id]?' · ✓ 읽음':''}</span></a>`).join('')}</div>`}
+function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();setCrumb(['배경지식',t.ko]);const S2=bgSeen();S2[id]=Date.now();store.set('bgseen',S2);
+  const sayBtn=(txt,lbl='🔊')=>`<button type="button" class="btn sm quiet" data-bgsay="${esc(txt)}" aria-label="듣기">${lbl}</button>`;
+  view.innerHTML=`<div class="bgpage" style="--sc:${t.c}">
+    <div class="cathead"><div><a class="small" href="#bg">← 배경지식</a><h1 style="margin-top:6px">${t.ic} ${esc(t.ko)} <span class="bgen">${esc(t.en)}</span></h1><p>교재 지문 ${t.ps.length}개 · 개요 → 그림 → 핵심 개념 → 어휘 → 영상 → 지문 순서로 보세요.</p></div></div>
+    <nav class="bgnav">${[['bgo','개요'],['bgd','그림'],['bgc','핵심 개념'],['bgv','어휘'],['bgm','영상'],['bgp','교재 지문']].map(([a,b])=>`<a href="javascript:void 0" data-go="${a}">${b}</a>`).join('')}</nav>
+    <section class="panel ph" id="bgo"><h2>개요</h2><div class="bgov"><div><h3>🇰🇷 한글</h3><p>${esc(t.ok)}</p></div><div><h3>🇺🇸 English ${sayBtn(t.oe,'🔊 듣기')}</h3><p class="bgoe">${esc(t.oe)}</p></div></div></section>
+    <section class="panel ph" id="bgd"><h2>그림으로 보기 <span class="small muted" style="font-weight:500">${esc(t.dg.t||'')}</span></h2><div class="bgfig">${bgSVG(t.dg,t.c)}</div></section>
+    <section class="panel ph" id="bgc"><h2>핵심 개념 <span class="small muted" style="font-weight:500">지문에 그대로 나오는 개념이에요</span></h2><div class="bgcc">${t.cc.map(([en,ko])=>`<div class="bgcard"><p class="bgterm">${esc(en)} ${sayBtn(en.replace(/\s*\(.*?\)/g,''))}</p><p>${esc(ko)}</p></div>`).join('')}</div></section>
+    <section class="panel ph" id="bgv"><h2>핵심 어휘</h2><div class="bgvv">${t.vv.map(([en,ko])=>`<div class="bgw">${sayBtn(en.split(' / ')[0])}<b>${esc(en)}</b><span class="muted">${esc(ko)}</span></div>`).join('')}</div></section>
+    <section class="panel ph" id="bgm"><h2>영상으로 보기 <span class="small muted" style="font-weight:500">새 창에서 YouTube가 열려요 · 자막(영어/한국어)을 켜고 보세요</span></h2><ul class="bgvid">${t.vid.map(v=>`<li><a href="${esc(v.u)}" target="_blank" rel="noopener">${v.v?'📺':'🔎'} ${esc(v.t)}</a></li>`).join('')}</ul></section>
+    <section class="panel ph" id="bgp"><h2>이 주제의 교재 지문 <span class="small muted" style="font-weight:500">누르면 지문·해석이 열려요</span></h2><ol class="bgps">${t.ps.map((p,i)=>`<li><button type="button" class="bgpsb" data-i="${i}"><span class="mtag sm ${p.sec==='r'?'':'alt'}">${p.sec==='r'?'Reading':'Listening'}</span> <b>${esc(p.ko)}</b><span class="small muted bgpsen">${esc(p.en)}</span><span class="small muted">${esc(p.src)}</span></button></li>`).join('')}</ol></section>
+  </div>`;
+  $$('[data-go]',view).forEach(a=>a.onclick=()=>{const e=$('#'+a.dataset.go);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})});
+  $$('[data-bgsay]',view).forEach(b=>b.onclick=()=>{try{const t=b.dataset.bgsay;rlSayE(t,t.length>80?'dev':(typeof vcEngRL==='function'?vcEngRL():'dev'))}catch(e){}});
+  $$('.bgpsb',view).forEach(b=>b.onclick=()=>{const p=t.ps[+b.dataset.i];try{rlShowBlock(p.sec,p.set,p.bi,'')}catch(e){toast('지문을 열지 못했어요')}})}
+{const _routeH=route;
+ route=function(){if(RUN.active||document.body.classList.contains('testing'))return;
+  const h=location.hash.slice(1);
+  if(h==='bg'||h.startsWith('bg-')){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}
+    const D=bgData();$('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>배경지식</small></span></a>${secSwitch('')}
+      <a class="nl" href="#start"><span class="ic" aria-hidden="true">⌂</span><span>홈</span></a><a class="nl" href="#bg" ${h==='bg'?'aria-current="page"':''}><span class="ic" aria-hidden="true">📚</span><span>배경지식 전체</span></a>
+      <div class="navgrp"><div class="gh">주제</div>${D.map(t=>`<a class="nl sub" href="#bg-${t.id}" ${h==='bg-'+t.id?'aria-current="page"':''}><span>${t.ic} ${esc(t.ko)}</span><span class="cnt">${t.ps.length}</span></a>`).join('')}</div>`;
+    $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
+    const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>배경지식 · 리딩·리스닝 학술 지문</span>'}
+    if(h==='bg')bgIndex();else bgTopic(h.slice(3));window.scrollTo(0,0);try{hmMsec()}catch(e){}return}
+  _routeH();
+  // add the menu link to every section menu
+  const l=$('#lnb');if(l&&!$('a[href="#bg"]',l)&&bgData().length){const g=[...l.querySelectorAll('.navgrp')].pop();if(g)g.insertAdjacentHTML('beforeend','<a class="nl" href="#bg"><span class="ic" aria-hidden="true">📚</span><span>배경지식</span></a>')}};
+ window.removeEventListener('hashchange',_routeH);window.addEventListener('hashchange',route)}
 
 /* ---------- boot ---------- */
 route();
