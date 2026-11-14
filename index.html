@@ -721,9 +721,10 @@ main{margin-inline:auto}
 
 .rltext b.vw,.rlpbody b.vw{font-size:inherit;font-weight:700;letter-spacing:0;background:color-mix(in srgb,var(--accent) 14%,transparent);padding:0 3px;border-radius:4px}
 
-.rlacc button,.rleng button{font-family:var(--ui);font-size:14px}.rlvsel{max-width:220px;font:15.5px var(--ui);padding:5px 8px;border-radius:8px;border:1px solid var(--line2);background:var(--surface);color:var(--ink)}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
+.rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
+@media (max-width:720px){.rlpv{flex-wrap:wrap}.rlpv button{font-size:13px;padding:5px 8px}}
 
-.rlacc button.none{opacity:.55}.rlacc button small{font-size:12px}
+
 
 /* ---- Vocab (VocaDay) ---- */
 .secsw.five{grid-template-columns:repeat(3,1fr)}.secsw.five a:last-child{grid-column:span 1}
@@ -1432,7 +1433,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="c4dc64b58ac8";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="449f55d44b76";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -3847,6 +3848,12 @@ async function rlPlayer(host,id,{auto=false,once=false,onEnd}={}){
 const RLTTS={on:false};
 const RLACC={US:{f:'🇺🇸',k:'미국',lang:'en-US',re:/^en[-_]US/i},UK:{f:'🇬🇧',k:'영국',lang:'en-GB',re:/^en[-_](GB|UK)/i},AU:{f:'🇦🇺',k:'호주',lang:'en-AU',re:/^en[-_]AU/i}};
 const rlAcc=()=>{const a=store.get('rlacc','US');return RLACC[a]?a:'US'};
+/* passage read-aloud voices: four are recorded in the pack, Australian falls back to the device voice */
+const RLPV={af:{f:'🇺🇸',k:'미국 여자',acc:'US',g:'f',rec:1},am:{f:'🇺🇸',k:'미국 남자',acc:'US',g:'m',rec:1},bf:{f:'🇬🇧',k:'영국 여자',acc:'UK',g:'f',rec:1},bm:{f:'🇬🇧',k:'영국 남자',acc:'UK',g:'m',rec:1},auf:{f:'🇦🇺',k:'호주 여자',acc:'AU',g:'f'},aum:{f:'🇦🇺',k:'호주 남자',acc:'AU',g:'m'}};
+/* device voices by gender: pick names known to be female/male, never a name that looks like the other gender */
+const RLGEN={f:/karen|catherine|matilda|natasha|serena|kate|samantha|ava|zoe|allison|susan|sonia|libby|jenny|aria|emma|fiona|moira|tessa|nicky|veena|clara|female|여성/i,m:/\blee\b|gordon|russell|william|daniel|oliver|ryan|\bguy\b|brian|evan|nathan|\btom\b|\balex\b|fred|\bmale\b|남성/i};
+function rlVoicesG(acc,g){const vs=rlVoices(acc);if(!g)return vs;const me=RLGEN[g],other=RLGEN[g==='f'?'m':'f'],hit=vs.filter(v=>me.test(v.name)&&!other.test(v.name));return hit.length?hit:vs.filter(v=>!other.test(v.name))}
+const rlPV=()=>{const v=store.get('rlpv','af');return RLPV[v]?v:'af'};
 /* rank voices: neural/online (Edge, Chrome) > premium/enhanced (Apple) > Google > known good names > rest; novelty/robotic voices last */
 function rlVScore(v){const n=v.name;let s=0;
   if(/Natural|Neural|Online/i.test(n))s+=100;if(/Premium/i.test(n))s+=90;if(/Enhanced|Siri/i.test(n))s+=80;if(/^Google/i.test(n))s+=55;
@@ -3855,7 +3862,7 @@ function rlVScore(v){const n=v.name;let s=0;
   if(v.localService===false)s+=5;return s}
 const RLANAME={US:/United States|\bUS\b|American/i,UK:/United Kingdom|\bUK\b|British|England|Scotland/i,AU:/Australia/i};
 function rlVoices(acc){try{return speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&(RLACC[acc].re.test(v.lang)||(!/^en[-_](US|GB|UK|AU|IN|IE|ZA|NZ|CA)/i.test(v.lang)&&RLANAME[acc].test(v.name))||(RLANAME[acc].test(v.name)&&acc!=='US'))).sort((a,b)=>rlVScore(b)-rlVScore(a))}catch(e){return []}}
-function rlVoice(acc=rlAcc()){const vs=rlVoices(acc),want=store.get('rlvoice:'+acc,'');return vs.find(v=>v.name===want)||vs[0]||null}
+function rlVoice(acc=rlAcc(),g){const vs=rlVoicesG(acc,g),want=store.get('rlvoice:'+acc+(g||''),'');return vs.find(v=>v.name===want)||vs[0]||null}
 /* Reliable speech: Chrome drops an utterance spoken right after cancel(), garbage-collects utterances (onend never fires)
    and Safari can stay silent outside a tap. So: keep a reference, wait a beat after cancel, and resolve on onend OR when the
    engine goes idle OR after a generous time limit — a stuck utterance can never freeze autoplay. */
@@ -3867,27 +3874,14 @@ function rlSpeakP(u){return new Promise(res=>{let done=false,started=false,poll=
     setTimeout(()=>{if(done)return;try{speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){return fin()}
       poll=setInterval(()=>{const sp=speechSynthesis.speaking||speechSynthesis.pending;if(sp)started=true;else if(started)fin()},300);
       setTimeout(()=>{if(done||started||speechSynthesis.speaking||speechSynthesis.pending)return;try{speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}setTimeout(()=>{if(!started&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin()},1600)},1100);to=setTimeout(fin,lim)},80)}catch(e){fin()}})}
-function rlSpeakU(t,rate){const acc=rlAcc(),u=new SpeechSynthesisUtterance(t);u.lang=RLACC[acc].lang;const v=rlVoice(acc);if(v){u.voice=v;u.lang=v.lang}u.rate=rate;return u}
-function rlTtsBar(lbl='지문 듣기'){const acc=rlAcc();return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
-  <span class="rlrate rlacc" role="group" aria-label="발음">${Object.entries(RLACC).map(([k,v])=>`<button type="button" data-acc="${k}" aria-pressed="${k===acc}">${v.f} ${v.k}</button>`).join('')}</span>
-  <span class="rlrate rleng" role="group" aria-label="음성 종류"><button type="button" data-eng="ai" aria-pressed="${rlEng()==='ai'}">✨ AI 목소리</button><button type="button" data-eng="dev" aria-pressed="${rlEng()==='dev'}">📱 기기 음성</button></span>
-  <select class="rlvsel" aria-label="목소리"></select><button type="button" class="btn sm quiet rlvtest" title="목소리 미리 듣기">▶ 미리 듣기</button>
+function rlSpeakU(t,rate){const p=RLPV[rlPV()],acc=p.acc,u=new SpeechSynthesisUtterance(t);u.lang=RLACC[acc].lang;const v=rlVoice(acc,p.g);if(v){u.voice=v;u.lang=v.lang}u.rate=rate;return u}
+function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
+  <span class="rlrate rlpv" role="group" aria-label="목소리">${Object.entries(RLPV).map(([k,v])=>`<button type="button" data-pv="${k}" aria-pressed="${k===rlPV()}">${v.f} ${v.k}</button>`).join('')}</span>
   <p class="rlvhint small muted" hidden></p></div>`}
-function rlVoiceUI(bar,eng){eng=eng||bar.dataset.eng||rlEng();const acc=rlAcc(),vs=rlVoices(acc),cur=rlVoice(acc),sel=$('.rlvsel',bar),hint=$('.rlvhint',bar);if(!sel)return;
-  $$('[data-eng]',bar).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.eng===eng)));
-  if(eng==='orig'){sel.hidden=true;$$('[data-acc]',bar).forEach(b=>b.closest('.rlacc').hidden=true);hint.hidden=false;hint.innerHTML='🎧 해커스 보카 교재 녹음(원어민)으로 단어·뜻·동의어·예문을 들려줘요. 녹음이 없는 문장은 AI 목소리나 기기 음성으로 읽어요.';return}
-  sel.hidden=false;$$('.rlacc',bar).forEach(x=>x.hidden=false);
-  if(eng==='ai'){$$('[data-acc]',bar).forEach(b=>{const k=b.dataset.acc;b.setAttribute('aria-pressed',String(k===acc));b.classList.remove('none');b.innerHTML=`${RLACC[k].f} ${RLACC[k].k}`;b.title=''});
-    const cv=rlAiVoice();sel.innerHTML=[['F','여성'],['M','남성']].map(([g,l])=>`<optgroup label="${l}">${RLAIV[g].map(([n,d])=>`<option value="${n}" ${n===cv?'selected':''}>${n} · ${d.split(' · ')[1]}</option>`).join('')}</optgroup>`).join('');
-    if(!S.cfg.geminiKey){hint.hidden=false;hint.innerHTML=`✨ AI 목소리는 사람처럼 자연스럽고 미국·영국·호주 억양이 실제로 달라요. <b>설정</b>에 Gemini API 키(무료, <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>에서 1분)를 넣으면 바로 쓸 수 있어요. <a href="#settings">설정 열기 →</a>`}
-    else{hint.hidden=false;hint.innerHTML='✨ AI 목소리(Gemini) · 한 번 들은 문단은 이 기기에 저장돼 다음부터 바로 나와요. 무료 한도를 넘으면 자동으로 기기 음성으로 읽어요.'}
-    return}
-  $$('[data-acc]',bar).forEach(b=>{const n=rlVoices(b.dataset.acc).length,k=b.dataset.acc;b.setAttribute('aria-pressed',String(k===acc));b.classList.toggle('none',!n);b.title=n?`${RLACC[k].k} 음성 ${n}개`:`이 기기에 ${RLACC[k].k} 영어 음성이 없어요`;b.innerHTML=`${RLACC[k].f} ${RLACC[k].k}${n?'':' <small>없음</small>'}`});
-  sel.innerHTML=vs.length?vs.map(v=>`<option value="${esc(v.name)}" ${cur&&v.name===cur.name?'selected':''}>${esc(v.name.replace(/^Microsoft /,'').replace(/ - English.*$/,''))}${rlVScore(v)>=80?' ★':''}</option>`).join(''):`<option value="">${RLACC[acc].k} 음성 없음 → 기본 음성</option>`;
-  const best=vs.length?rlVScore(vs[0]):0;
-  const ua=navigator.userAgent,ios=/iPhone|iPad|Macintosh/.test(ua),edge=/Edg\//.test(ua),win=/Windows/.test(ua);
-  if(!vs.length){hint.hidden=false;hint.innerHTML=`⚠️ 이 기기·브라우저에는 <b>${RLACC[acc].k} 영어 음성</b>이 설치되어 있지 않아 기본 목소리로 읽어요(그래서 발음 차이가 없어요). `+(ios?`<b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 <b>${acc==='UK'?'영국 – Serena, Daniel, Kate':acc==='AU'?'호주 – Karen, Lee, Matilda':'미국 – Ava, Zoe, Evan'}</b> 음성을 내려받은 뒤 앱을 완전히 닫고 다시 여세요.`:edge?`Edge 설정에서 음성이 아직 안 받아졌을 수 있어요. 잠시 뒤 다시 열어 보세요.`:win?`<b>Microsoft Edge</b>로 열면 미국·영국·호주 Natural 음성이 모두 있어요. 또는 Windows <b>설정 › 시간 및 언어 › 음성 › 음성 추가</b>에서 English (${acc==='UK'?'United Kingdom':acc==='AU'?'Australia':'United States'})를 추가하세요.`:`<b>Microsoft Edge</b>로 열면 미국·영국·호주 Natural 음성이 모두 있어요. Chrome에는 호주 음성이 없어요.`);return}
-  if(best<80){hint.hidden=false;hint.innerHTML=ios?`더 자연스러운 목소리: <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 ${acc==='US'?'Ava·Zoe·Evan':acc==='UK'?'Serena·Daniel·Kate':'Karen·Lee·Matilda'}의 <b>프리미엄(또는 향상된)</b> 음성을 내려받은 뒤 앱을 다시 여세요.`:`더 자연스러운 목소리: PC에서는 <b>Microsoft Edge</b>로 열면 'Natural' 음성(★)이 생겨요. Chrome은 'Google' 음성이 상대적으로 자연스러워요.`}else hint.hidden=true}
+function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar);$$('[data-pv]',bar).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pv===v)));if(!h)return;h.hidden=false;
+  const p=RLPV[v];if(p.rec){h.innerHTML=window.PACKBLOB?'🎙 녹음된 목소리예요. 인터넷 없이 바로 나와요.':'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.';return}
+  const dv=rlVoicesG(p.acc,p.g)[0];
+  h.innerHTML=dv?'📱 호주는 녹음이 없어서 지문을 이 기기의 호주 영어 음성('+esc(dv.name)+')으로 읽어요. 단어는 녹음된 목소리 그대로예요.':'⚠️ 이 기기에 호주 영어 음성이 없어 기본 목소리로 읽어요. iPhone은 <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 호주 음성('+(p.g==='f'?'Karen · Matilda':'Lee · Gordon')+')을 내려받은 뒤 앱을 다시 여세요.'}
 function rlTtsStop(){try{RLTTS.on=false;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}$$('.rltts [data-t=pp]').forEach(b=>b.textContent=b.textContent.replace(/^■ 멈추기/,'🔊 '+(b.dataset.l||'지문 듣기')));$$('.speaking').forEach(p=>p.classList.remove('speaking'))}
 
 /* ---- AI voice (Gemini TTS, uses the user's own Gemini key) ---- */
@@ -3941,59 +3935,34 @@ async function rlAiAudio(text,opt={}){const acc=opt.ko?'KO':rlAcc(),v=rlAiVoice(
 /* the first quoted English evidence sentence in an explanation ('...'(뜻)) is shown on its own as the 근거 문장 box */
 function rlEvBox(w){const m=/'([^\n]{20,}?)'\s?\(([^)]{4,})\)/.exec(String(w||''));if(!m||!/[A-Za-z]{3}/.test(m[1])||/[가-힣]/.test(m[1]))return '';return `<div class="rlev"><b>🖍 근거 문장</b><p class="en">${esc(m[1])}</p><p class="ko">${esc(m[2])}</p></div>`}
 function rlParaTx(p){let s;if(p&&p.cloneNode){const c=p.cloneNode(true);c.querySelectorAll('.rlsq').forEach(x=>x.remove());s=c.textContent}else s=p&&p.innerText;return String(s||'').replace(/\s+/g,' ').trim()}
-function rlClipUrl(t){if(!window.TTSIX||!window.PACKBLOB)return null;const fz=x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'');
+function rlClipUrl(t,v){if(!window.PACKBLOB||!window.TTSIX)return null;const fz=x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'');
   if(!window.TTSFZ){window.TTSFZ={};for(const k in TTSIX)TTSFZ[fz(k)]=TTSIX[k]}
-  const h=TTSFZ[fz(t)],b=h&&PACKBLOB['tts/'+h+'.mp3'];if(!b)return null;return (window.TTSURL=window.TTSURL||{})[h]||(TTSURL[h]=URL.createObjectURL(b))}
-function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;if(!('speechSynthesis' in window)){bar.hidden=true;return}
-  const pb=$('[data-t=pp]',bar);pb.dataset.l=pb.textContent.replace(/^🔊 /,'');
+  const h=window.TTSFZ[fz(t)];if(!h)return null;
+  const p=(!v||v==='af')?'tts/'+h+'.mp3':'tts/'+v+'/'+h+'.mp3',key=PACKBLOB[p]?p:'tts/'+h+'.mp3',b=PACKBLOB[key];   // a voice with no clip for this text uses the default recording
+  if(!b)return null;return (window.TTSURL=window.TTSURL||{})[key]||(TTSURL[key]=URL.createObjectURL(b))}
+function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;
+  const pb=$('[data-t=pp]',bar);pb.dataset.l=pb.textContent.replace(/^🔊 /,'');rlPvUI(bar);
   const play=()=>{rlTtsStop();rlStopAudio();const ps=getParas();let i=0;RLTTS.on=true;pb.textContent='■ 멈추기';
     const next=()=>{ps.forEach(p=>p.classList.remove('speaking'));if(!RLTTS.on||i>=ps.length){rlTtsStop();return}
       const p=ps[i++],t=rlParaTx(p);if(!t){next();return}p.classList.add('speaking');
       if(p.scrollIntoView&&p.getBoundingClientRect){const r=p.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight)p.scrollIntoView({block:'center',behavior:'smooth'})}
       const dev=()=>{rlSpeakP(rlSpeakU(t,rlRate())).then(()=>{if(RLTTS.on)next()})};
-      {const cu=rlClipUrl(t);if(cu){const a=rlAiEl(cu);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev());return}}
-      if(rlEng()!=='ai'){dev();return}
-      pb.textContent='⏳ AI 목소리 준비 중…';
-      const nt=ps[i]&&rlParaTx(ps[i]);if(nt&&!rlClipUrl(nt))rlAiAudio(nt).catch(()=>{});
-      rlAiAudio(t).then(url=>{if(!RLTTS.on)return;pb.textContent='■ 멈추기';const a=rlAiEl(url);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())})
-        .catch(e=>{if(!RLTTS.on)return;pb.textContent='■ 멈추기';const h=$('.rlvhint',bar);if(h){h.hidden=false;h.innerHTML='⚠️ '+esc(rlAiErr(e))+' · 기기 음성으로 대신 읽어요.'}toast(rlAiErr(e));dev()})};next()};
+      const v=rlPV(),cu=RLPV[v].rec?rlClipUrl(t,v):null;if(!cu){dev();return}
+      const a=rlAiEl(cu);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())};next()};
   pb.onclick=()=>RLTTS.on?rlTtsStop():play();
-  rlVoiceUI(bar);
-  $$('[data-acc]',bar).forEach(b=>b.onclick=()=>{store.set('rlacc',b.dataset.acc);rlVoiceUI(bar);if(RLTTS.on){toast('다음 문단부터 '+RLACC[b.dataset.acc].k+' 발음으로 읽어요')}else rlTest()});
-  const rlTest=()=>{const line='Hello. This is how I sound when I read the passage.';try{speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}
-    if(rlEng()==='ai'&&S.cfg.geminiKey){const tb=$('.rlvtest',bar);tb.textContent='⏳';const h=$('.rlvhint',bar);h.hidden=false;h.textContent='⏳ AI 목소리 요청 중…';rlAiAudio(line).then(u=>{tb.textContent='▶ 미리 듣기';h.innerHTML='✅ AI 목소리 연결됨 ('+esc(store.get('rlttsmodel',''))+') · 한 번 들은 문단은 이 기기에 저장돼요.';const a=rlAiEl(u);RLAIA=a;a.playbackRate=rlRate();a.play().catch(er=>{h.innerHTML='⚠️ 소리를 재생하지 못했어요('+esc(er.message)+'). 화면을 한 번 누른 뒤 다시 눌러 보세요.'})}).catch(e=>{tb.textContent='▶ 미리 듣기';h.innerHTML='⚠️ '+esc(rlAiErr(e));toast(rlAiErr(e));try{speechSynthesis.speak(rlSpeakU(line,rlRate()))}catch(_){}});return}
-    try{speechSynthesis.speak(rlSpeakU(line,rlRate()))}catch(e){}};
-  $('.rlvsel',bar).onchange=e=>{if(rlEng()==='ai')store.set('rlaiv',e.target.value);else store.set('rlvoice:'+rlAcc(),e.target.value);if(!RLTTS.on)rlTest()};
-  $$('[data-eng]',bar).forEach(b=>b.onclick=()=>{store.set('rlteng',b.dataset.eng);if(RLTTS.on)rlTtsStop();rlVoiceUI(bar)});
-  $('.rlvtest',bar).onclick=()=>{if(RLTTS.on)rlTtsStop();rlTest()};
-  try{speechSynthesis.addEventListener('voiceschanged',()=>{if(document.body.contains(bar))rlVoiceUI(bar)})}catch(e){}
-  $$('.rlrate:not(.rlacc):not(.rleng) button',bar).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);if(RLAIA)RLAIA.playbackRate=+b.dataset.r;$$('.rlrate:not(.rlacc):not(.rleng) button',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(RLTTS.on)toast('다음 문단부터 '+b.dataset.r+'× 속도로 읽어요')})}
+  $$('[data-pv]',bar).forEach(b=>b.onclick=()=>{const k=b.dataset.pv;store.set('rlpv',k);store.set('rlacc',RLPV[k].acc);rlPvUI(bar);if(RLTTS.on)toast('다음 문단부터 '+RLPV[k].k+' 목소리로 읽어요')});
+  $$('.rlrate:not(.rlpv) button',bar).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);if(RLAIA)RLAIA.playbackRate=+b.dataset.r;$$('.rlrate:not(.rlpv) button',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(RLTTS.on)toast('다음 문단부터 '+b.dataset.r+'× 속도로 읽어요')})}
+
 try{speechSynthesis.getVoices()}catch(e){}
 
-/* ---- standalone voice bar (vocab pages): engine (orig/ai/dev) + accent + voice ---- */
-function rlVoiceBar(engKey,engs,line){const eng=store.get(engKey,engs[0]);return `<div class="rltts rlvbar" data-key="${engKey}" data-eng="${eng}" data-line="${esc(line||'Hello. This is how I pronounce the words.')}">
-  <span class="rlrate rleng" role="group" aria-label="음성 종류">${engs.map(e=>`<button type="button" data-eng="${e}" aria-pressed="${e===eng}">${e==='orig'?'🎧 교재 원음':e==='ai'?'✨ AI 목소리':'📱 기기 음성'}</button>`).join('')}</span>
-  <span class="rlrate rlacc" role="group" aria-label="발음">${Object.entries(RLACC).map(([k,v])=>`<button type="button" data-acc="${k}" aria-pressed="${k===rlAcc()}">${v.f} ${v.k}</button>`).join('')}</span>
-  <select class="rlvsel" aria-label="목소리"></select>
-  <span class="rlrate rlspd" role="group" aria-label="속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
-  <button type="button" class="btn sm quiet rlvtest">▶ 미리 듣기</button><p class="rlvhint small muted" hidden></p></div>`}
-function rlVoiceWire(bar,test){if(!bar)return;const key=bar.dataset.key,ui=()=>rlVoiceUI(bar,bar.dataset.eng);ui();
-  const t=()=>test?test():rlSayE(bar.dataset.line,bar.dataset.eng);
-  $$('[data-eng]',bar).forEach(b=>b.onclick=()=>{bar.dataset.eng=b.dataset.eng;store.set(key,b.dataset.eng);ui();t()});
-  $$('[data-acc]',bar).forEach(b=>b.onclick=()=>{store.set('rlacc',b.dataset.acc);ui();t()});
-  $('.rlvsel',bar).onchange=e=>{if(bar.dataset.eng==='ai')store.set('rlaiv',e.target.value);else store.set('rlvoice:'+rlAcc(),e.target.value);t()};
-  $$('.rlspd button',bar).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);$$('.rlspd button',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-  $('.rlvtest',bar).onclick=t;
-  try{speechSynthesis.addEventListener('voiceschanged',()=>{if(document.body.contains(bar))ui()})}catch(e){}}
-/* speak a short English text with the chosen engine (ai → Gemini, else device). Returns a promise that resolves when done. */
-window.RLSAYSEQ=0;
 function rlSayE(text,eng,rate,opt={}){eng=eng||store.get('rlvceng','dev');rate=rate||rlRate();const t=String(text||'').replace(/<[^>]+>/g,'').trim();if(!t)return Promise.resolve();
   try{speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}
   const dev=()=>{try{if(opt.ko){const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}return rlSpeakP(rlSpeakU(t,rate))}catch(e){return Promise.resolve()}};
   const seq=++window.RLSAYSEQ;
   // offline neural voice shipped in the pack (no AI quota, instant)
-  {const h=window.TTSIX&&TTSIX[t.replace(/\s+/g,' ')],b=h&&window.PACKBLOB&&PACKBLOB['tts/'+h+'.mp3'];
-   if(b){const u=(window.TTSURL=window.TTSURL||{})[h]||(TTSURL[h]=URL.createObjectURL(b));
+  // single words and sentences always use a recording: the picked voice when it has one, otherwise the default. Korean is recorded in one voice.
+  {const pv=rlPV(),u=rlClipUrl(t,(opt.ko||!RLPV[pv].rec)?'af':pv);
+   if(u){
      return new Promise(res0=>{let d=false;const res=()=>{if(!d){d=true;clearTimeout(wd);res0()}},wd=setTimeout(res,3000+t.length*120/rate);const a=rlAiEl(u);RLAIA=a;a.playbackRate=rate;a.onended=()=>res();a.onerror=()=>{res()};a.onpause=()=>{if(!a.ended)setTimeout(()=>{if(a.paused)res()},200)};
        a.play().catch(()=>{if(seq===window.RLSAYSEQ)dev().then(res);else res()})})}}
   if(eng!=='ai'||Date.now()<(window.RLAIOFF||0))return dev();
@@ -4417,8 +4386,8 @@ const vcKr=w=>(w.senses||[]).map(s=>s.kr).join(' / ');
 const vcTx=s=>String(s||'').replace(/<(?!\/?b>)[^>]+>/g,'');
 
 /* ---------- audio: book recording (sprite per Day) · AI · device ---------- */
-const vcEng=()=>{const e=store.get('vceng','orig');return e==='ai'&&!(S.cfg&&S.cfg.geminiKey)?'orig':e};
-const vcEngRL=()=>{const e=store.get('rlweng','');return e==='dev'?'dev':(S.cfg&&S.cfg.geminiKey)?'ai':'dev'};
+const vcEng=()=>'orig';   /* book recording first, then the pack's recorded voice, then the device voice */
+const vcEngRL=()=>'dev';   /* R/L words: the pack's recorded voice, device voice only if a clip is missing */
 let VCA=null,VCAT=null,VCRES=null,VCGEN=0;try{VCA=rlUnlockEl(new Audio())}catch(e){}
 function vcStop(){window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;window.VCPSEQ=(window.VCPSEQ||0)+1;try{if(VCRES){const r=VCRES;VCRES=null;r('stop')}if(VCA){VCA.pause()}clearTimeout(VCAT);speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}}
 function vcKoSay(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=1;const v=speechSynthesis.getVoices().find(x=>/^ko/i.test(x.lang));if(v)u.voice=v;return rlSpeakP(u)}catch(e){return Promise.resolve()}}
@@ -4537,12 +4506,14 @@ function vcDash(){setCrumb(['Vocab','대시보드']);
     const box=$('#vctrend');if(box){if(!vals.some(v=>v))box.innerHTML='<div class="empty">단어를 외우기 시작하면 하루 학습량이 여기에 그려져요.</div>';
       else{const mx=Math.max(10,...vals),top=Math.ceil(mx/10)*10;box.appendChild(lineChart({series:[{name:'학습한 단어',color:'var(--c1)',values:vals}],labels,ymin:0,ymax:top,ticks:[0,top/2,top].map(Math.round),fmt:v=>Math.round(v)+'개',hi:29,bars:true}))}}}catch(e){}}
 /* listening settings live next to the study screens (not on the dashboard) */
-const VCENGN={orig:'🎧 교재 원음',ai:'✨ AI 목소리',dev:'📱 기기 음성'};
-function vcVoiceMount(sample,rl){const head=$('.cathead',view);if(!head||$('.vcvwrap',view))return;const K=rl?'rlweng':'vceng',cur=()=>rl?vcEngRL():vcEng();
-  head.insertAdjacentHTML('afterend',`<div class="vcvwrap"><button type="button" class="btn sm quiet vcvbtn" aria-expanded="false">🎧 듣기 설정 · <b>${VCENGN[cur()]}</b> ▾</button><div class="panel ph vcvpanel" hidden>${rl?rlVoiceBar(K,['ai','dev'],'constrict. assess. significant.').replace(/data-eng="[a-z]+"/,'data-eng="'+cur()+'"'):rlVoiceBar(K,['orig','ai','dev'],'exploit. account for. particular.')}<p class="small muted" style="margin:6px 0 0">${rl?'리딩·리스닝 단어는 교재 녹음이 없어서 AI 목소리(키가 동작할 때)나 기기 음성으로 읽어요.':'교재 원음: 해커스 보카에 있는 단어는 사람 목소리로 읽어요. 녹음이 없는 단어·한글 뜻·지문 문장은 AI 목소리(키가 동작할 때)나 기기 음성으로 읽어요.'}</p></div></div>`);
-  const wrap=$('.vcvwrap',view),btn=$('.vcvbtn',wrap),pan=$('.vcvpanel',wrap),bar=$('.rlvbar',wrap);
+function vcVoiceMount(sample,rl){const head=$('.cathead',view);if(!head||$('.vcvwrap',view))return;
+  head.insertAdjacentHTML('afterend',`<div class="vcvwrap"><button type="button" class="btn sm quiet vcvbtn" aria-expanded="false">🎧 듣기 설정 ▾</button><div class="panel ph vcvpanel" hidden>
+    <div class="rltts"><span class="rlrate rlspd" role="group" aria-label="속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span><button type="button" class="btn sm quiet vcvtest">▶ 미리 듣기</button></div>
+    <p class="small muted" style="margin:8px 0 0">${rl?'🎙 리딩·리스닝 단어는 녹음된 목소리로 읽어요.':'🎧 해커스 보카에 녹음이 있는 단어는 교재 원음으로, 나머지(한글 뜻·지문 문장)는 녹음된 목소리로 읽어요.'} 녹음이 없는 부분만 기기 음성으로 읽어요.</p></div></div>`);
+  const wrap=$('.vcvwrap',view),btn=$('.vcvbtn',wrap),pan=$('.vcvpanel',wrap);
   btn.onclick=()=>{pan.hidden=!pan.hidden;btn.setAttribute('aria-expanded',String(!pan.hidden))};
-  rlVoiceWire(bar,()=>{store.set(K,bar.dataset.eng);$('b',btn).textContent=VCENGN[cur()];vcPlay(sample||VC.data[0],'w')})}
+  $$('.rlspd button',wrap).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);$$('.rlspd button',wrap).forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  $('.vcvtest',wrap).onclick=()=>vcPlay(sample||VC.data[0],'w')}
 
 /* ---------- Day page: card / quiz / spell / list ---------- */
 const VCM={card:'🃏 카드',quiz:'✅ 퀴즈',spell:'⌨ 철자 쓰기',list:'📋 목록'};
