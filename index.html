@@ -722,7 +722,7 @@ main{margin-inline:auto}
 .rltext b.vw,.rlpbody b.vw{font-size:inherit;font-weight:700;letter-spacing:0;background:color-mix(in srgb,var(--accent) 14%,transparent);padding:0 3px;border-radius:4px}
 
 .rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
-@media (max-width:720px){.rlpv{flex-wrap:wrap}.rlpv button{font-size:13px;padding:5px 8px}}
+@media (max-width:720px){.rlpv{flex:1 1 100%;min-width:0;flex-wrap:wrap}.rlpv button{font-size:13px;padding:5px 8px}}
 
 
 
@@ -1095,12 +1095,25 @@ body.navmin main{max-width:1500px}
 .rlscopes select:disabled{opacity:.5}.rlscopen{white-space:nowrap;font-size:15px;color:var(--mute);padding:0 4px 10px}.rlscopen b{font-size:21.5px;color:var(--accent);margin-right:2px}
 .linkbtn{border:0;background:none;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0 4px}
 .vcpsg{margin:4px 0 12px}
-.psgscrim{align-items:flex-start;padding:4vh 16px;overflow:auto}.psgmodal{max-width:820px!important;max-height:none}
-.psgh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}.psgh h2{margin:6px 0 2px}
-.psgbody{max-height:58vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--paper);line-height:1.8}
-.psgbody p{margin:0 0 10px}mark.psgw{background:#fde68a;color:#111;border-radius:4px;padding:0 2px;box-shadow:0 0 0 2px #fde68a}
-.psgko,.psgvoc{margin-top:12px}.psgvl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.psgaud{margin:0 0 10px}
+.psgscrim{align-items:flex-start;padding:4vh 16px;overflow:auto}.psgmodal{max-width:860px!important;max-height:none;padding:20px 24px 24px}
+.psgh{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}
+.psgh h2{margin:10px 0 4px;font-size:20px;line-height:1.35}
+.psgh>div{min-width:0}.psgh p{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psgh [data-x]{flex:none;white-space:nowrap;align-self:flex-start}
+.psgmodal .rltts{margin:0 0 14px}
+.psgbody{max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--paper);line-height:1.85}
+.psgbody p{margin:0 0 14px}.psgbody p:last-child{margin-bottom:0}mark.psgw{background:#fde68a;color:#111;border-radius:4px;padding:0 2px;box-shadow:0 0 0 2px #fde68a}
+.psgko,.psgvoc{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.psgvl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.psgaud{margin:0 0 14px}
+/* phone: one full-height sheet with one scrollbar, so the passage is not boxed inside a box */
+@media (max-width:640px){
+  .psgscrim{padding:0;align-items:stretch;place-items:stretch;grid-template-columns:minmax(0,1fr)}
+  .psgmodal{max-width:100%!important;width:100%;min-width:0;min-height:100%;border-radius:0;padding:12px 16px calc(32px + env(safe-area-inset-bottom))}
+  .psgh{position:sticky;top:0;z-index:3;background:var(--surface);margin:0 0 12px;padding:6px 0 10px;border-bottom:1px solid var(--line)}
+  .psgh h2{font-size:18.5px;margin:8px 0 3px}
+  .psgh .badge{font-size:11px}
+  .psgbody{max-height:none;overflow:visible;padding:16px 16px 4px}
+}
 .vccard{max-width:900px!important}.vcbtns{max-width:900px;margin-inline:auto}
 .wsplit{max-width:1440px}#test .rlexam.rd{max-width:1400px}#test .rlexam.lis{max-width:880px}
 .vcq,.vcspellbox{max-width:900px}
@@ -4230,9 +4243,10 @@ function rlOpenSaved(ts){const r=RLH.hist.find(x=>x.ts===ts);if(!r){view.innerHT
     const body=$('.rlrbody',d);
     if(b.kind==='cw'){body.innerHTML=`<p class="rlcwt">${rlTx(b.text).replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,a,rest)=>`<b class="cwans">${a}<u>${rest}</u></b>`)}</p>
       <table class="rlcwtab"><tr><th>#</th><th>정답</th><th>내 답</th></tr>${b.qs.map(q=>`<tr class="${rlCorrect(q,my[q.n])?'':'bad'}"><td>${q.n}</td><td>${esc(q.a)}</td><td>${esc(my[q.n]||'—')}</td></tr>`).join('')}</table><p class="rlwhy">💡 ${esc(b.why||'')}</p><details><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}`}
-    else body.innerHTML=`${isL?`<div id="pl-${b.audio}"></div><details class="rlscript" ${bad?'open':''}><summary><b>스크립트</b> <span class="small muted">형광 표시 = 정답 근거</span></summary><div>${rlScript(b)}</div></details>`:`${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext rlpsg ${b.kind}">${b.title?`<h4 class="rltitle">${b.title}</h4>`:''}${rlPassage(b,{reveal:true})}</div>${/<mark/.test(b.text)?'<p class="small muted">형광 표시 = 정답 근거 문장</p>':''}`}
+    else body.innerHTML=`${isL?`<div id="pl-${b.audio}"></div><details class="rlscript" ${bad?'open':''}><summary><b>스크립트</b> <span class="small muted">형광 표시 = 정답 근거</span></summary><div>${rlScript(b)}</div></details>`:`${rlTtsBar()}${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext rlpsg ${b.kind}">${b.title?`<h4 class="rltitle">${b.title}</h4>`:''}${rlPassage(b,{reveal:true})}</div>${/<mark/.test(b.text)?'<p class="small muted">형광 표시 = 정답 근거 문장</p>':''}`}
       <details ${bad?'open':''}><summary><b>${isL?'스크립트 해석':'지문 해석'} · 어휘</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>
       ${b.qs.map(q=>`<div class="rlq rev"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<i class="muted">(음성 질문) '+esc(b.script)+'</i>'}</div></div><div class="rlopts">${q.o.map((o,k)=>`<div class="rlopt ${k===q.a?'ans':''} ${k===my[q.n]&&k!==q.a?'wrong':''}"><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></div>`).join('')}</div>${rlQExp(q,my[q.n])}</div>`).join('')}`;
+    if(!isL&&b.kind!=='cw')rlTtsWire(body,()=>$$('.rlpsg p',body));
     if(isL)d.addEventListener('toggle',()=>{const h=$('#pl-'+b.audio,d);if(d.open&&h&&!h.innerHTML)rlPlayer(h,b.audio)});
     if(isL&&bad)rlPlayer($('#pl-'+b.audio,d),b.audio);
     rlVocWire(d,sec)});
@@ -4280,10 +4294,10 @@ function rlShowBlock(sec,setId,bi,word){const x=rlSets(sec).find(y=>y.id===setId
       html=html.replace(/(<[^>]+>)|([^<]+)/g,(m,tag,txt)=>tag?tag:txt.replace(rx,'<mark class="psgw">$1</mark>'))}}
   const voc=(b.vocab||[]).map(([w,k])=>`<span class="mtag sm">${esc(w)} · ${esc(k)}</span>`).join(' ');
   const m=el(`<div class="scrim psgscrim" role="dialog" aria-modal="true"><div class="modal psgmodal"><div class="psgh"><div><span class="badge">${esc(RLCAT[x.cat]||'')}</span><h2>${esc(x.title)}</h2><p class="small muted">${esc(rlBlkName(b,bi))}${word?` · <b>${esc(word)}</b>이(가) 나온 곳을 표시했어요`:''}</p></div><button class="btn sm" data-x>닫기 ✕</button></div>
-    ${sec==='l'&&b.audio?'<div class="psgaud"></div>':''}<div class="psgbody rltext">${html}</div>${b.ko?`<details class="psgko"><summary><b>해석 보기</b></summary>${rlKo(b)}</details>`:''}${voc?`<details class="psgvoc"><summary><b>이 지문의 단어 ${b.vocab.length}개</b></summary><div class="psgvl">${voc}</div></details>`:''}</div></div>`);
-  const close=()=>{try{rlStopAudio()}catch(_){}m.remove();document.removeEventListener('keydown',kd,true);removeEventListener('hashchange',close)},kd=e=>{if(e.key==='Escape'){e.stopPropagation();close()}};addEventListener('hashchange',close);
+    ${sec==='l'&&b.audio?'<div class="psgaud"></div>':sec!=='l'?rlTtsBar():''}<div class="psgbody rltext">${html}</div>${b.ko?`<details class="psgko"><summary><b>해석 보기</b></summary>${rlKo(b)}</details>`:''}${voc?`<details class="psgvoc"><summary><b>이 지문의 단어 ${b.vocab.length}개</b></summary><div class="psgvl">${voc}</div></details>`:''}</div></div>`);
+  const close=()=>{try{rlStopAudio()}catch(_){}try{rlTtsStop()}catch(_){}m.remove();document.removeEventListener('keydown',kd,true);removeEventListener('hashchange',close)},kd=e=>{if(e.key==='Escape'){e.stopPropagation();close()}};addEventListener('hashchange',close);
   m.addEventListener('click',e=>{if(e.target===m)close()});$('[data-x]',m).onclick=close;document.addEventListener('keydown',kd,true);document.body.appendChild(m);
-  if(sec==='l'&&b.audio)rlPlayer($('.psgaud',m),b.audio,{auto:false});
+  if(sec==='l'&&b.audio)rlPlayer($('.psgaud',m),b.audio,{auto:false});else if(sec!=='l')rlTtsWire(m,()=>$$('.psgbody p',m));
   setTimeout(()=>{const k=$('.psgw',m);if(k)k.scrollIntoView({block:'center'})},50)}
 window.rlShowPassage=w=>{const sec=String(w.rk||'').split(':')[0],ref=rlFindRef(sec,w.word);if(ref)rlShowBlock(sec,ref.set,ref.bi,w.word);else toast('이 단어가 나온 지문을 찾지 못했어요')};
 /* R/L deck entry → rich word object (same shape as the Vocab section) so cards/quiz/spell share one UI.
