@@ -1433,7 +1433,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="449f55d44b76";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="1f8047156671";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -1442,6 +1442,7 @@ function iconSVG(id, size){
   function boot(meta,files){
     window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.BG=meta.bg||null;window.PACKURL={};window.PACKBLOB={};
     for(const [name,blob] of Object.entries(files)){if(name.startsWith('images/'))PACKURL[name.slice(7)]=URL.createObjectURL(blob);else PACKBLOB[name]=blob}
+    window.HASVOICES=Object.keys(files).some(n=>n.startsWith('tts/am/'));
     const s=document.createElement('script');s.text=document.getElementById('appjs').textContent;document.body.appendChild(s);
   }
   async function importPack(file,status){
@@ -1453,11 +1454,23 @@ function iconSVG(id, size){
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
+    await tx(db,'meta','readwrite',st=>st.delete('voices'));
     await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,bg:head.bg||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600);
   }
-  window.PACKIO={importPack,async clear(){const db=await open();await tx(db,'files','readwrite',st=>st.clear());await tx(db,'meta','readwrite',st=>st.clear());location.reload()}};
+  async function importVoices(file,status){
+    const h8=new DataView(await file.slice(0,8).arrayBuffer());
+    if(String.fromCharCode(h8.getUint8(0),h8.getUint8(1),h8.getUint8(2),h8.getUint8(3))!=='TFVP')throw new Error('toefl-voices.bin 파일이 아니에요');
+    const hl=h8.getUint32(4,true),head=JSON.parse(new TextDecoder().decode(await file.slice(8,8+hl).arrayBuffer())),base=8+hl;
+    const db=await open();const F=head.files;
+    for(let i=0;i<F.length;i+=40){const part=F.slice(i,i+40);
+      const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
+      await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
+    await tx(db,'meta','readwrite',st=>st.put({n:F.length,stamp:head.stamp||null,at:Date.now()},'voices'));
+    status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600);
+  }
+  window.PACKIO={importPack,importVoices,async clear(){const db=await open();await tx(db,'files','readwrite',st=>st.clear());await tx(db,'meta','readwrite',st=>st.clear());location.reload()}};
   function showImport(old){
     const d=document.createElement('div');d.className='importer';
     d.innerHTML=`<div class="imp"><img src="icon-192.png" alt="" width="72" height="72" style="border-radius:18px;margin:0 auto 8px;display:block"><h1>TOEFL Practice</h1>
@@ -2642,7 +2655,9 @@ function renderSettings(){
   view.innerHTML=`<div class="cathead"><div><h1>설정</h1></div></div>
   <div class="panel form">
     ${window.PACKIO?`<div class="field"><label>교재 데이터</label><label class="btn">새 toefl-pack.bin 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" hidden></label>
-      <div class="hint">앱이 업데이트되면서 교재 데이터가 바뀌었을 때 다시 불러오세요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>`:''}
+      <div class="hint">앱이 업데이트되면서 교재 데이터가 바뀌었을 때 다시 불러오세요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>
+    <div class="field"><label>목소리 데이터 ${window.HASVOICES?'· 불러왔어요 ✅':'· 아직 없어요'}</label><label class="btn">toefl-voices.bin 불러오기<input type="file" id="vpack" accept=".bin,application/octet-stream" hidden></label>
+      <div class="hint">지문을 미국 남자 · 영국 여자 · 영국 남자 목소리로도 듣고 싶을 때 불러오세요. 교재 데이터를 다시 불러오면 이것도 다시 불러와야 해요.</div><div class="hint" id="vpackst"></div></div>`:''}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
       <textarea id="pers" rows="3" style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)">${esc((S.cfg.persona||'').trim()||PERSONA_DEF)}</textarea>
       <label class="small" style="font-weight:400;display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="phook" ${S.cfg.personaHook===false?'':'checked'}> 템플릿별 연결 문장 붙이기 (예: Add-on I → "So every dollar counts for that tuition.")</label>
@@ -2675,6 +2690,7 @@ function renderSettings(){
   $('#lang').value=S.cfg.fbLang;$('#eng').value=S.cfg.engine==='browser'?'browser':'whisper';
   $$('#gap button').forEach(b=>b.onclick=()=>{$$('#gap button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
   $('#repack')?.addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const st=t=>{$('#repackst').textContent=t};st('불러오는 중…');try{await PACKIO.importPack(f,st)}catch(err){st('실패: '+err.message)}});
+  $('#vpack')?.addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const st=t=>{$('#vpackst').textContent=t};st('불러오는 중…');try{await PACKIO.importVoices(f,st)}catch(err){st('실패: '+err.message)}});
   const pwc=()=>{$('#pwc').textContent=norm($('#pers').value).length};pwc();$('#pers').oninput=pwc;
   $$('#theme button').forEach(b=>b.onclick=()=>{$$('#theme button').forEach(x=>x.setAttribute('aria-pressed',x===b));S.cfg.theme=b.dataset.v;saveCfg();applyTheme()});
   $('#save').onclick=()=>{S.cfg.apiKey=$('#key').value.trim();S.cfg.model=$('#model').value||'claude-sonnet-5-5';S.cfg.fbLang=$('#lang').value;
@@ -3879,7 +3895,9 @@ function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="
   <span class="rlrate rlpv" role="group" aria-label="목소리">${Object.entries(RLPV).map(([k,v])=>`<button type="button" data-pv="${k}" aria-pressed="${k===rlPV()}">${v.f} ${v.k}</button>`).join('')}</span>
   <p class="rlvhint small muted" hidden></p></div>`}
 function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar);$$('[data-pv]',bar).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pv===v)));if(!h)return;h.hidden=false;
-  const p=RLPV[v];if(p.rec){h.innerHTML=window.PACKBLOB?'🎙 녹음된 목소리예요. 인터넷 없이 바로 나와요.':'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.';return}
+  const p=RLPV[v];if(p.rec){h.innerHTML=!window.PACKBLOB?'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.'
+    :(v!=='af'&&!window.HASVOICES)?'🎙 이 목소리 녹음은 <b>toefl-voices.bin</b>에 들어 있어요. 설정에서 한 번 불러오면 바로 나와요. 지금은 미국 여자 녹음으로 읽어요.'
+    :'🎙 녹음된 목소리예요. 인터넷 없이 바로 나와요.';return}
   const dv=rlVoicesG(p.acc,p.g)[0];
   h.innerHTML=dv?'📱 호주는 녹음이 없어서 지문을 이 기기의 호주 영어 음성('+esc(dv.name)+')으로 읽어요. 단어는 녹음된 목소리 그대로예요.':'⚠️ 이 기기에 호주 영어 음성이 없어 기본 목소리로 읽어요. iPhone은 <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 호주 음성('+(p.g==='f'?'Karen · Matilda':'Lee · Gordon')+')을 내려받은 뒤 앱을 다시 여세요.'}
 function rlTtsStop(){try{RLTTS.on=false;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}$$('.rltts [data-t=pp]').forEach(b=>b.textContent=b.textContent.replace(/^■ 멈추기/,'🔊 '+(b.dataset.l||'지문 듣기')));$$('.speaking').forEach(p=>p.classList.remove('speaking'))}
