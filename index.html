@@ -3953,9 +3953,14 @@ async function rlAiAudio(text,opt={}){const acc=opt.ko?'KO':rlAcc(),v=rlAiVoice(
 /* the first quoted English evidence sentence in an explanation ('...'(뜻)) is shown on its own as the 근거 문장 box */
 function rlEvBox(w){const m=/'([^\n]{20,}?)'\s?\(([^)]{4,})\)/.exec(String(w||''));if(!m||!/[A-Za-z]{3}/.test(m[1])||/[가-힣]/.test(m[1]))return '';return `<div class="rlev"><b>🖍 근거 문장</b><p class="en">${esc(m[1])}</p><p class="ko">${esc(m[2])}</p></div>`}
 function rlParaTx(p){let s;if(p&&p.cloneNode){const c=p.cloneNode(true);c.querySelectorAll('.rlsq').forEach(x=>x.remove());s=c.textContent}else s=p&&p.innerText;return String(s||'').replace(/\s+/g,' ').trim()}
-function rlClipUrl(t,v){if(!window.PACKBLOB||!window.TTSIX)return null;const fz=x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'');
-  if(!window.TTSFZ){window.TTSFZ={};for(const k in TTSIX)TTSFZ[fz(k)]=TTSIX[k]}
-  const h=window.TTSFZ[fz(t)];if(!h)return null;
+/* the loose key keeps letters of any script (Korean included) and drops only spacing and punctuation, so two different
+   sentences can never share a key; a key that two clips would share is dropped, so a near-miss stays silent instead of
+   playing the wrong recording. */
+const rlFz=x=>{try{return String(x).toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'')}catch(e){return String(x).toLowerCase().replace(/[^0-9a-z\u00c0-\uffff]+/g,'')}};
+function rlClipUrl(t,v){if(!window.PACKBLOB||!window.TTSIX)return null;
+  if(!window.TTSFZ){const m={},dup={};for(const k in TTSIX){const f=rlFz(k);if(!f)continue;if(f in m){if(m[f]!==TTSIX[k])dup[f]=1}else m[f]=TTSIX[k]}
+    for(const f in dup)delete m[f];window.TTSFZ=m}
+  const h=TTSIX[t]||window.TTSFZ[rlFz(t)];if(!h)return null;
   const p=(!v||v==='af')?'tts/'+h+'.mp3':'tts/'+v+'/'+h+'.mp3',key=PACKBLOB[p]?p:'tts/'+h+'.mp3',b=PACKBLOB[key];   // a voice with no clip for this text uses the default recording
   if(!b)return null;return (window.TTSURL=window.TTSURL||{})[key]||(TTSURL[key]=URL.createObjectURL(b))}
 function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;
