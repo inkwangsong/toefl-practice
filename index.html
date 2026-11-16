@@ -1158,6 +1158,8 @@ body.navmin main{max-width:1500px}
 
 
 
+
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -1481,14 +1483,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
    버튼·탭·진행 막대·포커스 테두리가 한꺼번에 따라와서,
    라벨을 읽지 않아도 지금 어느 과목인지 알 수 있어요.
    ============================================================ */
-:root[data-sec="r"]{--accent:var(--k-r);--accent-soft:var(--k-r-s)}
-:root[data-sec="l"]{--accent:var(--k-l);--accent-soft:var(--k-l-s)}
-:root[data-sec="s"]{--accent:var(--k-s);--accent-soft:var(--k-s-s)}
-:root[data-sec="w"]{--accent:var(--k-w);--accent-soft:var(--k-w-s)}
-:root[data-sec="v"]{--accent:var(--k-v);--accent-soft:var(--k-v-s)}
-:root[data-sec]{--c1:var(--accent)}
-:root[data-sec="r"]{--sc:var(--k-r)}:root[data-sec="l"]{--sc:var(--k-l)}
-:root[data-sec="s"]{--sc:var(--k-s)}:root[data-sec="w"]{--sc:var(--k-w)}:root[data-sec="v"]{--sc:var(--k-v)}
+:root:root:root:root:root[data-sec="r"]{--accent:var(--k-r);--accent-soft:var(--k-r-s)}
+:root:root:root:root:root[data-sec="l"]{--accent:var(--k-l);--accent-soft:var(--k-l-s)}
+:root:root:root:root:root[data-sec="s"]{--accent:var(--k-s);--accent-soft:var(--k-s-s)}
+:root:root:root:root:root[data-sec="w"]{--accent:var(--k-w);--accent-soft:var(--k-w-s)}
+:root:root:root:root:root[data-sec="v"]{--accent:var(--k-v);--accent-soft:var(--k-v-s)}
+:root:root:root:root:root[data-sec]{--c1:var(--accent)}
+:root:root:root:root:root[data-sec="r"]{--sc:var(--k-r)}:root:root:root:root:root[data-sec="l"]{--sc:var(--k-l)}
+:root:root:root:root:root[data-sec="s"]{--sc:var(--k-s)}:root:root:root:root:root[data-sec="w"]{--sc:var(--k-w)}:root:root:root:root:root[data-sec="v"]{--sc:var(--k-v)}
 
 /* 과목 화면 머리말은 그 과목 색을 옅게 깔아요 */
 :root:root[data-sec] .welcome{background:linear-gradient(180deg,var(--accent-soft) 0%,var(--surface) 160px);border-color:color-mix(in srgb,var(--accent) 16%,var(--line))}
@@ -1585,6 +1587,29 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .badge{text-transform:none;letter-spacing:-.01em}
 .rlmode b{display:inline-flex;align-items:center;gap:8px}
 .rlmode b .i{width:20px;height:20px;color:var(--accent)}
+
+
+/* ---- 예전 어두운 테마가 남긴 보라·연두 장식 걷어내기 ----
+   예전 규칙은 [data-theme=dark]와 '기기 설정 따라' 두 경로로 걸려 있어서,
+   테마와 상관없이 더 강한 선택자로 토큰 색에 다시 묶어요. */
+:root:root:root:root:root body{background:var(--paper)}
+:root:root:root:root:root .btn.primary{background:var(--accent);border-color:transparent;color:var(--accent-ink);font-weight:600;box-shadow:none}
+:root:root:root:root:root .btn.primary:hover{background:color-mix(in srgb,var(--accent) 88%,#000)}
+:root:root:root:root:root .kpi .v,:root:root:root:root:root .wkstats b,:root:root:root:root:root .kpi b{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink);-webkit-text-fill-color:currentColor}
+:root:root:root:root:root .cd.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+:root:root:root:root:root .secsw a[aria-selected="true"],:root:root:root:root:root .vtabs a[aria-selected="true"]{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important}
+:root:root:root:root:root .bar i,:root:root:root:root:root .rlbar i,:root:root:root:root:root .vcday .bar i,:root:root:root:root:root .vcprog .bar i{background:var(--accent)!important;box-shadow:none!important}
+:root:root:root:root:root .vcsynl{background:var(--accent-soft);color:var(--accent)}
+:root:root:root:root:root .vcex b,:root:root:root:root:root .rlvl .vctxl b{color:var(--accent)}
+:root:root:root:root:root .vcyes{background:var(--ok)!important;color:#fff!important;border-color:transparent!important}
+:root:root:root:root:root .cdot-last{filter:none}
+:root:root:root:root:root .welcome{background:var(--surface);border:1px solid var(--line);box-shadow:none}
+:root:root:root:root:root[data-sec] .welcome{background:linear-gradient(180deg,var(--accent-soft) 0%,var(--surface) 160px);border-color:color-mix(in srgb,var(--accent) 16%,var(--line))}
+:root:root:root:root:root .welcome .btn{background:var(--surface);border-color:var(--line2);color:var(--ink);box-shadow:none}
+:root:root:root:root:root .welcome .btn.primary,:root:root:root:root:root .welcome .row .btn:first-child{background:var(--accent);border-color:transparent;color:var(--accent-ink);box-shadow:none}
+:root:root:root:root:root .welcome .btn.ghost,:root:root:root:root:root .welcome .btn+.btn{background:transparent;border-color:var(--line2);color:var(--ink)}
+:root:root:root:root:root .welcome .badge,:root:root:root:root:root .welcome .eyebrow{background:var(--accent-soft);color:var(--accent)}
+:root:root:root:root:root .welcome .kpi{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 14%,var(--line));backdrop-filter:none}
 
 /* ---- 마무리: 과한 그림자와 호버 이동 없애기 ---- */
 .panel:hover{box-shadow:none}
