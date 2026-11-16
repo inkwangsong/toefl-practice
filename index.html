@@ -1152,6 +1152,8 @@ body.navmin main{max-width:1500px}
 
 
 
+
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -1546,6 +1548,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .nc-TR{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn);border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
 @media (max-width:560px){.rlparar{grid-template-columns:1fr;gap:3px}.rlparal{justify-self:start;padding:2px 10px}}
 
+
+/* ---- 사이드 메뉴: 묶음 머리와 화살표 ---- */
+.navgrp>.gh{display:flex;align-items:center;gap:6px;cursor:pointer;border-radius:8px;padding:8px 10px 6px}
+.navgrp>.gh:hover{color:var(--ink)}
+.navgrp>.gh .chev{display:inline-grid;place-items:center;width:16px;transform:rotate(90deg);transition:transform .15s ease;font-size:0}
+.navgrp>.gh .chev .i{width:14px;height:14px;stroke-width:2}
+.navgrp.fold>.gh .chev{transform:rotate(0deg)}
+.navgrp>.gh .gn{font:600 12px var(--ui);font-variant-numeric:tabular-nums;color:var(--mute);background:var(--sunken);border-radius:999px;padding:1px 8px}
+.nl{gap:11px;padding:8px 10px}
+.nl .cnt{font:600 12px var(--ui);font-variant-numeric:tabular-nums}
+.brand{padding:6px 10px 18px;letter-spacing:-.02em}
+.brand small{font-weight:500}
+
 /* ---- 마무리: 과한 그림자와 호버 이동 없애기 ---- */
 .panel:hover{box-shadow:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -1796,9 +1811,11 @@ function iconSVG(id, size){
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const el=h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstElementChild};
-const ICONS={read:'<rect x="4.4" y="3.4" width="15.2" height="17.2" rx="3.2"/><path d="M8.2 8.4h7.6M8.2 12.2h7.6M8.2 16h4.4"/>',listen:'<path d="M4.4 13.6v-1.9a7.6 7.6 0 0 1 15.2 0v1.9"/><rect x="2.6" y="13.2" width="4.6" height="6.9" rx="2.3"/><rect x="16.8" y="13.2" width="4.6" height="6.9" rx="2.3"/>',speak:'<rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/>',write:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/><path d="M14 7l3 3"/>',vocab:'<rect x="3" y="6.6" width="13.4" height="13.8" rx="3.2"/><path d="M7.6 3.6h9.8A3.6 3.6 0 0 1 21 7.2v9.6"/><path d="M6.9 16.6l2.8-6.4 2.8 6.4M7.9 14.4h3.6"/>',home:'<path d="M3.9 10.5 12 3.8l8.1 6.7v8.6a1.7 1.7 0 0 1-1.7 1.7H5.6a1.7 1.7 0 0 1-1.7-1.7z"/>',pencil:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/>',play:'<path d="M7.6 5.3 18.8 12 7.6 18.7z"/>',list:'<path d="M4 6.6h16M4 12h16M4 17.4h10"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',gear:'<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 2.4v2.4M12 19.2v2.4M19.8 7.8l-2.1 1.2M6.3 15l-2.1 1.2M19.8 16.2l-2.1-1.2M6.3 9 4.2 7.8"/>',theme:'<circle cx="12" cy="12" r="8.4"/><path d="M12 20.4a8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none"/>',book:'<path d="M5 5.1A2.1 2.1 0 0 1 7.1 3H19v14.4H7.1A2.1 2.1 0 0 0 5 19.5z"/><path d="M5 19.5A2.1 2.1 0 0 0 7.1 21.6H19"/>',chev:'<path d="M9.2 5.4 15.8 12l-6.6 6.6"/>',bolt:'<path d="M13.4 2.8 5.9 13.2h4.9l-.7 8 7.6-10.4h-5z"/>',cal:'<rect x="3.4" y="5.2" width="17.2" height="15.4" rx="3.2"/><path d="M3.4 10h17.2M8.2 2.8v4.2M15.8 2.8v4.2"/>',check:'<path d="M4.8 12.4 9.6 17.2 19.2 6.8"/>',close:'<path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/>',chart:'<path d="M3.6 20.4h16.8"/><path d="M7.4 17V10.8M12 17V4.6M16.6 17v-8.6"/>',star:'<path d="M12 3.3 14.7 9l6.3.8-4.6 4.3 1.2 6.2L12 17.3 6.4 20.3l1.2-6.2L3 9.8 9.3 9z"/>',refresh:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.4v4.4h-4.4"/>',search:'<circle cx="11" cy="11" r="6.8"/><path d="M16 16l4.4 4.4"/>'};
+const ICONS={read:'<rect x="4.4" y="3.4" width="15.2" height="17.2" rx="3.2"/><path d="M8.2 8.4h7.6M8.2 12.2h7.6M8.2 16h4.4"/>',listen:'<path d="M4.4 13.6v-1.9a7.6 7.6 0 0 1 15.2 0v1.9"/><rect x="2.6" y="13.2" width="4.6" height="6.9" rx="2.3"/><rect x="16.8" y="13.2" width="4.6" height="6.9" rx="2.3"/>',speak:'<rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/>',write:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/><path d="M14 7l3 3"/>',vocab:'<rect x="3" y="6.6" width="13.4" height="13.8" rx="3.2"/><path d="M7.6 3.6h9.8A3.6 3.6 0 0 1 21 7.2v9.6"/><path d="M6.9 16.6l2.8-6.4 2.8 6.4M7.9 14.4h3.6"/>',home:'<path d="M3.9 10.5 12 3.8l8.1 6.7v8.6a1.7 1.7 0 0 1-1.7 1.7H5.6a1.7 1.7 0 0 1-1.7-1.7z"/>',pencil:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/>',play:'<path d="M7.6 5.3 18.8 12 7.6 18.7z"/>',list:'<path d="M4 6.6h16M4 12h16M4 17.4h10"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',gear:'<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 2.4v2.4M12 19.2v2.4M19.8 7.8l-2.1 1.2M6.3 15l-2.1 1.2M19.8 16.2l-2.1-1.2M6.3 9 4.2 7.8"/>',theme:'<circle cx="12" cy="12" r="8.4"/><path d="M12 20.4a8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none"/>',book:'<path d="M5 5.1A2.1 2.1 0 0 1 7.1 3H19v14.4H7.1A2.1 2.1 0 0 0 5 19.5z"/><path d="M5 19.5A2.1 2.1 0 0 0 7.1 21.6H19"/>',chev:'<path d="M9.2 5.4 15.8 12l-6.6 6.6"/>',bolt:'<path d="M13.4 2.8 5.9 13.2h4.9l-.7 8 7.6-10.4h-5z"/>',cal:'<rect x="3.4" y="5.2" width="17.2" height="15.4" rx="3.2"/><path d="M3.4 10h17.2M8.2 2.8v4.2M15.8 2.8v4.2"/>',check:'<path d="M4.8 12.4 9.6 17.2 19.2 6.8"/>',close:'<path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/>',chart:'<path d="M3.6 20.4h16.8"/><path d="M7.4 17V10.8M12 17V4.6M16.6 17v-8.6"/>',star:'<path d="M12 3.3 14.7 9l6.3.8-4.6 4.3 1.2 6.2L12 17.3 6.4 20.3l1.2-6.2L3 9.8 9.3 9z"/>',refresh:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.4v4.4h-4.4"/>',search:'<circle cx="11" cy="11" r="6.8"/><path d="M16 16l4.4 4.4"/>',grid:'<rect x="3.6" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="3.6" y="13.2" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="13.2" width="7.2" height="7.2" rx="2"/>',keyboard:'<rect x="2.6" y="6" width="18.8" height="12" rx="2.6"/><path d="M6.4 9.8h.01M10.1 9.8h.01M13.9 9.8h.01M17.6 9.8h.01M7.6 14.2h8.8"/>',flag:'<path d="M5 21V4.2"/><path d="M5 4.6c4.6-2.4 9 2.4 14 0v9.2c-5 2.4-9.4-2.4-14 0"/>',save:'<path d="M12 3.8v11M7.6 10.6 12 15l4.4-4.4"/><path d="M4.2 15.6v2.6A2 2 0 0 0 6.2 20.2h11.6a2 2 0 0 0 2-2v-2.6"/>'};
 const ICON=(n,cls='')=>ICONS[n]?`<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[n]}</svg>`:'';
 window.ICON=ICON;
+const NAVG={'◧':'grid','☰':'list','≡':'list','★':'star','⚙':'gear','▶':'play','✎':'pencil','⌨':'keyboard','↻':'refresh','✕':'flag','✍':'write','⌕':'search','💾':'save','📚':'book','⌂':'home'};
+const NAVIC=g=>NAVG[g]?ICON(NAVG[g]):g;window.NAVIC=NAVIC;
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pad2=n=>String(n).padStart(2,'0');
 
@@ -2424,7 +2441,7 @@ function envState(){
 
 /* ---------- LNB ---------- */
 function renderLnb(cur){
-  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span><span>${label}</span>${extra}</a>`;
+  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const catLink=c=>{const d=doneCount(c),n=c.sets.length;return `<a class="nl sub" href="#${c.id}" ${cur===c.id?'aria-current="page"':''}><span>${esc(c.label)}<span class="sl">${esc(c.sub)}</span></span><span class="cnt ${d===n?'full':''}">${d}/${n}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#home"><span class="mk">iBT</span><span>TOEFL Practice<small>Speaking · Hackers Intermediate</small></span></a>
     ${link('home','◧','대시보드')}${link('mock','▶','실전 모의고사',`<span class="cnt">${MOCKS.length+1}</span>`)}
@@ -2442,9 +2459,9 @@ $('#navtoggle').onclick=()=>{const m=!document.body.classList.contains('navmin')
 function lnbEnhance(){const l=$('#lnb');if(!l)return;
   $$('.navgrp',l).forEach(g=>{const gh=g.querySelector(':scope>.gh');if(!gh||gh.dataset.f)return;gh.dataset.f='1';
     const k=gh.textContent.trim(),n=g.querySelectorAll(':scope>a').length,cur=!!g.querySelector('[aria-current="page"]');
-    gh.innerHTML=`<span class="chev" aria-hidden="true">▼</span><span>${esc(k)}</span><span class="gn">${n}</span>`;
+    gh.innerHTML=`<span class="chev" aria-hidden="true">${ICON('chev')}</span><span>${esc(k)}</span><span class="gn">${n}</span>`;
     gh.setAttribute('role','button');gh.tabIndex=0;
-    const fold=cur?false:(k in NAVF?NAVF[k]:(n>4&&k!=='내 학습'));g.classList.toggle('fold',fold);gh.setAttribute('aria-expanded',String(!fold));
+    const fold=cur?false:(k in NAVF?NAVF[k]:(n>5&&k!=='내 학습'&&k!=='과목'));g.classList.toggle('fold',fold);gh.setAttribute('aria-expanded',String(!fold));
     const t=()=>{const f=!g.classList.contains('fold');g.classList.toggle('fold',f);gh.setAttribute('aria-expanded',String(!f));NAVF[k]=f;store.set('navfold',NAVF)};
     gh.onclick=t;gh.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}};
   });
@@ -3430,7 +3447,7 @@ const WRUB={5:'과제를 완벽히 수행. 명확하고 충분히 구체적이�
 const isW=h=>h==='w'||h.startsWith('w-');
 function secSwitch(w){return `<div class="secsw" role="tablist" aria-label="영역 선택"><a href="#home" role="tab" aria-selected="${!w}">Speaking</a><a href="#w" role="tab" aria-selected="${!!w}">Writing</a></div>`}
 function renderWLnb(cur){
-  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span><span>${label}</span>${extra}</a>`;
+  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const catLink=c=>{const d=wdone(c),n=c.sets.length;return `<a class="nl sub" href="#${c.id}" ${cur===c.id?'aria-current="page"':''}><span>${esc(c.label)}<span class="sl">${esc(c.sub)}</span></span><span class="cnt ${n&&d===n?'full':''}">${d}/${n}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#w"><span class="mk">iBT</span><span>TOEFL Practice<small>Writing · Hackers Intermediate</small></span></a>${secSwitch(true)}
     ${link('w','◧','대시보드')}${link('w-mock','▶','실전 모의고사',`<span class="cnt">${WCATS.filter(c=>c.kind==='full').reduce((n,c)=>n+c.sets.length,0)+1}</span>`)}
@@ -4198,7 +4215,7 @@ function rlBand(p){return Math.round((1+5*p)*2)/2}
 secSwitch=function(w){const cur=w===true?'w':w===false?'s':w;const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
   return `<div class="secsw four" role="tablist" aria-label="영역 선택">${a('rd','r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}</div>`};
 function rlLnb(sec,cur){const S_=RLSEC[sec],P=S_.pre;
-  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span><span>${label}</span>${extra}</a>`;
+  const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const best=id=>{const h=RLH.hist.filter(x=>x.set===id);return h.length?Math.max(...h.map(x=>x.ok))+'/'+h[0].n:'—'};
   $('#lnb').innerHTML=`<a class="brand" href="#${P}"><span class="mk">iBT</span><span>TOEFL Practice<small>${S_.name} · Hackers Intermediate</small></span></a>${secSwitch(sec)}
    ${link(P,'◧','대시보드')}
@@ -4900,7 +4917,7 @@ async function vcPlay(w0,kind='w',si=0){vcStop();const w=w0.vref||w0,eng=w.day?v
 /* ---------- shell: section switch, LNB, router ---------- */
 secSwitch=function(w){const cur=w===true?'w':w===false?'s':w;const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
   return `<div class="secsw four five" role="tablist" aria-label="영역 선택">${a('rd','r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}${a('vc','v','Vocab')}</div>`};
-function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span><span>${label}</span>${extra}</a>`;
+function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const day=d=>{const ws=vcDay(d),k=ws.filter(w=>vcSt(w)==='known').length;return `<a class="nl sub" href="#vc-d-${d}" ${cur==='vc-d-'+d?'aria-current="page"':''}><span>Day ${String(d).padStart(2,'0')}<span class="sl">${ws.length}단어</span></span><span class="cnt ${k&&k===ws.length?'full':''}">${k}/${ws.length}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#vc"><span class="mk">iBT</span><span>TOEFL Practice<small>Vocab · Hackers TOEFL VOCA</small></span></a>${secSwitch('v')}
    ${link('vc','◧','대시보드')}${link('vc-rev','↻','오늘의 복습',`<span class="cnt">${vcDue().length}</span>`)}${link('vc-miss','✕','모름 · 애매',`<span class="cnt">${VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure').length}</span>`)}${link('vc-sp','✍','철자 오답 노트',`<span class="cnt">${vcSpMiss().length}</span>`)}${link('vc-find','⌕','단어 검색')}
@@ -5312,7 +5329,7 @@ function renderHome(){
     <section class="panel ph hmact"><div class="plhead" style="margin-bottom:8px"><h2 style="flex:1">학습 기록 · ${days[0].getMonth()+1}/${days[0].getDate()} – ${days[N-1].getMonth()+1}/${days[N-1].getDate()} <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2><label class="small hmfrom">시작일 <input type="date" id="hmfrom" value="${hmKey(days[0])}"></label></div>
       <div class="hmtbl" role="table" aria-label="과목별 학습 기록" style="--n:${N}">
         <div class="hmrow hmhead" role="row"><span role="columnheader"></span>${days.map(d=>`<span role="columnheader" class="${hmKey(d)===today?'hmtd':''}${d.getDay()===0?' sun':''}${d>t0?' fut':''}">${d.getDate()===1||d===days[0]?(d.getMonth()+1)+'/':''}${d.getDate()}</span>`).join('')}</div>
-        ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader">${s.ic} ${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''} ${d>t0?'fut':''} ${hmKey(d)===today?'tdc':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
+        ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader"><span class="hmrh" style="color:${s.c}">${ICON(s.ic)}</span>${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''} ${d>t0?'fut':''} ${hmKey(d)===today?'tdc':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
       </div></section>
   </div>`;
   const a=$('.hmact'),tc=a&&$('.hmhead .hmtd',a);if(a&&tc)a.scrollLeft=Math.max(0,tc.offsetLeft-a.clientWidth*.6);
@@ -5326,7 +5343,7 @@ function renderHome(){
   if(h===''||h==='start'){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}
     $('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>Hackers Intermediate</small></span></a>${secSwitch('')}
       <a class="nl" href="#start" aria-current="page"><span class="ic" aria-hidden="true">${ICON('home')}</span><span>홈</span></a>
-      <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true">${s.ic}</span><span>${s.name}</span></a>`).join('')}</div>
+      <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true" style="color:${s.c}">${ICON(s.ic)}</span><span>${s.name}</span></a>`).join('')}</div>
       <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">${ICON('gear')}</span><span>설정</span></a></div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
     const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.map(s=>`<a href="${s.href}">${ICON(s.ic)}${s.name}</a>`).join('');
@@ -5407,14 +5424,14 @@ function bgIndex(){setCrumb(['배경지식']);const D=bgData(),seen=bgSeen();
   const h=location.hash.slice(1);
   if(h==='bg'||h.startsWith('bg-')){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}try{bgStopSay();BGSAYB=null}catch(e){}
     const D=bgData();$('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>배경지식</small></span></a>${secSwitch('')}
-      <a class="nl" href="#start"><span class="ic" aria-hidden="true">⌂</span><span>홈</span></a><a class="nl" href="#bg" ${h==='bg'?'aria-current="page"':''}><span class="ic" aria-hidden="true">📚</span><span>배경지식 전체</span></a>
+      <a class="nl" href="#start"><span class="ic" aria-hidden="true">${ICON('home')}</span><span>홈</span></a><a class="nl" href="#bg" ${h==='bg'?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ICON('book')}</span><span>배경지식 전체</span></a>
       <div class="navgrp"><div class="gh">주제</div>${D.map(t=>`<a class="nl sub" href="#bg-${t.id}" ${h==='bg-'+t.id?'aria-current="page"':''}><span>${t.ic} ${esc(t.ko)}</span><span class="cnt">${t.ps.length}</span></a>`).join('')}</div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>배경지식 · 리딩·리스닝 학술 지문</span>'}
     if(h==='bg')bgIndex();else bgTopic(h.slice(3));window.scrollTo(0,0);try{hmMsec()}catch(e){}return}
   _routeH();
   // add the menu link to every section menu
-  const l=$('#lnb');if(l&&!$('a[href="#bg"]',l)&&bgData().length){const g=[...l.querySelectorAll('.navgrp')].pop();if(g)g.insertAdjacentHTML('beforeend','<a class="nl" href="#bg"><span class="ic" aria-hidden="true">📚</span><span>배경지식</span></a>')}};
+  const l=$('#lnb');if(l&&!$('a[href="#bg"]',l)&&bgData().length){const g=[...l.querySelectorAll('.navgrp')].pop();if(g)g.insertAdjacentHTML('beforeend','<a class="nl" href="#bg"><span class="ic" aria-hidden="true">'+ICON('book')+'</span><span>배경지식</span></a>')}};
  window.removeEventListener('hashchange',_routeH);window.addEventListener('hashchange',route)}
 
 /* ---------- boot ---------- */
