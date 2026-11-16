@@ -1156,6 +1156,8 @@ body.navmin main{max-width:1500px}
 
 
 
+
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -2491,7 +2493,7 @@ function lnbEnhance(){const l=$('#lnb');if(!l)return;
   const c=l.querySelector('[aria-current="page"]');if(c&&c.scrollIntoView&&l.scrollHeight>l.clientHeight){const r=c.getBoundingClientRect();if(r.bottom>innerHeight||r.top<0)c.scrollIntoView({block:'center'})}}
 new MutationObserver(lnbEnhance).observe($('#lnb'),{childList:true});
 
-function msecSync(){const h=location.hash.slice(1)||'home';
+function msecSync(){const h=location.hash.slice(1)||'start';   /* an empty address is the landing page, not Speaking (#home) */
   const k=/^(rd|r-)/.test(h)?'r':/^(ls|l-)/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
   /* the whole screen takes the section's colour, so you can tell where you are without reading a label */
   document.documentElement.dataset.sec=k;
@@ -2536,7 +2538,7 @@ function lightbox(src){const l=el(`<div class="lightbox" role="dialog" aria-labe
 
 /* ---------- dashboard ---------- */
 function renderDash(){
-  setCrumb(['대시보드']);
+  setCrumb(['Speaking','대시보드']);
   const last=S.hist[S.hist.length-1],bands=S.hist.filter(h=>h.band).map(h=>h.band);
   const doneN=Object.keys(S.best).filter(k=>!k.includes('+')).length;
   const nx=nextSet();
@@ -2657,7 +2659,7 @@ function allTplQs(){const out=[];SETS.filter(s=>s.task===2).forEach(s=>s.questio
 let TPLQ=null;   // question chosen from a result screen
 
 function renderTpl(){
-  setCrumb(['Task 2 템플릿']);
+  setCrumb(['Speaking','Task 2 템플릿']);
   const n=allTplQs(),cnt={};n.forEach(x=>cnt[x.q.tpl.a]=(cnt[x.q.tpl.a]||0)+1);
   const log=store.get('plog',[]).filter(l=>l.type==='tpl'),done=new Set(log.map(l=>l.q));
   view.innerHTML=`<div class="cathead"><div><span class="badge">Task 2 · Take an Interview</span><h1>답변 템플릿 연습</h1>
@@ -2901,7 +2903,7 @@ function calendarPanel(){
 
 /* ---------- practice index (mobile tab) ---------- */
 function renderPractice(){
-  setCrumb(['연습']);
+  setCrumb(['Speaking','연습']);
   view.innerHTML=`<div class="cathead"><div><h1>유형별 연습</h1><p>챕터를 고르면 교재 쪽수와 함께 세트가 나와요.</p></div></div>
     <a class="panel tplbanner" href="#tpl"><span class="mtag mine">Task 2</span><b>답변 템플릿 연습 (Add-on I–VI)</b><span class="small muted">템플릿으로 45초 답변 → 단계별 체크</span><span aria-hidden="true">›</span></a>
     ${[1,2].map(t=>`<section class="section" style="margin-top:${t===1?0:22}px"><h2>Task ${t} · ${TASKNAME[t]}</h2><div class="panel list catlist">
@@ -2910,7 +2912,7 @@ function renderPractice(){
 
 /* ---------- mocks ---------- */
 function renderMocks(){
-  setCrumb(['모의고사']);
+  setCrumb(['Speaking','모의고사']);
   const combos=store.get('combos',[]);
   view.innerHTML=`<div class="cathead"><div><h1>모의고사</h1>
     <p>실제 시험처럼 Listen and Repeat 7문항과 Take an Interview 4문항(Question 01–11)을 이어서 봐요. 문항당 0–5점, 총 55점이 Speaking 밴드(1–6)로 바뀌어요.</p></div></div>
