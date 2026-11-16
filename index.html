@@ -554,6 +554,31 @@ body.testing .shell{display:none}
 .wkstats.big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.kpi{display:grid;gap:2px;padding:12px;border-radius:10px;background:var(--paper)}.kpi span{font-size:15px;color:var(--mute)}.kpi b{font-size:24.5px}
 @media (max-width:720px){.wkstats.big{grid-template-columns:repeat(2,1fr)}}
 .wprog{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.wpc{display:grid;gap:4px;text-decoration:none;color:inherit}
+/* 따라 쓰기 · 시험 화면: 문제(왼쪽) + 템플릿 구조·모범 답안·답안 칸(오른쪽) */
+.tymode.three{grid-template-columns:repeat(3,1fr)}
+.tyx{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:18px;align-items:start}
+.tyxq{padding:16px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.tyxqt{white-space:pre-wrap;font-size:17px;line-height:1.7;color:var(--ink)}
+.tyxm{padding:14px 16px;display:grid;gap:10px;min-width:0}
+.tyxsec{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.tyxsec i{font-style:normal;color:var(--mute);font-size:13px}
+.tyxchip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;border:1.5px solid var(--line);font-size:14px;font-weight:700;color:var(--mute);background:var(--surface)}
+.tyxchip b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--line);color:var(--ink);font-size:12px}
+.tyxchip.on{border-color:var(--accent);color:var(--accent)}.tyxchip.on b{background:var(--accent);color:var(--accent-ink)}
+.tyxchip.done{color:var(--ink)}.tyxchip.done b{background:color-mix(in srgb,var(--accent) 22%,var(--surface))}
+.tyxtools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tyxtools [aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--accent)}
+.tyxans{max-height:38vh;overflow:auto;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px solid var(--line);font-size:17px;line-height:1.75;color:var(--mute);scroll-behavior:smooth}
+.tyxp{padding:6px 0 8px 12px;border-left:3px solid var(--line);margin-bottom:8px}.tyxp.on{border-left-color:var(--accent)}
+.tyxlab{display:block;font-size:12.5px;font-weight:800;color:var(--mute);margin-bottom:2px}.tyxp.on .tyxlab{color:var(--accent)}
+.tyxs.done{color:var(--ink)}.tyxs.now{color:var(--ink)}.tyxdone{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.tyxcur{border-bottom:2px solid var(--accent)}
+.tyxko{display:block;font-size:14px;color:var(--mute);margin:1px 0 4px}
+.tyxans.hide .tyxs:not(.done){letter-spacing:.5px}
+.tyxed textarea{display:block;width:100%;box-sizing:border-box;border:0;border-radius:0;margin:0;resize:vertical;min-height:240px;font-size:17px;line-height:1.65;padding:12px 14px;background:var(--surface);color:var(--ink)}.tyxed textarea:focus{outline:none}.tyxed:focus-within{border-color:var(--accent)}.tyxq summary{cursor:pointer;margin-bottom:10px;list-style-position:inside}
+.tyxctl{align-items:center}
+.tyxres{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:6px}.tyxres li{display:grid;grid-template-columns:110px 1fr 46px;align-items:center;gap:10px;font-size:15px}
+.tyxres i{height:8px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}.tyxres i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--accent);border-radius:99px}
+.tyxtwo{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tyxtwo p{white-space:pre-wrap;line-height:1.7;font-size:15.5px}
+@media (max-width:820px){.tyx{grid-template-columns:1fr}.tyxq{position:static;max-height:none}.tyxans{max-height:32vh}.tyxtwo{grid-template-columns:1fr}.tyxres li{grid-template-columns:90px 1fr 42px}}
 .tybox{display:grid;gap:10px}.tyhead{display:flex;justify-content:space-between;align-items:center}
 .tytgt{font:500 21.5px/1.65 var(--mono,ui-monospace,Menlo,monospace);letter-spacing:.01em;padding:12px 14px;border-radius:10px;background:var(--bg2,rgba(127,127,127,.08));word-break:break-word}
 .tyko{margin:8px 2px 0;font-size:16.5px;line-height:1.6;color:var(--muted,#777);padding-left:10px;border-left:3px solid color-mix(in srgb,var(--accent) 45%,transparent)}
@@ -729,7 +754,7 @@ main{margin-inline:auto}
 
 .rltext b.vw,.rlpbody b.vw{font-size:inherit;font-weight:700;letter-spacing:0;background:color-mix(in srgb,var(--accent) 14%,transparent);padding:0 3px;border-radius:4px}
 
-.rlpv{flex-wrap:wrap;max-width:100%;min-width:0}.rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
+.rlpvsel{display:inline-flex;align-items:center;gap:6px}.rlpvsel select{font:inherit;font-size:14.5px;font-weight:600;padding:6px 30px 6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-height:36px}.rlpv{flex-wrap:wrap;max-width:100%;min-width:0}.rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
 @media (max-width:720px){.rlpv{flex:1 1 100%;min-width:0;flex-wrap:wrap}.rlpv button{font-size:13px;padding:5px 8px}}
 
 
@@ -1013,7 +1038,7 @@ body.navmin main{max-width:1500px}
 
 /* ---------- landing (home.js) ---------- */
 .hmbtn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;text-decoration:none;font-size:20px;color:var(--ink);border:1px solid var(--line);background:var(--surface);flex:none;margin-right:6px}
-.hmbtn:hover{border-color:var(--accent);color:var(--accent)}
+.hmbtn:hover{border-color:var(--accent);color:var(--accent)}.hmbtn[aria-current="page"]{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
 .hm{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}.hm>*{min-width:0}.plsel,.plitems li,.plitems label{min-width:0}
 .hmhero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:26px 28px}
 .hmk{margin:0;color:var(--mute);font-weight:600}.hmhero h1{margin:4px 0 6px;font-size:30px;letter-spacing:-.01em}.hmsub{margin:0 0 14px;color:var(--mute)}
@@ -1828,14 +1853,16 @@ function iconSVG(id, size){
   function boot(meta,files){
     window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.BG=meta.bg||null;window.PACKURL={};window.PACKBLOB={};
     for(const [name,blob] of Object.entries(files)){if(name.startsWith('images/'))PACKURL[name.slice(7)]=URL.createObjectURL(blob);else PACKBLOB[name]=blob}
-    window.HASVOICES=Object.keys(files).some(n=>n.startsWith('tts/am/'));
+    window.HASVOICES=Object.keys(files).some(n=>n.startsWith('tts/bf/'));
     const s=document.createElement('script');s.text=document.getElementById('appjs').textContent;document.body.appendChild(s);
   }
   async function importPack(file,status,o={}){
     const h8=new DataView(await file.slice(0,8).arrayBuffer());
     if(String.fromCharCode(h8.getUint8(0),h8.getUint8(1),h8.getUint8(2),h8.getUint8(3))!=='TFPK')throw new Error('toefl-pack.bin 파일이 아니에요');
     const hl=h8.getUint32(4,true),head=JSON.parse(new TextDecoder().decode(await file.slice(8,8+hl).arrayBuffer())),base=8+hl;
-    const db=await open();await tx(db,'files','readwrite',st=>st.clear());
+    const db=await open();
+    /* keep recordings from the voices file (tts/...): importing only a new toefl-pack.bin later must not wipe them */
+    await new Promise((res,rej)=>{const t=db.transaction('files','readwrite'),c=t.objectStore('files').openCursor();c.onsuccess=()=>{const k=c.result;if(k){if(!String(k.key).startsWith('tts/'))k.delete();k.continue()}};t.oncomplete=()=>res();t.onerror=()=>rej(t.error)});
     const F=head.files;for(let i=0;i<F.length;i+=40){const part=F.slice(i,i+40);
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
@@ -2567,7 +2594,7 @@ function msecSync(){const h=location.hash.slice(1)||'start';   /* an empty addre
 window.addEventListener('hashchange',msecSync);msecSync();
 function toggleLnb(open){$('#lnb').classList.toggle('open',open);$('#lnbscrim').classList.toggle('open',open)}
 $('#menubtn').onclick=()=>toggleLnb(true);$('#lnbscrim').onclick=()=>toggleLnb(false);
-function setCrumb(parts){$('#crumb').innerHTML=parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)+' <span aria-hidden="true">›</span>').join(' ');
+function setCrumb(parts){/* the home button already says 홈, so the trail never repeats it */parts=parts.filter((p,i)=>!(i===0&&p==='홈'));{const hb=$('#hmbtn');if(hb){const on=!parts.length;hb.toggleAttribute('aria-current',on);if(on)hb.setAttribute('aria-current','page')}}$('#crumb').innerHTML=parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)+' <span aria-hidden="true">›</span>').join(' ');
   const e=envState(),c=$('#env');c.className='envchip'+(e.ok?'':' warn');c.innerHTML=`<i></i><span>${esc(e.msg)}</span>`;c.title=e.msg}
 
 /* ---------- router ---------- */
@@ -3063,7 +3090,7 @@ function renderSettings(){
   const e=envState();
   view.innerHTML=`<div class="cathead"><div><h1>설정</h1></div></div>
   <div class="panel form">
-    ${window.PACKIO?`<div class="field"><label>데이터 파일 ${window.HASVOICES?'· 목소리 3종 있음':'· 목소리 3종 아직 없음'}</label><label class="btn">받은 파일 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" multiple hidden></label>
+    ${window.PACKIO?`<div class="field"><label>데이터 파일 ${window.HASVOICES?'· 영국 목소리·기본 교재 녹음 있음':'· 영국 목소리·기본 교재 녹음 아직 없음 (toefl-voices.bin)'}</label><label class="btn">받은 파일 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" multiple hidden></label>
       <div class="hint">Claude 채팅에서 받은 파일을 <b>한 번에 여러 개 같이</b> 골라도 돼요. <b>toefl-pack.bin</b>(교재 데이터)이 있으면 먼저 넣고, <b>toefl-voices.bin</b>(목소리·한국어 녹음)을 그 위에 얹어요. 목소리 파일만 골라도 돼요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>`:''}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
       <textarea id="pers" rows="3" style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)">${esc((S.cfg.persona||'').trim()||PERSONA_DEF)}</textarea>
@@ -3564,7 +3591,7 @@ route=function(){
   else if(h==='w-hist')renderWHist();
   else if(h==='w-tpl2'||h==='w-tpl3')renderWTpl(+h.slice(5));
   else if(h==='w-type')renderWType();
-  else if(h.startsWith('w-ty-')){const x=decodeURIComponent(h.slice(5));renderWTypeRun(x.replace(/~b$/,''),x.endsWith('~b'))}
+  else if(h.startsWith('w-ty-')){const x=decodeURIComponent(h.slice(5));if(x.endsWith('~x'))renderWTypeExam(x.slice(0,-2));else renderWTypeRun(x.replace(/~b$/,''),x.endsWith('~b'))}
   else if(/^w-tq-[23]-.+$/.test(h))renderWTplQ(+h[5],decodeURIComponent(h.slice(7)));
   else if(/^w-r-\d+$/.test(h))openWSaved(+h.slice(4));
   else renderWDash();
@@ -4220,6 +4247,75 @@ function wFbHtml(j){
 }
 
 /* ---------- 따라 쓰기 (teacher template copy-typing) ---------- */
+/* a drill is a whole answer (email or essay) when it has a prompt and its lines are not an expression list */
+const tyFull=d=>!!(d&&d.q&&d.lines.length>=4&&!d.lines.some(l=>l.k==='예문'));
+/* section of a template line: lines with the same section form one paragraph and one chip in the structure bar */
+function tySec(k){k=String(k||'');if(/받는 사람|인사말/.test(k))return '인사';if(/인사 · 목적|목적/.test(k))return '목적';if(/항목|세부/.test(k))return '세부 내용';if(/마무리/.test(k))return '마무리';if(/맺음말|서명/.test(k))return '맺음말';
+  if(/도입/.test(k))return '도입';if(/의견/.test(k))return '내 의견';if(/이유/.test(k))return '이유';if(/일반/.test(k))return '일반적 진술';if(/예시/.test(k))return '예시';if(/요약|결론/.test(k))return '요약';return k}
+/* the whole answer as it would be typed: emails get paragraphs, a sign-off on its own lines; an essay is one paragraph */
+function tyCompose(d){const email=d.lines.some(l=>/받는 사람|맺음말/.test(l.k));const L=d.lines.map(l=>({k:l.k,sec:tySec(l.k),t:tyN(tyName(l.t)),ko:tyName(l.ko||'')}));
+  let out='';const parts=[];L.forEach((l,i)=>{let t=l.t;if(email&&l.sec==='맺음말')t=t.replace(/,\s+/,',\n');
+    const sep=i===0?'':email&&(l.sec!==L[i-1].sec||l.sec==='인사')?'\n\n':' ';out+=sep;const a=out.length;out+=t;parts.push({...l,t,a,b:out.length})});return {text:out,parts,email}}
+const tyFlat=s=>tyN(String(s).replace(/\n/g,' '));
+function renderWTypeExam(id){
+  const f=tyFind(id);if(!f||!tyFull(f.d)){renderWTypeRun(id,false);return}
+  const {g,d}=f,C=tyCompose(d),T=C.text,TF=tyFlat(T),email=C.email;
+  /* where each line starts in the flattened target (newlines become single spaces) */
+  const P=C.parts.map(p=>({...p,fa:tyFlat(T.slice(0,p.a)).length+(p.a>0?1:0)}));P.forEach((p,i)=>p.fb=i+1<P.length?P[i+1].fa-1:TF.length);
+  const secs=[];P.forEach(p=>{const s=secs[secs.length-1];if(s&&s.n===p.sec)s.to=p.fb;else secs.push({n:p.sec,from:p.fa,to:p.fb})});
+  setCrumb(['Writing','따라 쓰기',tyName(d.title)]);
+  const st={t0:0,hide:store.get('tyxhide',false),ko:store.get('tyxko',false)};
+  view.innerHTML=`<div class="cathead"><div><a href="#w-type" class="small">← 따라 쓰기 목록</a><h1 style="margin-top:6px">${esc(tyName(d.title))}</h1><p class="small muted">${esc(g.title)} · 시험 화면에서 답안 전체를 따라 써요</p></div>
+    <div class="row"><div class="secsw tymode three" role="tablist"><a href="#w-ty-${id}~x" role="tab" aria-selected="true">시험 화면</a><a href="#w-ty-${id}" role="tab" aria-selected="false">한 문장씩</a><a href="#w-ty-${id}~b" role="tab" aria-selected="false">가리고 쓰기</a></div></div></div>
+    <div class="tyx">
+      <details class="tyxq panel" ${innerWidth>820?'open':''}><summary><b>📝 문제</b> <span class="small muted">눌러서 접기/펼치기</span></summary><div class="wdirbox"><b>Directions</b> ${email?'Read the situation and write an email. You will have 7 minutes in the real test.':'Your professor has posted a question. Write a post that gives and supports your opinion. Aim for at least 100 words; you will have 10 minutes in the real test.'}</div>
+        <div class="tyxqt">${esc(tyName(d.q))}</div></details>
+      <section class="tyxm panel">
+        <div class="tyxsec" role="list" aria-label="템플릿 구조">${secs.map((s,i)=>`<span role="listitem" class="tyxchip" data-s="${i}"><b>${i+1}</b>${esc(s.n)}</span>`).join('<i aria-hidden="true">→</i>')}</div>
+        <div class="tyxtools"><span class="small muted" id="tyxst">모범 답안을 보면서 아래 칸에 그대로 쳐 보세요</span><span style="flex:1"></span>
+          <button type="button" class="btn sm quiet" id="tyxko" aria-pressed="${st.ko}">한글 뜻</button><button type="button" class="btn sm quiet" id="tyxhide" aria-pressed="${st.hide}">답안 가리기</button></div>
+        <div class="tyxans" id="tyxans" aria-label="모범 답안"></div>
+        <div class="wedit tyxed"><div class="wtools"><b class="small">Your Response</b><span class="wwc"><span class="small muted" id="tyxacc"></span> <b class="mono" id="tyxwc">0 words</b></span></div>
+          <textarea id="tyxin" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" aria-label="답안 따라 쓰기" placeholder="위 모범 답안을 보면서 여기에 그대로 쳐 보세요"></textarea></div>
+        <div class="row tyxctl"><button type="button" class="btn sm quiet" id="tyxreset">처음부터</button><span style="flex:1"></span><button type="button" class="btn primary" id="tyxdone">다 썼어요 · 채점</button></div>
+      </section>
+    </div>`;
+  const inp=$('#tyxin'),box=$('#tyxans');
+  /* how far the typed text matches the answer: position in the flat target, and how many typed letters were wrong */
+  function scan(){const v=tyFlat(inp.value);let i=0,bad=0;const n=Math.min(v.length,TF.length);for(;i<n;i++)if(v[i].toLowerCase()!==TF[i].toLowerCase())bad++;return {pos:v.length,bad}}
+  function paint(){const {pos,bad}=scan();const cur=P.findIndex(p=>pos<=p.fb)<0?P.length-1:P.findIndex(p=>pos<=p.fb);
+    box.classList.toggle('hide',st.hide);
+    let h='',lastSec=null;P.forEach((p,i)=>{if(p.sec!==lastSec){if(lastSec!==null)h+='</div>';h+=`<div class="tyxp${p.sec===P[cur].sec?' on':''}"><span class="tyxlab">${esc(p.sec)}</span>`;lastSec=p.sec}
+      const done=pos>=p.fb,now=i===cur;
+      let t;if(now&&!st.hide){const k=Math.max(0,Math.min(p.t.length,pos-p.fa));t=`<span class="tyxdone">${esc(p.t.slice(0,k))}</span><span class="tyxcur">${esc(p.t.slice(k,k+1))}</span>${esc(p.t.slice(k+1))}`}
+      else if(st.hide&&!done)t=esc(p.t.replace(/([A-Za-z])([A-Za-z'’-]*)/g,(m,a,b)=>now?a+b.replace(/./g,'_'):m.replace(/./g,'_')));else t=esc(p.t);
+      h+=`<span class="tyxs${done?' done':''}${now?' now':''}" data-i="${i}">${t}${st.ko&&p.ko?`<small class="tyxko">${esc(p.ko)}</small>`:''}</span> `});
+    box.innerHTML=h+'</div>';
+    $$('.tyxchip').forEach((c,i)=>{const s=secs[i];c.classList.toggle('done',pos>=s.to);c.classList.toggle('on',pos>=s.from&&pos<s.to||(i===secs.length-1&&pos>=s.to&&pos<TF.length))});
+    const now=$('.tyxs.now',box);if(now){const r=now.getBoundingClientRect(),b=box.getBoundingClientRect();if(r.top<b.top||r.bottom>b.bottom)box.scrollTop+=r.top-b.top-40}
+    const w=inp.value.trim()?inp.value.trim().split(/\s+/).length:0;$('#tyxwc').textContent=w+' words';
+    $('#tyxacc').textContent=pos?(bad?`오타 ${bad}자 · `:'오타 없음 · ')+Math.min(100,Math.round(Math.min(pos,TF.length)/TF.length*100))+'%':''}
+  inp.addEventListener('input',()=>{if(!st.t0&&inp.value)st.t0=Date.now();paint()});
+  $('#tyxko').onclick=e=>{st.ko=!st.ko;store.set('tyxko',st.ko);e.currentTarget.setAttribute('aria-pressed',st.ko);paint()};
+  $('#tyxhide').onclick=e=>{st.hide=!st.hide;store.set('tyxhide',st.hide);e.currentTarget.setAttribute('aria-pressed',st.hide);paint();inp.focus()};
+  $('#tyxreset').onclick=()=>{inp.value='';st.t0=0;paint();inp.focus()};
+  $('#tyxdone').onclick=()=>{if(!inp.value.trim()){inp.focus();return}finish()};
+  function finish(){const v=inp.value,sec=st.t0?(Date.now()-st.t0)/1000:0;
+    const a=tyWords(T),b=tyWords(v),{hit,miss}=tyLcs(a,b),acc=Math.round(hit/Math.max(a.length,1)*100),wpm=sec>=5?Math.min(200,Math.round(b.length/(sec/60))):0;
+    /* per section: share of its words that appear, in order, in what was typed */
+    const bw=tyWords(v);const rows=secs.map(s=>{const sw=tyWords(TF.slice(s.from,s.to));const r=tyLcs(sw,bw);return {n:s.n,acc:Math.round(r.hit/Math.max(sw.length,1)*100)}});
+    const PP=store.get('wtype',{}),p=PP[id]||{acc:0,wpm:0,n:0};PP[id]={acc:Math.max(p.acc,acc),wpm:Math.max(p.wpm,wpm),n:p.n+1,blind:p.blind||(st.hide&&acc>=90),ts:Date.now()};store.set('wtype',PP);
+    {const TL=store.get('wtylog',[]);TL.unshift({ts:Date.now(),id,acc,wpm});store.set('wtylog',TL.slice(0,300))}
+    const mc={};miss.forEach(w=>mc[w]=(mc[w]||0)+1);const mw=Object.entries(mc).sort((x,y)=>y[1]-x[1]).slice(0,15);
+    $('.tyx').outerHTML=`<div class="panel ph tyres"><h2 style="margin:0 0 10px">채점 결과 · ${acc>=95?'완벽해요 👏':acc>=80?'잘했어요':'한 번 더 해 볼까요?'}</h2>
+      <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>단어 정확도</span></div><div class="kpi"><b>${b.length}</b><span>쓴 단어 수 (모범 ${a.length})</span></div><div class="kpi"><b>${wpm||'—'}</b><span>WPM (분당 단어)</span></div><div class="kpi"><b>${Math.floor(sec/60)}분 ${Math.round(sec%60)}초</b><span>걸린 시간</span></div></div>
+      <h4>구조별 정확도</h4><ol class="tyxres">${rows.map(r=>`<li><span>${esc(r.n)}</span><i style="--w:${r.acc}%"></i><b>${r.acc}%</b></li>`).join('')}</ol>
+      ${mw.length?`<h4>놓치거나 틀린 단어</h4><p class="tymiss">${mw.map(([w,n])=>`<span class="mtag sm">${esc(w)}${n>1?' ×'+n:''}</span>`).join(' ')}</p>`:''}
+      <details class="tyxcmp"><summary><b>모범 답안과 내 답안 비교</b></summary><div class="tyxtwo"><div><h4>모범 답안</h4><p>${esc(T)}</p></div><div><h4>내 답안</h4><p>${esc(v)}</p></div></div></details>
+      <div class="row" style="margin-top:12px"><a class="btn primary" href="#w-ty-${id}~x" onclick="setTimeout(route,0)">다시 쓰기</a>${!st.hide?`<button class="btn" id="tyxblind">답안 가리고 다시 쓰기</button>`:''}<a class="btn quiet" href="#w-type">목록으로</a></div></div>`;
+    const bl=$('#tyxblind');if(bl)bl.onclick=()=>{store.set('tyxhide',true);route()}}
+  paint();setTimeout(()=>inp.focus(),60);
+}
 const WTYPE=WD.type||[];
 const tyN=s=>String(s||'').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
 const tyName=s=>s.replace(/Alex Kim/g,wName());
@@ -4231,9 +4327,9 @@ function tyLcs(a,b){const m=a.length,n=b.length,D=Array.from({length:m+1},()=>ne
 function renderWType(){
   setCrumb(['Writing','따라 쓰기']);const P=store.get('wtype',{});
   view.innerHTML=`<div class="cathead"><div><span class="badge">Task 2 · 3 템플릿</span><h1>따라 쓰기 (템플릿 필사)</h1>
-    <p>선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 한 문장씩 그대로 쳐 보는 연습이에요. 에세이·이메일 답안은 <b>문제</b>와 함께, 모든 문장은 <b>한글 직역</b>과 함께 나와서 뜻을 생각하며 쓸 수 있어요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
+    <p>선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 그대로 쳐 보는 연습이에요. 이메일 답안과 모범 에세이는 <b>시험 화면으로 쓰기</b>로 실제 시험처럼 문제를 보면서 답안 전체를 한 번에 따라 쓸 수 있어요. 오른쪽에 템플릿 구조(인사 → 목적 → 항목 → 맺음말, 도입 → 의견 → 이유 → 예시 → 요약)가 함께 보여요. 에세이·이메일 답안은 <b>문제</b>와 함께, 모든 문장은 <b>한글 직역</b>과 함께 나와서 뜻을 생각하며 쓸 수 있어요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
     ${WTYPE.length?WTYPE.map(g=>`<section class="section"><h2>${esc(g.title)} <span class="small muted">Task ${g.task} · ${g.drills.length}세트</span></h2><p class="small muted" style="margin:-4px 0 8px">${esc(g.desc)}</p><div class="panel list">${g.drills.map(d=>{const p=P[d.id];
-      return `<div class="li wli"><div class="lmain"><b>${esc(tyName(d.title))}</b><span class="small muted">${d.lines.length}문장${p?` · 최고 정확도 <b style="color:var(--accent)">${p.acc}%</b> · ${p.wpm} WPM · ${p.n}회${p.blind?' · 가리고 쓰기 ✓':''}`:''}</span></div><div class="lside"><a class="btn sm" href="#w-ty-${d.id}">보고 쓰기</a><a class="btn sm quiet" href="#w-ty-${d.id}~b">가리고 쓰기</a></div></div>`}).join('')}</div></section>`).join('')
+      return `<div class="li wli"><div class="lmain"><b>${esc(tyName(d.title))}</b><span class="small muted">${d.lines.length}문장${p?` · 최고 정확도 <b style="color:var(--accent)">${p.acc}%</b> · ${p.wpm} WPM · ${p.n}회${p.blind?' · 가리고 쓰기 ✓':''}`:''}</span></div><div class="lside">${tyFull(d)?`<a class="btn sm primary" href="#w-ty-${d.id}~x">시험 화면으로 쓰기</a>`:''}<a class="btn sm${tyFull(d)?' quiet':''}" href="#w-ty-${d.id}">한 문장씩</a><a class="btn sm quiet" href="#w-ty-${d.id}~b">가리고 쓰기</a></div></div>`}).join('')}</div></section>`).join('')
       :'<div class="empty">따라 쓰기 데이터가 없어요. 설정 → 교재 데이터에서 새 데이터 팩을 다시 가져와 주세요.</div>'}`;
 }
 function renderWTypeRun(id,blind){
@@ -4242,7 +4338,7 @@ function renderWTypeRun(id,blind){
   setCrumb(['Writing','따라 쓰기',tyName(d.title)]);
   const st={i:0,blind,t0:0,typed:0,res:[],peek:false,gh:blind?false:store.get('tyghost',true),ko:store.get('tyko',true)};
   view.innerHTML=`<div class="cathead"><div><a href="#w-type" class="small">← 따라 쓰기 목록</a><h1 style="margin-top:6px">${esc(tyName(d.title))}</h1><p class="small muted">${esc(g.title)}</p></div>
-    <div class="row"><div class="secsw tymode" role="tablist"><a href="#w-ty-${id}" role="tab" aria-selected="${!blind}">보고 쓰기</a><a href="#w-ty-${id}~b" role="tab" aria-selected="${blind}">가리고 쓰기</a></div></div></div>
+    <div class="row"><div class="secsw tymode${tyFull(d)?' three':''}" role="tablist">${tyFull(d)?`<a href="#w-ty-${id}~x" role="tab" aria-selected="false">시험 화면</a>`:''}<a href="#w-ty-${id}" role="tab" aria-selected="${!blind}">한 문장씩</a><a href="#w-ty-${id}~b" role="tab" aria-selected="${blind}">가리고 쓰기</a></div></div></div>
     ${d.q?`<details class="panel ph tyq" ${store.get('tyqopen',true)?'open':''}><summary><b>📝 문제</b> <span class="small muted">이 문제에 대한 답안이에요 · 눌러서 접기/펼치기</span></summary><p class="tyqt">${esc(tyName(d.q))}</p></details>`:''}
     <div class="panel ph tybox"><div class="tyhead"><span class="mtag book sm" id="tyk"></span><span class="small muted" id="typ"></span></div>
       <div class="tytgt" id="tyt" aria-live="polite"></div><div class="tyko" id="tyko"></div>
@@ -4362,7 +4458,8 @@ const RLTTS={on:false};
 const RLACC={US:{f:'🇺🇸',k:'미국',lang:'en-US',re:/^en[-_]US/i},UK:{f:'🇬🇧',k:'영국',lang:'en-GB',re:/^en[-_](GB|UK)/i},AU:{f:'🇦🇺',k:'호주',lang:'en-AU',re:/^en[-_]AU/i}};
 const rlAcc=()=>{const a=store.get('rlacc','US');return RLACC[a]?a:'US'};
 /* passage read-aloud voices: four are recorded in the pack, Australian falls back to the device voice */
-const RLPV={af:{f:'🇺🇸',k:'미국 여자',acc:'US',g:'f',rec:1},am:{f:'🇺🇸',k:'미국 남자',acc:'US',g:'m',rec:1},bf:{f:'🇬🇧',k:'영국 여자',acc:'UK',g:'f',rec:1},bm:{f:'🇬🇧',k:'영국 남자',acc:'UK',g:'m',rec:1},auf:{f:'🇦🇺',k:'호주 여자',acc:'AU',g:'f'},aum:{f:'🇦🇺',k:'호주 남자',acc:'AU',g:'m'}};
+/* only voices that sound natural: the US male and the device-only Australian voices were dropped (a saved choice of them falls back to US female) */
+const RLPV={af:{f:'🇺🇸',k:'미국 여자',acc:'US',g:'f',rec:1},bf:{f:'🇬🇧',k:'영국 여자',acc:'UK',g:'f',rec:1},bm:{f:'🇬🇧',k:'영국 남자',acc:'UK',g:'m',rec:1}};
 /* device voices by gender: pick names known to be female/male, never a name that looks like the other gender */
 const RLGEN={f:/karen|catherine|matilda|natasha|serena|kate|samantha|ava|zoe|allison|susan|sonia|libby|jenny|aria|emma|fiona|moira|tessa|nicky|veena|clara|female|여성/i,m:/\blee\b|gordon|russell|william|daniel|oliver|ryan|\bguy\b|brian|evan|nathan|\btom\b|\balex\b|fred|\bmale\b|남성/i};
 function rlVoicesG(acc,g){const vs=rlVoices(acc);if(!g)return vs;const me=RLGEN[g],other=RLGEN[g==='f'?'m':'f'],hit=vs.filter(v=>me.test(v.name)&&!other.test(v.name));return hit.length?hit:vs.filter(v=>!other.test(v.name))}
@@ -4389,12 +4486,13 @@ function rlSpeakP(u){return new Promise(res=>{let done=false,started=false,poll=
       setTimeout(()=>{if(done||started||speechSynthesis.speaking||speechSynthesis.pending)return;try{speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}setTimeout(()=>{if(!started&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin()},1600)},1100);to=setTimeout(fin,lim)},80)}catch(e){fin()}})}
 function rlSpeakU(t,rate){const p=RLPV[rlPV()],acc=p.acc,u=new SpeechSynthesisUtterance(t);u.lang=RLACC[acc].lang;const v=rlVoice(acc,p.g);if(v){u.voice=v;u.lang=v.lang}u.rate=rate;return u}
 function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
-  <span class="rlrate rlpv" role="group" aria-label="목소리">${Object.entries(RLPV).map(([k,v])=>`<button type="button" data-pv="${k}" aria-pressed="${k===rlPV()}">${v.f} ${v.k}</button>`).join('')}</span>
+  <label class="rlpvsel"><span class="small muted">목소리</span><select data-pvs aria-label="읽어 주는 목소리">${Object.entries(RLPV).map(([k,v])=>`<option value="${k}" ${k===rlPV()?'selected':''}>${v.f} ${v.k}</option>`).join('')}</select></label>
   <p class="rlvhint small muted" hidden></p></div>`}
-function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar);$$('[data-pv]',bar).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pv===v)));if(!h)return;h.hidden=false;
-  const p=RLPV[v];if(p.rec){h.innerHTML=!window.PACKBLOB?'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.'
-    :(v!=='af'&&!window.HASVOICES)?'🎙 이 목소리 녹음은 <b>toefl-voices.bin</b>에 들어 있어요. 설정에서 한 번 불러오면 바로 나와요. 지금은 미국 여자 녹음으로 읽어요.'
-    :'🎙 녹음된 목소리예요. 인터넷 없이 바로 나와요.';return}
+/* the hint only appears when something is missing, so the bar stays small */
+function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar),sel=$('[data-pvs]',bar);if(sel)sel.value=v;if(!h)return;
+  const p=RLPV[v];if(p.rec){const m=!window.PACKBLOB?'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.'
+    :!window.HASVOICES?'🎙 리딩 기본 교재 녹음과 영국 목소리는 <b>toefl-voices.bin</b>에 들어 있어요. 설정 › 교재 데이터에서 이 파일을 불러오면 바로 나와요.':'';
+    h.innerHTML=m;h.hidden=!m;return}
   const dv=rlVoicesG(p.acc,p.g)[0];
   h.innerHTML=dv?'📱 호주는 녹음이 없어서 지문을 이 기기의 호주 영어 음성('+esc(dv.name)+')으로 읽어요. 단어는 녹음된 목소리 그대로예요.':'⚠️ 이 기기에 호주 영어 음성이 없어 기본 목소리로 읽어요. iPhone은 <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 호주 음성('+(p.g==='f'?'Karen · Matilda':'Lee · Gordon')+')을 내려받은 뒤 앱을 다시 여세요.'}
 function rlTtsStop(){try{RLTTS.on=false;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}$$('.rltts [data-t=pp]').forEach(b=>b.textContent=b.textContent.replace(/^■ 멈추기/,'🔊 '+(b.dataset.l||'지문 듣기')));$$('.speaking').forEach(p=>p.classList.remove('speaking'))}
@@ -4470,7 +4568,7 @@ function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;
       const v=rlPV(),cu=RLPV[v].rec?rlClipUrl(t,v):null;if(!cu){dev();return}
       const a=rlAiEl(cu);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())};next()};
   pb.onclick=()=>RLTTS.on?rlTtsStop():play();
-  $$('[data-pv]',bar).forEach(b=>b.onclick=()=>{const k=b.dataset.pv;store.set('rlpv',k);store.set('rlacc',RLPV[k].acc);rlPvUI(bar);if(RLTTS.on)toast('다음 문단부터 '+RLPV[k].k+' 목소리로 읽어요')});
+  $$('[data-pvs]',bar).forEach(b=>b.onchange=()=>{const k=b.value;store.set('rlpv',k);store.set('rlacc',RLPV[k].acc);rlPvUI(bar);if(RLTTS.on)toast('다음 문단부터 '+RLPV[k].k+' 목소리로 읽어요')});
   $$('.rlrate:not(.rlpv) button',bar).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);if(RLAIA)RLAIA.playbackRate=+b.dataset.r;$$('.rlrate:not(.rlpv) button',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(RLTTS.on)toast('다음 문단부터 '+b.dataset.r+'× 속도로 읽어요')})}
 
 try{speechSynthesis.getVoices()}catch(e){}
