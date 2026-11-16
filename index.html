@@ -4342,6 +4342,8 @@ function renderWTypeExam(id){
   paint();setTimeout(()=>inp.focus(),60);
 }
 const WTYPE=WD.type||[];
+/* small data fixes shipped in the voices file (e.g. an English version of a prompt), applied over the pack's drills */
+(async()=>{try{const b=window.PACKBLOB&&PACKBLOB['data/wfix.json'];if(!b)return;const F=JSON.parse(await b.text());for(const g of WTYPE)for(const d of g.drills)if(F[d.id])Object.assign(d,F[d.id])}catch(e){}})();
 const tyN=s=>String(s||'').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
 const tyName=s=>s.replace(/Alex Kim/g,wName());
 function tyFind(id){for(const g of WTYPE)for(const d of g.drills)if(d.id===id)return {g,d};return null}
@@ -4581,16 +4583,17 @@ function rlClipUrl(t,v){if(!window.PACKBLOB||!window.TTSIX)return null;
   if(!window.TTSFZ){const m={},dup={};for(const k in TTSIX){const f=rlFz(k);if(!f)continue;if(f in m){if(m[f]!==TTSIX[k])dup[f]=1}else m[f]=TTSIX[k]}
     for(const f in dup)delete m[f];window.TTSFZ=m}
   const h=TTSIX[t]||window.TTSFZ[rlFz(t)];if(!h)return null;
-  const p=(!v||v==='af')?'tts/'+h+'.mp3':'tts/'+v+'/'+h+'.mp3',key=PACKBLOB[p]?p:'tts/'+h+'.mp3',b=PACKBLOB[key];   // a voice with no clip for this text uses the default recording
+  const p=(!v||v==='af')?'tts/'+h+'.mp3':'tts/'+v+'/'+h+'.mp3',key=PACKBLOB[p]?p:'tts/'+h+'.mp3',b=PACKBLOB[key];window.RLFB=!!(v&&v!=='af'&&key!==p&&b);   // a voice with no clip for this text uses the default recording
   if(!b)return null;return (window.TTSURL=window.TTSURL||{})[key]||(TTSURL[key]=URL.createObjectURL(b))}
 function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;
   const pb=$('[data-t=pp]',bar);pb.dataset.l=pb.textContent.replace(/^🔊 /,'');rlPvUI(bar);
-  const play=()=>{rlTtsStop();rlStopAudio();const ps=getParas();let i=0;RLTTS.on=true;pb.textContent='■ 멈추기';
+  const play=()=>{rlTtsStop();rlStopAudio();RLTTS.fbw=0;const ps=getParas();let i=0;RLTTS.on=true;pb.textContent='■ 멈추기';
     const next=()=>{ps.forEach(p=>p.classList.remove('speaking'));if(!RLTTS.on||i>=ps.length){rlTtsStop();return}
       const p=ps[i++],t=rlParaTx(p);if(!t){next();return}p.classList.add('speaking');
       if(p.scrollIntoView&&p.getBoundingClientRect){const r=p.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight)p.scrollIntoView({block:'center',behavior:'smooth'})}
       const dev=()=>{rlSpeakP(rlSpeakU(t,rlRate())).then(()=>{if(RLTTS.on)next()})};
       const v=rlPV(),cu=RLPV[v].rec?rlClipUrl(t,v):null;if(!cu){dev();return}
+      if(window.RLFB&&!RLTTS.fbw){RLTTS.fbw=1;toast('이 지문은 아직 '+RLPV[v].k+' 녹음이 없어서 미국 여자 녹음으로 읽어요')}
       const a=rlAiEl(cu);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())};next()};
   pb.onclick=()=>RLTTS.on?rlTtsStop():play();
   $$('[data-pvs]',bar).forEach(b=>b.onchange=()=>{const k=b.value;store.set('rlpv',k);store.set('rlacc',RLPV[k].acc);rlPvUI(bar);if(RLTTS.on)toast('다음 문단부터 '+RLPV[k].k+' 목소리로 읽어요')});
