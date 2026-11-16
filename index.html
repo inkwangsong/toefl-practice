@@ -1145,6 +1145,7 @@ body.navmin main{max-width:1500px}
 
 
 
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -1165,7 +1166,8 @@ body.navmin main{max-width:1500px}
   --ok:#0f9d63; --warn:#d98200; --bad:#e5484d; --rec:#e5484d;
   --burg:#e5366f; --burg-soft:#ffeef4;
   --s0:#e5484d; --s1:#ef7a3c; --s2:#d98200; --s3:#6aa63a; --s4:#0f9d63; --s5:#2f6bff;
-  --k-r:#2f6bff; --k-l:#00a189; --k-s:#ff5a35; --k-w:#e8900a; --k-v:#7a5cff;
+  --k-r:#2563eb; --k-l:#0f766e; --k-s:#e11d48; --k-w:#7c3aed; --k-v:#15803d;
+  --k-r-s:#e8f0ff; --k-l-s:#e0f5f1; --k-s-s:#ffe9ee; --k-w-s:#f1ebff; --k-v-s:#e4f6e9;
   --glass:rgba(255,255,255,.72); --glass2:rgba(255,255,255,.9);
   --shadow:0 1px 2px rgba(16,20,30,.04),0 10px 28px -20px rgba(16,20,30,.3);
   --lift:0 2px 6px rgba(16,20,30,.05),0 20px 44px -26px rgba(16,20,30,.4);
@@ -1183,7 +1185,8 @@ body.navmin main{max-width:1500px}
   --ok:#3ecf8e; --warn:#f0ab3a; --bad:#ff6b6f; --rec:#ff6b6f;
   --burg:#ff6b96; --burg-soft:rgba(255,107,150,.14);
   --s0:#ff6b6f; --s1:#ff9b63; --s2:#f0ab3a; --s3:#9ed45f; --s4:#3ecf8e; --s5:#5e8dff;
-  --k-r:#5e8dff; --k-l:#2ecfb4; --k-s:#ff7d5c; --k-w:#f5b23c; --k-v:#9b82ff;
+  --k-r:#6b9bff; --k-l:#2dd4bf; --k-s:#fb7185; --k-w:#a78bfa; --k-v:#4ade80;
+  --k-r-s:rgba(107,155,255,.15); --k-l-s:rgba(45,212,191,.15); --k-s-s:rgba(251,113,133,.15); --k-w-s:rgba(167,139,250,.15); --k-v-s:rgba(74,222,128,.15);
   --glass:rgba(21,24,30,.72); --glass2:rgba(21,24,30,.92);
   --shadow:0 1px 2px rgba(0,0,0,.5); --lift:0 10px 32px -16px rgba(0,0,0,.75);
   color-scheme:dark;
@@ -1196,7 +1199,8 @@ body.navmin main{max-width:1500px}
   --ok:#3ecf8e; --warn:#f0ab3a; --bad:#ff6b6f; --rec:#ff6b6f;
   --burg:#ff6b96; --burg-soft:rgba(255,107,150,.14);
   --s0:#ff6b6f; --s1:#ff9b63; --s2:#f0ab3a; --s3:#9ed45f; --s4:#3ecf8e; --s5:#5e8dff;
-  --k-r:#5e8dff; --k-l:#2ecfb4; --k-s:#ff7d5c; --k-w:#f5b23c; --k-v:#9b82ff;
+  --k-r:#6b9bff; --k-l:#2dd4bf; --k-s:#fb7185; --k-w:#a78bfa; --k-v:#4ade80;
+  --k-r-s:rgba(107,155,255,.15); --k-l-s:rgba(45,212,191,.15); --k-s-s:rgba(251,113,133,.15); --k-w-s:rgba(167,139,250,.15); --k-v-s:rgba(74,222,128,.15);
   --glass:rgba(21,24,30,.72); --glass2:rgba(21,24,30,.92);
   --shadow:0 1px 2px rgba(0,0,0,.5); --lift:0 10px 32px -16px rgba(0,0,0,.75);
   color-scheme:dark;
@@ -1451,6 +1455,39 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 /* 뒤로 가는 링크는 조용하게 */
 .cathead a.small,.bgpage a.small{color:var(--mute);text-decoration:none;font-weight:600}
 .cathead a.small:hover,.bgpage a.small:hover{color:var(--ink)}
+
+
+/* ============================================================
+   과목 색: 화면이 속한 과목의 색이 그 화면의 강조색이 돼요.
+   버튼·탭·진행 막대·포커스 테두리가 한꺼번에 따라와서,
+   라벨을 읽지 않아도 지금 어느 과목인지 알 수 있어요.
+   ============================================================ */
+:root[data-sec="r"]{--accent:var(--k-r);--accent-soft:var(--k-r-s)}
+:root[data-sec="l"]{--accent:var(--k-l);--accent-soft:var(--k-l-s)}
+:root[data-sec="s"]{--accent:var(--k-s);--accent-soft:var(--k-s-s)}
+:root[data-sec="w"]{--accent:var(--k-w);--accent-soft:var(--k-w-s)}
+:root[data-sec="v"]{--accent:var(--k-v);--accent-soft:var(--k-v-s)}
+:root[data-sec]{--c1:var(--accent)}
+:root[data-sec="r"]{--sc:var(--k-r)}:root[data-sec="l"]{--sc:var(--k-l)}
+:root[data-sec="s"]{--sc:var(--k-s)}:root[data-sec="w"]{--sc:var(--k-w)}:root[data-sec="v"]{--sc:var(--k-v)}
+
+/* 과목 화면 머리말은 그 과목 색을 옅게 깔아요 */
+:root:root[data-sec] .welcome{background:linear-gradient(180deg,var(--accent-soft) 0%,var(--surface) 160px);border-color:color-mix(in srgb,var(--accent) 16%,var(--line))}
+:root:root[data-sec] .welcome h1{color:var(--ink)}
+/* 머리말 옆 숫자 타일도 같은 색 계열로 */
+:root:root[data-sec] .welcome .kpi{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-color:color-mix(in srgb,var(--accent) 14%,var(--line))}
+
+/* 막대·고리·진행 표시 */
+.rlbar i,.plprog .bar i,.vcprog .bar i,.prog i{background:var(--accent)}
+.hmcard .hmic{color:var(--sc)}
+/* 정답·오답은 늘 같은 뜻의 색으로 */
+.okc,.rlopt.ans,.vcyes{--tone:var(--ok)}
+.badc,.rlopt.wrong{--tone:var(--bad)}
+.rlopt.ans{background:color-mix(in srgb,var(--ok) 10%,transparent);border-color:color-mix(in srgb,var(--ok) 42%,transparent)}
+.rlopt.wrong{background:color-mix(in srgb,var(--bad) 9%,transparent);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.okc{color:var(--ok)}.badc{color:var(--bad)}
+/* 밴드 점수는 1~6 색 눈금을 그대로 */
+.rlsumv,.scoreband{letter-spacing:-.04em}
 
 /* ---- 마무리: 과한 그림자와 호버 이동 없애기 ---- */
 .panel:hover{box-shadow:none}
@@ -2357,7 +2394,10 @@ function lnbEnhance(){const l=$('#lnb');if(!l)return;
   const c=l.querySelector('[aria-current="page"]');if(c&&c.scrollIntoView&&l.scrollHeight>l.clientHeight){const r=c.getBoundingClientRect();if(r.bottom>innerHeight||r.top<0)c.scrollIntoView({block:'center'})}}
 new MutationObserver(lnbEnhance).observe($('#lnb'),{childList:true});
 
-function msecSync(){const h=location.hash.slice(1)||'home';const k=h==='rd'||h.startsWith('rd-')?'r':h==='ls'||h.startsWith('ls-')?'l':h==='w'||h.startsWith('w-')?'w':h==='vc'||h.startsWith('vc-')?'v':h==='settings'?'':'s';
+function msecSync(){const h=location.hash.slice(1)||'home';
+  const k=/^(rd|r-)/.test(h)?'r':/^(ls|l-)/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
+  /* the whole screen takes the section's colour, so you can tell where you are without reading a label */
+  document.documentElement.dataset.sec=k;
   $$('#msecsw a').forEach(a=>a.setAttribute('aria-selected',String(a.dataset.s===k)))}
 window.addEventListener('hashchange',msecSync);msecSync();
 function toggleLnb(open){$('#lnb').classList.toggle('open',open);$('#lnbscrim').classList.toggle('open',open)}
