@@ -1154,6 +1154,8 @@ body.navmin main{max-width:1500px}
 
 
 
+
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -1561,6 +1563,27 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .brand{padding:6px 10px 18px;letter-spacing:-.02em}
 .brand small{font-weight:500}
 
+
+/* ---- 리스닝: 큰 이모지 상자 대신 종류를 알려 주는 아이콘 ---- */
+.rlpic,.rlpic.big{display:flex;align-items:center;justify-content:center;gap:12px;font-size:15px;font-weight:700;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line));
+  border-radius:var(--r2);padding:18px 16px;min-height:0;height:auto;line-height:1.2}
+.rlpic .i{width:30px;height:30px;stroke-width:1.6}
+.rlpic.big{padding:28px 16px;font-size:16.5px}
+.rlpic.big .i{width:40px;height:40px}
+/* 효과음 버튼 */
+#rlsfx .i{width:19px;height:19px}
+.rlrun .wbar #rlsfx{color:#fff}
+/* 듣기 설정 버튼 */
+.vcvbtn{display:inline-flex;align-items:center;gap:6px}
+.vcvbtn .i{width:18px;height:18px}.vcvbtn .i.sm{width:14px;height:14px}
+.vcvbtn[aria-expanded="true"] .i.sm{transform:rotate(180deg)}
+
+/* 배지·모드 버튼 */
+.badge{text-transform:none;letter-spacing:-.01em}
+.rlmode b{display:inline-flex;align-items:center;gap:8px}
+.rlmode b .i{width:20px;height:20px;color:var(--accent)}
+
 /* ---- 마무리: 과한 그림자와 호버 이동 없애기 ---- */
 .panel:hover{box-shadow:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -1771,7 +1794,7 @@ function iconSVG(id, size){
   }
   async function importVoices(file,status){
     const h8=new DataView(await file.slice(0,8).arrayBuffer());
-    if(String.fromCharCode(h8.getUint8(0),h8.getUint8(1),h8.getUint8(2),h8.getUint8(3))!=='TFVP')throw new Error('toefl-voices.bin 파일이 아니에요');
+    if(String.fromCharCode(h8.getUint8(0),h8.getUint8(1),h8.getUint8(2),h8.getUint8(3))!=='TFVP')throw new Error('추가 음성 파일(toefl-voices.bin · toefl-ko.bin)이 아니에요');
     const hl=h8.getUint32(4,true),head=JSON.parse(new TextDecoder().decode(await file.slice(8,8+hl).arrayBuffer())),base=8+hl;
     const db=await open();const F=head.files;
     for(let i=0;i<F.length;i+=40){const part=F.slice(i,i+40);
@@ -1811,7 +1834,7 @@ function iconSVG(id, size){
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const el=h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstElementChild};
-const ICONS={read:'<rect x="4.4" y="3.4" width="15.2" height="17.2" rx="3.2"/><path d="M8.2 8.4h7.6M8.2 12.2h7.6M8.2 16h4.4"/>',listen:'<path d="M4.4 13.6v-1.9a7.6 7.6 0 0 1 15.2 0v1.9"/><rect x="2.6" y="13.2" width="4.6" height="6.9" rx="2.3"/><rect x="16.8" y="13.2" width="4.6" height="6.9" rx="2.3"/>',speak:'<rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/>',write:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/><path d="M14 7l3 3"/>',vocab:'<rect x="3" y="6.6" width="13.4" height="13.8" rx="3.2"/><path d="M7.6 3.6h9.8A3.6 3.6 0 0 1 21 7.2v9.6"/><path d="M6.9 16.6l2.8-6.4 2.8 6.4M7.9 14.4h3.6"/>',home:'<path d="M3.9 10.5 12 3.8l8.1 6.7v8.6a1.7 1.7 0 0 1-1.7 1.7H5.6a1.7 1.7 0 0 1-1.7-1.7z"/>',pencil:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/>',play:'<path d="M7.6 5.3 18.8 12 7.6 18.7z"/>',list:'<path d="M4 6.6h16M4 12h16M4 17.4h10"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',gear:'<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 2.4v2.4M12 19.2v2.4M19.8 7.8l-2.1 1.2M6.3 15l-2.1 1.2M19.8 16.2l-2.1-1.2M6.3 9 4.2 7.8"/>',theme:'<circle cx="12" cy="12" r="8.4"/><path d="M12 20.4a8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none"/>',book:'<path d="M5 5.1A2.1 2.1 0 0 1 7.1 3H19v14.4H7.1A2.1 2.1 0 0 0 5 19.5z"/><path d="M5 19.5A2.1 2.1 0 0 0 7.1 21.6H19"/>',chev:'<path d="M9.2 5.4 15.8 12l-6.6 6.6"/>',bolt:'<path d="M13.4 2.8 5.9 13.2h4.9l-.7 8 7.6-10.4h-5z"/>',cal:'<rect x="3.4" y="5.2" width="17.2" height="15.4" rx="3.2"/><path d="M3.4 10h17.2M8.2 2.8v4.2M15.8 2.8v4.2"/>',check:'<path d="M4.8 12.4 9.6 17.2 19.2 6.8"/>',close:'<path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/>',chart:'<path d="M3.6 20.4h16.8"/><path d="M7.4 17V10.8M12 17V4.6M16.6 17v-8.6"/>',star:'<path d="M12 3.3 14.7 9l6.3.8-4.6 4.3 1.2 6.2L12 17.3 6.4 20.3l1.2-6.2L3 9.8 9.3 9z"/>',refresh:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.4v4.4h-4.4"/>',search:'<circle cx="11" cy="11" r="6.8"/><path d="M16 16l4.4 4.4"/>',grid:'<rect x="3.6" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="3.6" y="13.2" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="13.2" width="7.2" height="7.2" rx="2"/>',keyboard:'<rect x="2.6" y="6" width="18.8" height="12" rx="2.6"/><path d="M6.4 9.8h.01M10.1 9.8h.01M13.9 9.8h.01M17.6 9.8h.01M7.6 14.2h8.8"/>',flag:'<path d="M5 21V4.2"/><path d="M5 4.6c4.6-2.4 9 2.4 14 0v9.2c-5 2.4-9.4-2.4-14 0"/>',save:'<path d="M12 3.8v11M7.6 10.6 12 15l4.4-4.4"/><path d="M4.2 15.6v2.6A2 2 0 0 0 6.2 20.2h11.6a2 2 0 0 0 2-2v-2.6"/>'};
+const ICONS={read:'<rect x="4.4" y="3.4" width="15.2" height="17.2" rx="3.2"/><path d="M8.2 8.4h7.6M8.2 12.2h7.6M8.2 16h4.4"/>',listen:'<path d="M4.4 13.6v-1.9a7.6 7.6 0 0 1 15.2 0v1.9"/><rect x="2.6" y="13.2" width="4.6" height="6.9" rx="2.3"/><rect x="16.8" y="13.2" width="4.6" height="6.9" rx="2.3"/>',speak:'<rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/>',write:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/><path d="M14 7l3 3"/>',vocab:'<rect x="3" y="6.6" width="13.4" height="13.8" rx="3.2"/><path d="M7.6 3.6h9.8A3.6 3.6 0 0 1 21 7.2v9.6"/><path d="M6.9 16.6l2.8-6.4 2.8 6.4M7.9 14.4h3.6"/>',home:'<path d="M3.9 10.5 12 3.8l8.1 6.7v8.6a1.7 1.7 0 0 1-1.7 1.7H5.6a1.7 1.7 0 0 1-1.7-1.7z"/>',pencil:'<path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/>',play:'<path d="M7.6 5.3 18.8 12 7.6 18.7z"/>',list:'<path d="M4 6.6h16M4 12h16M4 17.4h10"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',gear:'<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 2.4v2.4M12 19.2v2.4M19.8 7.8l-2.1 1.2M6.3 15l-2.1 1.2M19.8 16.2l-2.1-1.2M6.3 9 4.2 7.8"/>',theme:'<circle cx="12" cy="12" r="8.4"/><path d="M12 20.4a8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none"/>',book:'<path d="M5 5.1A2.1 2.1 0 0 1 7.1 3H19v14.4H7.1A2.1 2.1 0 0 0 5 19.5z"/><path d="M5 19.5A2.1 2.1 0 0 0 7.1 21.6H19"/>',chev:'<path d="M9.2 5.4 15.8 12l-6.6 6.6"/>',bolt:'<path d="M13.4 2.8 5.9 13.2h4.9l-.7 8 7.6-10.4h-5z"/>',cal:'<rect x="3.4" y="5.2" width="17.2" height="15.4" rx="3.2"/><path d="M3.4 10h17.2M8.2 2.8v4.2M15.8 2.8v4.2"/>',check:'<path d="M4.8 12.4 9.6 17.2 19.2 6.8"/>',close:'<path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/>',chart:'<path d="M3.6 20.4h16.8"/><path d="M7.4 17V10.8M12 17V4.6M16.6 17v-8.6"/>',star:'<path d="M12 3.3 14.7 9l6.3.8-4.6 4.3 1.2 6.2L12 17.3 6.4 20.3l1.2-6.2L3 9.8 9.3 9z"/>',refresh:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.4v4.4h-4.4"/>',search:'<circle cx="11" cy="11" r="6.8"/><path d="M16 16l4.4 4.4"/>',grid:'<rect x="3.6" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="3.6" width="7.2" height="7.2" rx="2"/><rect x="3.6" y="13.2" width="7.2" height="7.2" rx="2"/><rect x="13.2" y="13.2" width="7.2" height="7.2" rx="2"/>',keyboard:'<rect x="2.6" y="6" width="18.8" height="12" rx="2.6"/><path d="M6.4 9.8h.01M10.1 9.8h.01M13.9 9.8h.01M17.6 9.8h.01M7.6 14.2h8.8"/>',flag:'<path d="M5 21V4.2"/><path d="M5 4.6c4.6-2.4 9 2.4 14 0v9.2c-5 2.4-9.4-2.4-14 0"/>',save:'<path d="M12 3.8v11M7.6 10.6 12 15l4.4-4.4"/><path d="M4.2 15.6v2.6A2 2 0 0 0 6.2 20.2h11.6a2 2 0 0 0 2-2v-2.6"/>',resp:'<path d="M4 6.4A2.4 2.4 0 0 1 6.4 4h11.2A2.4 2.4 0 0 1 20 6.4v7.2a2.4 2.4 0 0 1-2.4 2.4H10l-4.4 3.6V16h0.8A2.4 2.4 0 0 1 4 13.6z"/><path d="M8.4 10h.01M12 10h.01M15.6 10h.01" stroke-width="2.4"/>',conv:'<path d="M3 5.6A2 2 0 0 1 5 3.6h8.4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H8.2L5 15v-2.4A2 2 0 0 1 3 10.6z"/><path d="M18 8.6h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v2.4l-3.2-2.4h-4.4a2 2 0 0 1-2-2"/>',talk:'<rect x="3" y="3.6" width="18" height="11.6" rx="2"/><path d="M7 8.2h6M7 11.2h9.4M12 15.2v3.2M8.4 20.4h7.2"/>',announce:'<path d="M4 9.6v4.8h3.2l6.4 4.4V5.2L7.2 9.6z"/><path d="M17.2 9a4.2 4.2 0 0 1 0 6M19.6 6.6a7.6 7.6 0 0 1 0 10.8"/>',bell:'<path d="M6 16.6V11a6 6 0 0 1 12 0v5.6l1.6 1.8H4.4z"/><path d="M10 20.6a2.2 2.2 0 0 0 4 0"/>',belloff:'<path d="M6 16.6V11a6 6 0 0 1 9.4-4.9M18 11v5.6l1.6 1.8H8"/><path d="M10 20.6a2.2 2.2 0 0 0 4 0M3.6 3.6l16.8 16.8"/>',down:'<path d="M5.4 9.2 12 15.8l6.6-6.6"/>'};
 const ICON=(n,cls='')=>ICONS[n]?`<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[n]}</svg>`:'';
 window.ICON=ICON;
 const NAVG={'◧':'grid','☰':'list','≡':'list','★':'star','⚙':'gear','▶':'play','✎':'pencil','⌨':'keyboard','↻':'refresh','✕':'flag','✍':'write','⌕':'search','💾':'save','📚':'book','⌂':'home'};
@@ -2974,8 +2997,8 @@ function renderSettings(){
   <div class="panel form">
     ${window.PACKIO?`<div class="field"><label>교재 데이터</label><label class="btn">새 toefl-pack.bin 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" hidden></label>
       <div class="hint">앱이 업데이트되면서 교재 데이터가 바뀌었을 때 다시 불러오세요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>
-    <div class="field"><label>목소리 데이터 ${window.HASVOICES?'· 불러왔어요 ✅':'· 아직 없어요'}</label><label class="btn">toefl-voices.bin 불러오기<input type="file" id="vpack" accept=".bin,application/octet-stream" hidden></label>
-      <div class="hint">지문을 미국 남자 · 영국 여자 · 영국 남자 목소리로도 듣고 싶을 때 불러오세요. 교재 데이터를 다시 불러오면 이것도 다시 불러와야 해요.</div><div class="hint" id="vpackst"></div></div>`:''}
+    <div class="field"><label>추가 음성 데이터 ${window.HASVOICES?'· 목소리 3종 있음':'· 목소리 3종 아직 없음'}</label><label class="btn">추가 음성 파일 불러오기<input type="file" id="vpack" accept=".bin,application/octet-stream" hidden></label>
+      <div class="hint"><b>toefl-voices.bin</b> — 지문을 미국 남자·영국 여자·영국 남자 목소리로 듣기<br><b>toefl-ko.bin</b> — 배경지식 한국어 새 녹음<br>받은 파일을 여기서 불러오면 그 녹음만 바뀌고 나머지는 그대로예요. 교재 데이터를 다시 불러오면 이것들도 다시 불러와야 해요.</div><div class="hint" id="vpackst"></div></div>`:''}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
       <textarea id="pers" rows="3" style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)">${esc((S.cfg.persona||'').trim()||PERSONA_DEF)}</textarea>
       <label class="small" style="font-weight:400;display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="phook" ${S.cfg.personaHook===false?'':'checked'}> 템플릿별 연결 문장 붙이기 (예: Add-on I → "So every dollar counts for that tuition.")</label>
@@ -4471,8 +4494,8 @@ function rlSetPage(sec,id){const set=rlSets(sec).find(s=>s.id===id);if(!set){vie
   const S_=RLSEC[sec];setCrumb([S_.name,set.title]);
   const types={};rlQs(set).forEach(q=>types[q.t]=(types[q.t]||0)+1);
   view.innerHTML=`<div class="cathead"><div><span class="badge">${S_.name} · ${esc(set.page||'')}</span><h1>${esc(set.title)}</h1><p>${rlQs(set).length}문항 · ${set.blocks.length}개 지문/세트</p></div></div>
-   <div class="rlmodes"><button class="panel ph rlmode" data-m="exam"><b>▶ 실전 모드</b><span>${sec==='r'?`제한 시간 ${Math.round(rlTime(set)/60)}분 · 문항 이동 가능 · 끝나고 한 번에 채점`:'음성은 한 번만 재생 · 다시 듣기 불가 · 끝나고 한 번에 채점'}</span></button>
-   <button class="panel ph rlmode" data-m="prac"><b>✎ 연습 모드</b><span>시간 제한 없음 · ${sec==='l'?'다시 듣기·속도 조절 가능 · ':''}문항마다 바로 정답·해석·해설 확인</span></button></div>
+   <div class="rlmodes"><button class="panel ph rlmode" data-m="exam"><b>${ICON('play')} 실전 모드</b><span>${sec==='r'?`제한 시간 ${Math.round(rlTime(set)/60)}분 · 문항 이동 가능 · 끝나고 한 번에 채점`:'음성은 한 번만 재생 · 다시 듣기 불가 · 끝나고 한 번에 채점'}</span></button>
+   <button class="panel ph rlmode" data-m="prac"><b>${ICON('pencil')} 연습 모드</b><span>시간 제한 없음 · ${sec==='l'?'다시 듣기·속도 조절 가능 · ':''}문항마다 바로 정답·해석·해설 확인</span></button></div>
    <section class="section"><h2>문제 유형</h2><p class="small">${Object.entries(types).map(([t,n])=>`<span class="mtag sm">${esc(t)} ${n}</span>`).join(' ')}</p></section>`;
   $$('.rlmode').forEach(b=>b.onclick=()=>rlRun(sec,set,b.dataset.m))}
 /* ---- runner ---- */
@@ -4481,10 +4504,10 @@ function rlRun(sec,set,mode){if(mode==='exam')return rlExam(sec,set);
   document.body.classList.add('rltest');
   const leave=()=>{clearInterval(st.tm);rlStopAudio();document.body.classList.remove('rltest')};
   function frame(){const b=set.blocks[st.i],ns=b.qs.map(q=>q.n),N=rlQs(set).length;
-    view.innerHTML=`<div class="rlrun"><div class="wbar"><b>TOEFL iBT</b><span class="small">${S_.name} | Questions ${String(ns[0]).padStart(2,'0')}${ns.length>1?'-'+String(ns[ns.length-1]).padStart(2,'0'):''} of ${N}</span><span style="flex:1"></span>${sec==='r'&&mode==='exam'?'<span class="rltime" id="rltm"></span>':''}${mode==='prac'?`<span class="rlstk" id="rlstk">${st.streak>=2?'🔥 '+st.streak+'연속':''}</span><button class="btn sm quiet" id="rlsfx" title="효과음">${SFX.on()?'🔔':'🔕'}</button>`:''}<button class="btn sm quiet" id="rlx">나가기</button>${st.i>0&&(sec==='r'||mode==='prac')?'<button class="btn sm" id="rlb">‹ Back</button>':''}<button class="btn sm primary" id="rln">${st.i===set.blocks.length-1?'채점하기':'Next ›'}</button></div>
+    view.innerHTML=`<div class="rlrun"><div class="wbar"><b>TOEFL iBT</b><span class="small">${S_.name} | Questions ${String(ns[0]).padStart(2,'0')}${ns.length>1?'-'+String(ns[ns.length-1]).padStart(2,'0'):''} of ${N}</span><span style="flex:1"></span>${sec==='r'&&mode==='exam'?'<span class="rltime" id="rltm"></span>':''}${mode==='prac'?`<span class="rlstk" id="rlstk">${st.streak>=2?'🔥 '+st.streak+'연속':''}</span><button class="btn sm quiet" id="rlsfx" title="효과음">${ICON(SFX.on()?'bell':'belloff')}</button>`:''}<button class="btn sm quiet" id="rlx">나가기</button>${st.i>0&&(sec==='r'||mode==='prac')?'<button class="btn sm" id="rlb">‹ Back</button>':''}<button class="btn sm primary" id="rln">${st.i===set.blocks.length-1?'채점하기':'Next ›'}</button></div>
       <div class="rldots">${set.blocks.map((x,k)=>`<button class="${k===st.i?'on':''} ${x.qs.every(q=>st.ans[q.n]!=null&&st.ans[q.n]!=='')?'ok':''}" data-k="${k}" ${sec==='l'&&mode==='exam'?'disabled':''}>${x.qs[0].n}${x.qs.length>1?'–'+x.qs[x.qs.length-1].n:''}</button>`).join('')}</div>
       <div id="rlbody"></div></div>`;
-    $('#rlsfx')?.addEventListener('click',()=>{store.set('sfx',!SFX.on());$('#rlsfx').textContent=SFX.on()?'🔔':'🔕';if(SFX.on())SFX.ok()});
+    $('#rlsfx')?.addEventListener('click',()=>{store.set('sfx',!SFX.on());$('#rlsfx').innerHTML=ICON(SFX.on()?'bell':'belloff');if(SFX.on())SFX.ok()});
     $('#rlx').onclick=async()=>{const v=await rlExitAsk(set,st,'풀이를');if(v==='save')finish(true);else if(v==='drop'){leave();location.hash='#'+S_.pre+'-s-'+set.id;route()}};
     $('#rlb')?.addEventListener('click',()=>{st.i--;rlStopAudio();frame()});
     $('#rln').onclick=()=>{if(st.i===set.blocks.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!confirm(`답하지 않은 문항이 ${miss}개 있어요. 채점할까요?`))return;finish()}else{st.i++;rlStopAudio();frame()}};
@@ -4537,7 +4560,7 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
     $('#rlpg').style.width=(st.i/steps.length*100)+'%';$('#rlb')&&($('#rlb').disabled=st.i===0);
     rlStopAudio();rlStopSpeak();clearTimeout(st.ct);host.scrollTop=0;tst.querySelector('.tmain').scrollTop=0;
     if(s.audio){$('#rln').disabled=!st.done[s.b.audio];
-      host.innerHTML=`<div class="rlaud"><p class="rlah">${esc(s.b.head)}</p><div class="rlpic big">${s.b.kind==='resp'?'🗣':s.b.kind==='conv'?'👥':s.b.kind==='talk'?'👩‍🏫':'📢'}</div><div id="rlpl"></div><p class="small muted">음성은 한 번만 재생돼요. 끝나면 문제가 나와요.</p></div>`;
+      host.innerHTML=`<div class="rlaud"><p class="rlah">${esc(s.b.head)}</p><div class="rlpic big">${ICON(s.b.kind==='resp'?'resp':s.b.kind==='conv'?'conv':s.b.kind==='talk'?'talk':'announce')}<span>${s.b.kind==='resp'?'짧은 응답':s.b.kind==='conv'?'대화':s.b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div><p class="small muted">음성은 한 번만 재생돼요. 끝나면 문제가 나와요.</p></div>`;
       if(st.done[s.b.audio]){$('#rlpl').innerHTML='<p class="small muted">✓ 재생 완료</p>';return}
       const alive=()=>steps[st.i]===s&&document.body.contains(host),pl=$('#rlpl');st.dir=st.dir||{};
       const play=()=>{if(!alive())return;rlPlayer(pl,s.b.audio,{auto:true,once:true,onEnd:()=>{st.done[s.b.audio]=1;$('#rln').disabled=false;setTimeout(()=>{if(steps[st.i]===s){st.i++;show()}},900)}})};
@@ -4579,7 +4602,7 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
     $('#cwchk',host)?.addEventListener('click',()=>{{const okn=b.qs.filter(q=>rlCorrect(q,st.ans[q.n])).length;if(okn===b.qs.length){SFX.combo();toast('🎯 전부 정답!')}else okn>=b.qs.length*.7?SFX.ok():SFX.bad()}$$('.rlcw input',host).forEach(i=>{const q=b.qs.find(x=>x.n==i.dataset.n);i.classList.toggle('ok',rlCorrect(q,st.ans[q.n]));i.classList.toggle('bad',!rlCorrect(q,st.ans[q.n]));if(!rlCorrect(q,st.ans[q.n]))i.title='정답: '+q.a});
       $('#cwfb',host).innerHTML=`<div class="rlexp"><p><b>정답</b> ${b.qs.map(q=>`<span class="mtag sm">${q.n} ${esc(q.a)}</span>`).join(' ')}</p><p>${esc(b.why||'')}</p><details open><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}</div>`;rlVocWire(host,sec)});
     return}
-  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${b.kind==='resp'?'🗣':b.kind==='conv'?'👥':b.kind==='talk'?'👩‍🏫':'📢'}</div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary><div>${rlScript(b)}</div></details>`:''}</div>`
+  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary><div>${rlScript(b)}</div></details>`:''}</div>`
     :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
   const allBtn=prac&&b.qs.length>1?`<div class="rlallchk"><button class="btn primary" data-all>✓ 이 지문 전체 채점 <span class="small">(${b.qs.length}문항)</span></button><div class="rlsum" hidden></div></div>`:'';
   host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));
@@ -4767,7 +4790,7 @@ function rlVoc(sec,tab){if(tab)RLVT=tab;const S_=RLSEC[sec],P=S_.pre;setCrumb([S
   view.innerHTML=`<div class="cathead"><div><span class="badge">${S_.name}</span><h1>단어장</h1><p>교재에 나온 어휘를 <b>간격 반복</b>으로 외워요. 아는 단어는 점점 늦게, 모르는 단어는 자주 다시 나와요.</p></div></div>
    <div class="c12 kpis vkpis"><div class="panel kpi"><div class="k">오늘 학습</div><div class="v">${todayN}</div><div class="s">복습 ${due.length} · 새 단어 ${Math.min(fresh.length,15)}</div></div><div class="panel kpi"><div class="k">익힌 단어</div><div class="v">${known.length}<span class="small muted"> / ${deck.length}</span></div><div class="s">4단계 이상</div></div><div class="panel kpi"><div class="k">학습 중</div><div class="v">${deck.length-fresh.length-known.length}</div><div class="s">한 번 이상 본 단어</div></div><div class="panel kpi"><div class="k">★ 저장</div><div class="v">${star.length}</div><div class="s">해설 화면에서 저장</div></div></div>
    ${rlScopeHTML(sec,sc,deck.length)}
-   <div class="secsw vtabs" role="tablist">${[['today',narrow?'🃏 카드':'🃏 오늘의 카드'],['quiz','✅ 퀴즈'],['spell','⌨ 철자 쓰기'],['list','📋 목록']].map(([k,t])=>`<a href="javascript:void 0" role="tab" data-t="${k}" aria-selected="${RLVT===k}">${t}</a>`).join('')}</div>
+   <div class="secsw vtabs" role="tablist">${[['today',narrow?'카드':'오늘의 카드'],['quiz','퀴즈'],['spell','철자 쓰기'],['list','목록']].map(([k,t])=>`<a href="javascript:void 0" role="tab" data-t="${k}" aria-selected="${RLVT===k}">${t}</a>`).join('')}</div>
    <div id="vbody"></div>`;
   $$('.vtabs a').forEach(a=>a.onclick=()=>rlVoc(sec,a.dataset.t));rlScopeWire(sec,sc);
   const host=$('#vbody');
@@ -4788,7 +4811,7 @@ function rlCards(sec,host,list,deck){
     host.innerHTML=`<div class="vprog"><span>${list.length-q.length+1>list.length?list.length:list.length-q.length+1} / ${list.length}</span><div class="rlbar"><i style="width:${(list.length-q.length)/list.length*100}%"></i></div><span>남은 카드 ${q.length}</span></div>
       <div class="vcard" tabindex="0" aria-label="카드를 눌러 뜻 보기"><div class="vin"><div class="vf"><span class="vbox">${r?'단계 '+r.box:'새 단어'}</span><b class="vw">${esc(v.w)}</b><button class="btn sm quiet vsay" aria-label="발음 듣기">🔊 발음</button><span class="small muted">카드를 누르거나 스페이스바 → 뜻 보기</span></div>
       <div class="vb"><b class="vw sm">${esc(v.w)}</b><span class="vk">${esc(v.k)}</span><span class="small muted">${esc(v.src)}</span></div></div></div>
-      <div class="vbtns" hidden><button class="btn vno" data-g="0">😵 몰라요 <kbd>1</kbd></button><button class="btn vmeh" data-g="1">🤔 애매해요 <kbd>2</kbd></button><button class="btn primary vyes" data-g="2">😎 알아요 <kbd>3</kbd></button></div>`;
+      <div class="vbtns" hidden><button class="btn vno" data-g="0">몰라요 <kbd>1</kbd></button><button class="btn vmeh" data-g="1">애매해요 <kbd>2</kbd></button><button class="btn primary vyes" data-g="2">알아요 <kbd>3</kbd></button></div>`;
     const card=$('.vcard',host),btns=$('.vbtns',host);
     const flip=()=>{if(card.classList.contains('on'))return;card.classList.add('on');btns.hidden=false;SFX.flip();rlSay(v.w)};
     card.onclick=e=>{if(e.target.closest('.vsay'))return;flip()};$('.vsay',host).onclick=()=>rlSay(v.w);
@@ -4852,7 +4875,7 @@ function vcSpMiss(){const out=[];for(const [id,p] of Object.entries(VCSP)){if(!p
   return out.sort((a,b)=>(VCSP[b.id].misses||0)-(VCSP[a.id].misses||0))}
 function vcSpPage(mode){mode=['spell','card','list'].includes(mode)?mode:'spell';const ws=vcSpMiss();setCrumb(['Vocab','철자 오답 노트']);
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">✍ 철자 오답 노트</h1><p>${ws.length}단어 · 철자 쓰기에서 틀리거나 힌트를 쓴 단어 (보카 + 리딩·리스닝). 두 번 연속 한 번에 맞히면 빠져요.</p></div></div>
-    <div class="secsw vtabs vcmodes" role="tablist">${[['spell','✍ 다시 쓰기'],['card','🃏 카드'],['list','📋 목록']].map(([k,t])=>`<a href="#vc-sp~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div><div id="vcbody"></div>`;
+    <div class="secsw vtabs vcmodes" role="tablist">${[['spell','다시 쓰기'],['card','카드'],['list','목록']].map(([k,t])=>`<a href="#vc-sp~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div><div id="vcbody"></div>`;
   if(!ws.length){$('#vcbody').innerHTML='<div class="empty">철자 오답이 없어요 👍 Day별 ‘철자 쓰기’에서 연습해 보세요.</div>';return}
   vcVoiceMount(ws[0]);const host=$('#vcbody');if(mode==='spell')vcSpell(host,ws);else if(mode==='card')vcCards(host,ws,{scope:'sp'});else vcList(host,ws)}
 const vcSec=h=>h==='vc'||h.startsWith('vc-');
@@ -4996,7 +5019,7 @@ function vcDash(){setCrumb(['Vocab','대시보드']);
       else{const mx=Math.max(10,...vals),top=Math.ceil(mx/10)*10;box.appendChild(lineChart({series:[{name:'학습한 단어',color:'var(--c1)',values:vals}],labels,ymin:0,ymax:top,ticks:[0,top/2,top].map(Math.round),fmt:v=>Math.round(v)+'개',hi:29,bars:true}))}}}catch(e){}}
 /* listening settings live next to the study screens (not on the dashboard) */
 function vcVoiceMount(sample,rl){const head=$('.cathead',view);if(!head||$('.vcvwrap',view))return;
-  head.insertAdjacentHTML('afterend',`<div class="vcvwrap"><button type="button" class="btn sm quiet vcvbtn" aria-expanded="false">🎧 듣기 설정 ▾</button><div class="panel ph vcvpanel" hidden>
+  head.insertAdjacentHTML('afterend',`<div class="vcvwrap"><button type="button" class="btn sm quiet vcvbtn" aria-expanded="false">${ICON('listen')} 듣기 설정 ${ICON('down','sm')}</button><div class="panel ph vcvpanel" hidden>
     <div class="rltts"><span class="rlrate rlspd" role="group" aria-label="속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span><button type="button" class="btn sm quiet vcvtest">▶ 미리 듣기</button></div>
     <p class="small muted" style="margin:8px 0 0">${rl?'🎙 리딩·리스닝 단어는 녹음된 목소리로 읽어요.':'🎧 해커스 보카에 녹음이 있는 단어는 교재 원음으로, 나머지(한글 뜻·지문 문장)는 녹음된 목소리로 읽어요.'} 녹음이 없는 부분만 기기 음성으로 읽어요.</p></div></div>`);
   const wrap=$('.vcvwrap',view),btn=$('.vcvbtn',wrap),pan=$('.vcvpanel',wrap);
@@ -5005,7 +5028,7 @@ function vcVoiceMount(sample,rl){const head=$('.cathead',view);if(!head||$('.vcv
   $('.vcvtest',wrap).onclick=()=>vcPlay(sample||VC.data[0],'w')}
 
 /* ---------- Day page: card / quiz / spell / list ---------- */
-const VCM={card:'🃏 카드',quiz:'✅ 퀴즈',spell:'⌨ 철자 쓰기',list:'📋 목록'};
+const VCM={card:'카드',quiz:'퀴즈',spell:'철자 쓰기',list:'목록'};
 function vcDayPage(d,mode){mode=mode&&VCM[mode]?mode:store.get('vcmode','card');store.set('vcmode',mode);
   const ws=vcDay(d);setCrumb(['Vocab','Day '+d]);
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">Day ${String(d).padStart(2,'0')}</h1><p>${ws.length}단어 · 외움 ${ws.filter(w=>vcSt(w)==='known').length} · 애매 ${ws.filter(w=>vcSt(w)==='unsure').length} · 모름 ${ws.filter(w=>vcSt(w)==='learning').length}</p></div>
