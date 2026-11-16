@@ -1161,6 +1161,7 @@ body.navmin main{max-width:1500px}
 
 
 
+
 /* @@V4@@ */
 /* ============================================================
    v4 — 화면 전체 리디자인 (2026.11)
@@ -1611,6 +1612,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 :root:root:root:root:root .welcome .btn.ghost,:root:root:root:root:root .welcome .btn+.btn{background:transparent;border-color:var(--line2);color:var(--ink)}
 :root:root:root:root:root .welcome .badge,:root:root:root:root:root .welcome .eyebrow{background:var(--accent-soft);color:var(--accent)}
 :root:root:root:root:root .welcome .kpi{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 14%,var(--line));backdrop-filter:none}
+
+/* ---- 홈으로 가는 버튼: 어느 화면에서든 늘 보여요 ---- */
+.hmbtn{display:inline-flex!important;align-items:center;gap:5px;width:auto!important;height:36px;padding:0 11px 0 9px;border-radius:11px;
+  border:1px solid var(--line)!important;background:var(--surface)!important;color:var(--ink)!important;font-size:13.5px!important;font-weight:700;text-decoration:none;flex:none}
+.hmbtn .i{width:18px;height:18px}
+.hmbtn:hover{background:var(--sunken)!important}
+@media (max-width:720px){.hmbtn{height:34px;padding:0 9px 0 8px}}
+@media (max-width:360px){.hmbtn .hmbtn-t{display:none}.hmbtn{padding:0 8px}}
 
 /* ---- 마무리: 과한 그림자와 호버 이동 없애기 ---- */
 .panel:hover{box-shadow:none}
@@ -5416,7 +5425,7 @@ function renderHome(){
  window.removeEventListener('hashchange',_routeV);window.addEventListener('hashchange',route)}
 function hmMsec(){const h=location.hash.slice(1);if(h===''||h==='start'||h==='bg'||h.startsWith('bg-'))$$('#msecsw a').forEach(a=>a.setAttribute('aria-selected','false'))}
 /* a home button in the top bar */
-try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="홈으로" title="홈 (5과목 한눈에 보기)">⌂</a>')}catch(e){}
+try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="홈으로" title="홈 (5과목 한눈에 보기)">'+ICON('home')+'<span class="hmbtn-t">홈</span></a>')}catch(e){}
 
 /* ---------- 배경지식 (background knowledge for the Reading/Listening academic passages) ---------- */
 /* data: window.BG (from the private pack) — topics with overview (ko/en), concepts, vocab, a diagram spec, videos and passage refs */
