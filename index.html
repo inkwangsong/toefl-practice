@@ -565,6 +565,14 @@ body.testing .shell{display:none}
 .tylist li.done,.tyrl li.done{color:inherit}.tylist li.done::marker,.tyrl li.done::marker{color:var(--accent)}.tylist li.part::marker,.tyrl li.part::marker{color:#d90}.tylist li.skip::marker,.tyrl li.skip::marker{color:#d33}
 .tywrap{position:relative}.tyghost{position:absolute;inset:0;z-index:0;font:19px/1.5 var(--mono,ui-monospace,Menlo,monospace);padding:11px 13px;white-space:pre-wrap;overflow-wrap:break-word;overflow:hidden;color:color-mix(in srgb,currentColor 32%,transparent);pointer-events:none}.tyghost .tyg-done{visibility:hidden}#tyin.ghon{background:transparent!important}.tywrap{background:var(--card,transparent);border-radius:10px}.tyq{margin-bottom:12px}.tyq p{margin:8px 0 0}.tymiss{display:flex;flex-wrap:wrap;gap:6px}.tymode{margin:0}
 .secsw.four{grid-template-columns:1fr 1fr}.secsw.four a{font-size:15.5px;padding:6px 0}
+/* Reading has two books: a level toggle under the area switch */
+.rlvsw{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:-4px 12px 12px}
+.rlvsw a{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px 6px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);text-decoration:none;color:var(--mute);line-height:1.15}
+.rlvsw a b{font-size:15.5px;font-weight:800;color:var(--ink)}
+.rlvsw a small{font-size:11.5px;font-weight:600;color:var(--mute)}
+.rlvsw a[aria-selected="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.rlvsw a[aria-selected="true"] b{color:var(--accent)}
+.rlvsw a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .rlmodes{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rlmode{text-align:left;display:grid;gap:6px;cursor:pointer;font:inherit;color:inherit}.rlmode b{font-size:20px}.rlmode span{color:var(--mute);font-size:16.5px}.rlmode:hover{border-color:var(--accent)}@media (max-width:720px){.rlmodes{grid-template-columns:1fr}}
 .rlrun .wbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-radius:10px;background:#1f2329;color:#fff;margin-bottom:10px}.rlrun .wbar .btn:not(.primary){color:#fff;background:transparent;border:1px solid #ffffff55}.rlplay select{width:auto}
 .rltime{font-variant-numeric:tabular-nums;font-weight:700}.rltime.warn{color:#ff8a8a}
@@ -721,7 +729,7 @@ main{margin-inline:auto}
 
 .rltext b.vw,.rlpbody b.vw{font-size:inherit;font-weight:700;letter-spacing:0;background:color-mix(in srgb,var(--accent) 14%,transparent);padding:0 3px;border-radius:4px}
 
-.rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
+.rlpv{flex-wrap:wrap;max-width:100%;min-width:0}.rlpv button{font-family:var(--ui);font-size:14px}.rlvhint{flex-basis:100%;margin:2px 0 0;line-height:1.5}
 @media (max-width:720px){.rlpv{flex:1 1 100%;min-width:0;flex-wrap:wrap}.rlpv button{font-size:13px;padding:5px 8px}}
 
 
@@ -1131,6 +1139,14 @@ body.navmin main{max-width:1500px}
 .bgsay.on{color:var(--sc);background:color-mix(in srgb,var(--sc) 12%,transparent)}.bgov h3{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 @media (max-width:720px){.bgbr{grid-template-columns:1fr}.bgtl li{grid-template-columns:78px 1fr;gap:0 24px}.bgtl li::before{left:84px}.bgtl li:not(:last-child)::after{left:89px}.bghc{padding:8px 4px}.bghc b{font-size:13px}.bghc em{font-size:11.5px}.bgar{font-size:20px}.bgcmp{font-size:13.5px}.bgcmp tbody th{white-space:normal}.bgcmp th,.bgcmp td{padding:7px 8px}}
 .bgcc{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.bgbk{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.bgkc{padding:13px 15px 14px;border-radius:var(--r2,12px);border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.bgkc header{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.bgkc h3{margin:0;font-size:16px;font-weight:800;line-height:1.3;flex:1;min-width:140px;color:var(--ink)}
+.bgkc h3 em{display:block;font-style:normal;font-weight:600;font-size:13px;color:var(--sc)}
+.bgkg{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--ink);align-self:flex-start}
+.bgkc p{margin:0;font-size:14.5px;line-height:1.7;color:var(--ink)}
+@media (max-width:520px){.bgbk{grid-template-columns:1fr}}
 .bgcard{padding:12px 14px;border-radius:12px;border:1px solid var(--line);border-top:3px solid var(--sc)}.bgcard p{margin:0;font-size:14.5px;line-height:1.6}.bgterm{font-weight:700;font-size:15.5px!important;margin-bottom:4px!important;color:var(--sc)}
 .bgvv{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px}.bgw{display:flex;align-items:center;gap:8px;font-size:15px}.bgw .muted{font-size:14px}
 .bgvid{margin:0;padding-left:4px;list-style:none;display:grid;gap:6px}.bgvid a{color:var(--accent);text-decoration:none}.bgvid a:hover{text-decoration:underline}
@@ -1803,7 +1819,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="1f8047156671";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="826d93e0fa69";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -2544,10 +2560,10 @@ function lnbEnhance(){const l=$('#lnb');if(!l)return;
 new MutationObserver(lnbEnhance).observe($('#lnb'),{childList:true});
 
 function msecSync(){const h=location.hash.slice(1)||'start';   /* an empty address is the landing page, not Speaking (#home) */
-  const k=/^(rd|r-)/.test(h)?'r':/^(ls|l-)/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
+  const k=/^(rd|rb|r-|r2-)/.test(h)?'r':/^(ls|l-)/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
   /* the whole screen takes the section's colour, so you can tell where you are without reading a label */
   document.documentElement.dataset.sec=k;
-  $$('#msecsw a').forEach(a=>a.setAttribute('aria-selected',String(a.dataset.s===k)))}
+  $$('#msecsw a').forEach(a=>{a.setAttribute('aria-selected',String(a.dataset.s===k));if(a.dataset.s==='r')a.setAttribute('href',store.get('rdlv','rd')==='rb'?'#rb':'#rd')})}
 window.addEventListener('hashchange',msecSync);msecSync();
 function toggleLnb(open){$('#lnb').classList.toggle('open',open);$('#lnbscrim').classList.toggle('open',open)}
 $('#menubtn').onclick=()=>toggleLnb(true);$('#lnbscrim').onclick=()=>toggleLnb(false);
@@ -4272,24 +4288,25 @@ function renderWTypeRun(id,blind){
 
 /* ================= Reading & Listening (Hackers Intermediate) ================= */
 let RLD={r:[],l:[]};try{RLD=RLDATA}catch(e){RLD=window.RLDATA||RLD}
-const RLSEC={r:{name:'Reading',pre:'rd',ko:'리딩',book:'Hackers Updated TOEFL Reading Intermediate'},l:{name:'Listening',pre:'ls',ko:'리스닝',book:'Hackers Updated TOEFL Listening Intermediate'}};
+const RLSEC={r:{name:'Reading',pre:'rd',ko:'리딩',lv:'중급',sub:'Hackers Intermediate',book:'Hackers Updated TOEFL Reading Intermediate'},r2:{name:'Reading 기본',pre:'rb',ko:'리딩 기본',lv:'기본',sub:'Hackers 기본',book:'Hackers Updated TOEFL Reading'},l:{name:'Listening',pre:'ls',ko:'리스닝',sub:'Hackers Intermediate',book:'Hackers Updated TOEFL Listening Intermediate'}};
 const RLH={hist:store.get('rlhist',[]),voc:store.get('rlvoc',{})};
 const rlSave=()=>{store.set('rlhist',RLH.hist.slice(-80));store.set('rlvoc',RLH.voc)};
 const LET='ABCD';
-const rlSec=h=>h==='rd'||h.startsWith('rd-')?'r':h==='ls'||h.startsWith('ls-')?'l':null;
+const rlSec=h=>h==='rd'||h.startsWith('rd-')?'r':h==='rb'||h.startsWith('rb-')?'r2':h==='ls'||h.startsWith('ls-')?'l':null;
+const rlIsR=sec=>sec==='r'||sec==='r2';
 const rlSets=sec=>RLD[sec]||[];
 const rlQs=set=>set.blocks.flatMap(b=>b.qs);
-const RLCAT={'r-dt':'Diagnostic Test','r-t1':'Task 1 · Complete the Words','r-t2':'Task 2 · Read in Daily Life','r-t3':'Task 3 · Read an Academic Passage','r-at':'Actual Test','l-dt':'Diagnostic Test','l-t1':'Task 1 · Listen and Choose a Response','l-t2':'Task 2 · Listen to a Conversation','l-t3':'Task 3 · Listen to an Announcement','l-t4':'Task 4 · Listen to an Academic Talk','l-at':'Actual Test'};
+const RLCAT={'r-dt':'Diagnostic Test','r-t1':'Task 1 · Complete the Words','r-t2':'Task 2 · Read in Daily Life','r-t3':'Task 3 · Read an Academic Passage','r-at':'Actual Test','r2-dt':'Diagnostic Test','r2-t1':'Task 1 · Complete the Words','r2-t2':'Task 2 · Read in Daily Life','r2-t3':'Task 3 · Read an Academic Passage','r2-at':'Actual Test','l-dt':'Diagnostic Test','l-t1':'Task 1 · Listen and Choose a Response','l-t2':'Task 2 · Listen to a Conversation','l-t3':'Task 3 · Listen to an Announcement','l-t4':'Task 4 · Listen to an Academic Talk','l-at':'Actual Test'};
 function rlGroups(sec){const g=new Map();rlSets(sec).forEach(s=>{const k=s.cat||'etc';if(!g.has(k))g.set(k,[]);g.get(k).push(s)});return g}
 function rlTime(set){if(set.time)return set.time;return set.blocks.reduce((t,b)=>t+(b.kind==='cw'?b.qs.length*18:b.qs.length*(b.kind==='passage'?100:80)),0)}
 function rlBand(p){return Math.round((1+5*p)*2)/2}
 /* ---- section switch now has 4 areas ---- */
-secSwitch=function(w){const cur=w===true?'w':w===false?'s':w;const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
-  return `<div class="secsw four" role="tablist" aria-label="영역 선택">${a('rd','r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}</div>`};
+secSwitch=function(w){const cur=w===true?'w':w===false?'s':w==='r2'?'r':w;const rdh=store.get('rdlv','rd')==='rb'?'rb':'rd';const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
+  return `<div class="secsw four" role="tablist" aria-label="영역 선택">${a(rdh,'r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}</div>`};
 function rlLnb(sec,cur){const S_=RLSEC[sec],P=S_.pre;
   const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const best=id=>{const h=RLH.hist.filter(x=>x.set===id);return h.length?Math.max(...h.map(x=>x.ok))+'/'+h[0].n:'—'};
-  $('#lnb').innerHTML=`<a class="brand" href="#${P}"><span class="mk">iBT</span><span>TOEFL Practice<small>${S_.name} · Hackers Intermediate</small></span></a>${secSwitch(sec)}
+  $('#lnb').innerHTML=`<a class="brand" href="#${P}"><span class="mk">iBT</span><span>TOEFL Practice<small>${S_.name} · ${S_.sub}</small></span></a>${secSwitch(sec)}${rlIsR(sec)?`<div class="rlvsw" role="tablist" aria-label="리딩 교재 선택"><a href="#rd" role="tab" aria-selected="${sec==='r'}"><b>중급</b><small>Intermediate</small></a><a href="#rb" role="tab" aria-selected="${sec==='r2'}"><b>기본</b><small>Updated Reading</small></a></div>`:''}
    ${link(P,'◧','대시보드')}
    ${[...rlGroups(sec)].map(([k,ss])=>`<div class="navgrp"><div class="gh">${esc(RLCAT[k]||k)}</div>${ss.map(s=>`<a class="nl sub" href="#${P}-s-${s.id}" ${cur===P+'-s-'+s.id?'aria-current="page"':''}><span>${esc(s.title.replace(/ · Hackers /,' · '))}<span class="sl">${esc((s.page||'').split(' · ')[0])}</span></span><span class="cnt">${best(s.id)}</span></a>`).join('')}</div>`).join('')}
    <div class="navgrp"><div class="gh">내 학습</div>${link(P+'-hist','☰','풀이 기록',`<span class="cnt">${RLH.hist.filter(x=>x.sec===sec).length}</span>`)}${link(P+'-voc','★','단어장',`<span class="cnt">${Object.values(RLH.voc).filter(v=>v.sec===sec).length}</span>`)}${link('settings','⚙','설정')}</div>
@@ -4303,7 +4320,7 @@ route=function(){
   if(RUN.active||document.body.classList.contains('testing'))return;
   const h=location.hash.slice(1)||'home',sec=rlSec(h);
   if(!sec){_routeW();const s=$('#lnb .secsw');if(s&&!s.classList.contains('four'))s.outerHTML=secSwitch(h==='w'||h.startsWith('w-')?'w':'s');return}
-  try{stopPlay()}catch(e){}rlStopAudio();store.set('sec',sec);const P=RLSEC[sec].pre;
+  try{stopPlay()}catch(e){}rlStopAudio();store.set('sec',sec);const P=RLSEC[sec].pre;if(rlIsR(sec))store.set('rdlv',P);
   rlLnb(sec,h.startsWith(P+'-r-')?P+'-hist':h);
   const c=$('#env');if(c){c.className='envchip';c.innerHTML=`<i></i><span>${RLSEC[sec].name} · 정답·해석·단어 포함</span>`}
   if(h===P)rlDash(sec);
@@ -4513,13 +4530,13 @@ function rlDash(sec){const S_=RLSEC[sec],P=S_.pre,H=RLH.hist.filter(x=>x.sec===s
   setCrumb([S_.name,'대시보드']);
   const best=id=>{const h=H.filter(x=>x.set===id);return h.length?Math.max(...h.map(x=>x.ok/x.n)):null};
   const done=sets.filter(s=>best(s.id)!=null),nx=sets.find(s=>best(s.id)==null),dt=sets.find(s=>/DT$/.test(s.id));
-  const bands=H.map(x=>rlBand(x.ok/x.n)),G=[...rlGroups(sec)],ats=sets.filter(s=>s.cat===P.replace(/^rd$/,'r').replace(/^ls$/,'l')+'-at');
+  const bands=H.map(x=>rlBand(x.ok/x.n)),G=[...rlGroups(sec)],ats=sets.filter(s=>s.cat===sec+'-at');
   const voc=Object.values(RLH.voc).filter(v=>v.sec===sec);
   const tc={};H.forEach(h=>h.res.forEach(r=>{const t=r.t||'기타';tc[t]=tc[t]||{n:0,ok:0};tc[t].n++;if(r.ok)tc[t].ok++}));
   const weak=Object.entries(tc).filter(([t,v])=>v.n>=2).sort((x,y)=>x[1].ok/x[1].n-y[1].ok/y[1].n).slice(0,5);
   view.innerHTML=`<div class="dash">
     <div class="panel welcome c12"><div><h1>오늘도 한 세트, 시험처럼.</h1>
-      <p>${esc(S_.book)}의 모든 문제를 ${sec==='r'?'제한 시간 안에 풀고':'실제 시험처럼 한 번만 듣고'} 바로 채점해요. 끝나면 정답 근거·해석·단어까지 확인할 수 있어요.</p></div>
+      <p>${esc(S_.book)}의 모든 문제를 ${rlIsR(sec)?'제한 시간 안에 풀고':'실제 시험처럼 한 번만 듣고'} 바로 채점해요. 끝나면 정답 근거·해석·단어까지 확인할 수 있어요.</p></div>
       <div class="row">${dt?`<a class="btn" href="#${P}-s-${dt.id}">진단 테스트 시작</a>`:''}${nx&&nx!==dt?`<a class="btn ghost" href="#${P}-s-${nx.id}">이어서: ${esc(nx.title)}</a>`:''}</div></div>
     <div class="c12 kpis">
       <div class="panel kpi"><div class="k">최근 밴드</div><div class="v">${last?rlBand(last.ok/last.n).toFixed(1):'–'}</div><div class="s">${last?esc(last.title)+' · '+last.ok+'/'+last.n:'응시 전'}</div></div>
@@ -4529,7 +4546,7 @@ function rlDash(sec){const S_=RLSEC[sec],P=S_.pre,H=RLH.hist.filter(x=>x.sec===s
     </div>
     <div class="panel ph c8"><h2>학습 달력 <span class="small muted" style="font-weight:500">날짜를 누르면 그날 푼 세트가 보여요</span></h2><div id="rlcal"></div></div>
     <div class="c4" style="display:grid;gap:16px;align-content:start">
-      <div class="panel ph"><h2>실전 모의고사</h2><div style="display:grid;gap:8px">${(ats.length?ats:sets.slice(-2)).map(s=>{const b=best(s.id);return `<a class="tile" href="#${P}-s-${s.id}"><span class="t">${esc(s.title)}</span><span class="m">${rlQs(s).length}문항${sec==='r'?' · '+Math.round(rlTime(s)/60)+'분':''}${b!=null?' · 최고 '+Math.round(b*100)+'%':''}</span></a>`}).join('')}</div></div>
+      <div class="panel ph"><h2>실전 모의고사</h2><div style="display:grid;gap:8px">${(ats.length?ats:sets.slice(-2)).map(s=>{const b=best(s.id);return `<a class="tile" href="#${P}-s-${s.id}"><span class="t">${esc(s.title)}</span><span class="m">${rlQs(s).length}문항${rlIsR(sec)?' · '+Math.round(rlTime(s)/60)+'분':''}${b!=null?' · 최고 '+Math.round(b*100)+'%':''}</span></a>`}).join('')}</div></div>
     </div>
     <div class="panel ph c8"><h2>Task별 진도 <a href="#${P}-hist">풀이 기록 →</a></h2><div class="prog" style="grid-template-columns:1fr">${G.map(([k,ss])=>{const d=ss.filter(s=>best(s.id)!=null).length,f=ss.find(s=>best(s.id)==null)||ss[0];return `<a class="progrow" href="#${P}-s-${f.id}"><span class="pt">${esc(RLCAT[k]||k)}<small>${ss.length}세트 · ${ss.reduce((n,s)=>n+rlQs(s).length,0)}문항</small></span><span class="bar"><i style="width:${(d/ss.length*100).toFixed(0)}%"></i></span><span class="mono small">${d}/${ss.length}</span></a>`}).join('')}</div></div>
     <div class="c4" style="display:grid;gap:16px;align-content:start">
@@ -4543,7 +4560,7 @@ function rlSetPage(sec,id){const set=rlSets(sec).find(s=>s.id===id);if(!set){vie
   const S_=RLSEC[sec];setCrumb([S_.name,set.title]);
   const types={};rlQs(set).forEach(q=>types[q.t]=(types[q.t]||0)+1);
   view.innerHTML=`<div class="cathead"><div><span class="badge">${S_.name} · ${esc(set.page||'')}</span><h1>${esc(set.title)}</h1><p>${rlQs(set).length}문항 · ${set.blocks.length}개 지문/세트</p></div></div>
-   <div class="rlmodes"><button class="panel ph rlmode" data-m="exam"><b>${ICON('play')} 실전 모드</b><span>${sec==='r'?`제한 시간 ${Math.round(rlTime(set)/60)}분 · 문항 이동 가능 · 끝나고 한 번에 채점`:'음성은 한 번만 재생 · 다시 듣기 불가 · 끝나고 한 번에 채점'}</span></button>
+   <div class="rlmodes"><button class="panel ph rlmode" data-m="exam"><b>${ICON('play')} 실전 모드</b><span>${rlIsR(sec)?`제한 시간 ${Math.round(rlTime(set)/60)}분 · 문항 이동 가능 · 끝나고 한 번에 채점`:'음성은 한 번만 재생 · 다시 듣기 불가 · 끝나고 한 번에 채점'}</span></button>
    <button class="panel ph rlmode" data-m="prac"><b>${ICON('pencil')} 연습 모드</b><span>시간 제한 없음 · ${sec==='l'?'다시 듣기·속도 조절 가능 · ':''}문항마다 바로 정답·해석·해설 확인</span></button></div>
    <section class="section"><h2>문제 유형</h2><p class="small">${Object.entries(types).map(([t,n])=>`<span class="mtag sm">${esc(t)} ${n}</span>`).join(' ')}</p></section>`;
   $$('.rlmode').forEach(b=>b.onclick=()=>rlRun(sec,set,b.dataset.m))}
@@ -4553,7 +4570,7 @@ function rlRun(sec,set,mode){if(mode==='exam')return rlExam(sec,set);
   document.body.classList.add('rltest');
   const leave=()=>{clearInterval(st.tm);rlStopAudio();document.body.classList.remove('rltest')};
   function frame(){const b=set.blocks[st.i],ns=b.qs.map(q=>q.n),N=rlQs(set).length;
-    view.innerHTML=`<div class="rlrun"><div class="wbar"><b>TOEFL iBT</b><span class="small">${S_.name} | Questions ${String(ns[0]).padStart(2,'0')}${ns.length>1?'-'+String(ns[ns.length-1]).padStart(2,'0'):''} of ${N}</span><span style="flex:1"></span>${sec==='r'&&mode==='exam'?'<span class="rltime" id="rltm"></span>':''}${mode==='prac'?`<span class="rlstk" id="rlstk">${st.streak>=2?'🔥 '+st.streak+'연속':''}</span><button class="btn sm quiet" id="rlsfx" title="효과음">${ICON(SFX.on()?'bell':'belloff')}</button>`:''}<button class="btn sm quiet" id="rlx">나가기</button>${st.i>0&&(sec==='r'||mode==='prac')?'<button class="btn sm" id="rlb">‹ Back</button>':''}<button class="btn sm primary" id="rln">${st.i===set.blocks.length-1?'채점하기':'Next ›'}</button></div>
+    view.innerHTML=`<div class="rlrun"><div class="wbar"><b>TOEFL iBT</b><span class="small">${S_.name} | Questions ${String(ns[0]).padStart(2,'0')}${ns.length>1?'-'+String(ns[ns.length-1]).padStart(2,'0'):''} of ${N}</span><span style="flex:1"></span>${rlIsR(sec)&&mode==='exam'?'<span class="rltime" id="rltm"></span>':''}${mode==='prac'?`<span class="rlstk" id="rlstk">${st.streak>=2?'🔥 '+st.streak+'연속':''}</span><button class="btn sm quiet" id="rlsfx" title="효과음">${ICON(SFX.on()?'bell':'belloff')}</button>`:''}<button class="btn sm quiet" id="rlx">나가기</button>${st.i>0&&(rlIsR(sec)||mode==='prac')?'<button class="btn sm" id="rlb">‹ Back</button>':''}<button class="btn sm primary" id="rln">${st.i===set.blocks.length-1?'채점하기':'Next ›'}</button></div>
       <div class="rldots">${set.blocks.map((x,k)=>`<button class="${k===st.i?'on':''} ${x.qs.every(q=>st.ans[q.n]!=null&&st.ans[q.n]!=='')?'ok':''}" data-k="${k}" ${sec==='l'&&mode==='exam'?'disabled':''}>${x.qs[0].n}${x.qs.length>1?'–'+x.qs[x.qs.length-1].n:''}</button>`).join('')}</div>
       <div id="rlbody"></div></div>`;
     $('#rlsfx')?.addEventListener('click',()=>{store.set('sfx',!SFX.on());$('#rlsfx').innerHTML=ICON(SFX.on()?'bell':'belloff');if(SFX.on())SFX.ok()});
@@ -4561,10 +4578,10 @@ function rlRun(sec,set,mode){if(mode==='exam')return rlExam(sec,set);
     $('#rlb')?.addEventListener('click',()=>{st.i--;rlStopAudio();frame()});
     $('#rln').onclick=()=>{if(st.i===set.blocks.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!confirm(`답하지 않은 문항이 ${miss}개 있어요. 채점할까요?`))return;finish()}else{st.i++;rlStopAudio();frame()}};
     $$('.rldots button').forEach(x=>x.onclick=()=>{st.i=+x.dataset.k;rlStopAudio();frame()});
-    if(sec==='r'&&mode==='exam'){const tick=()=>{const e=$('#rltm');if(e)e.textContent='⏱ '+Math.floor(st.left/60)+':'+String(st.left%60).padStart(2,'0');e?.classList.toggle('warn',st.left<=60)};tick();clearInterval(st.tm);st.tm=setInterval(()=>{st.left--;tick();if(st.left<=0){clearInterval(st.tm);toast('시간이 끝났어요. 채점할게요.');finish()}},1000)}
+    if(rlIsR(sec)&&mode==='exam'){const tick=()=>{const e=$('#rltm');if(e)e.textContent='⏱ '+Math.floor(st.left/60)+':'+String(st.left%60).padStart(2,'0');e?.classList.toggle('warn',st.left<=60)};tick();clearInterval(st.tm);st.tm=setInterval(()=>{st.left--;tick();if(st.left<=0){clearInterval(st.tm);toast('시간이 끝났어요. 채점할게요.');finish()}},1000)}
     rlBlock($('#rlbody'),sec,b,st,mode)}
   function finish(part){leave();const qs=rlQs(set).filter(q=>!part||(st.ans[q.n]!=null&&st.ans[q.n]!=='')),res=qs.map(q=>({n:q.n,t:q.t,my:st.ans[q.n]??null,ok:rlCorrect(q,st.ans[q.n])}));
-    const rec={ts:Date.now(),sec,set:set.id,title:set.title+(part?' (중간 저장)':''),partial:!!part,mode,n:qs.length,ok:res.filter(r=>r.ok).length,res,sec_used:sec==='r'&&mode==='exam'?rlTime(set)-st.left:null};
+    const rec={ts:Date.now(),sec,set:set.id,title:set.title+(part?' (중간 저장)':''),partial:!!part,mode,n:qs.length,ok:res.filter(r=>r.ok).length,res,sec_used:rlIsR(sec)&&mode==='exam'?rlTime(set)-st.left:null};
     RLH.hist.push(rec);rlSave();location.hash='#'+S_.pre+'-r-'+rec.ts}
   frame()}
 function rlTx(t){return esc(t).replace(/&lt;(\/?(?:i|b|u|br|small|sup|sub))&gt;/g,'<$1>').replace(/&amp;(#\d+;)/g,'&$1')}
@@ -4987,8 +5004,8 @@ async function vcPlay(w0,kind='w',si=0){vcStop();const w=w0.vref||w0,eng=w.day?v
   const t=kind==='s'?(w.senses[si]||w.senses[0]||{}).ex:w.word;return rlSayE(t,fb)}
 
 /* ---------- shell: section switch, LNB, router ---------- */
-secSwitch=function(w){const cur=w===true?'w':w===false?'s':w;const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
-  return `<div class="secsw four five" role="tablist" aria-label="영역 선택">${a('rd','r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}${a('vc','v','Vocab')}</div>`};
+secSwitch=function(w){const cur=w===true?'w':w===false?'s':w==='r2'?'r':w;const rdh=store.get('rdlv','rd')==='rb'?'rb':'rd';const a=(h,k,t)=>`<a href="#${h}" role="tab" aria-selected="${cur===k}">${t}</a>`;
+  return `<div class="secsw four five" role="tablist" aria-label="영역 선택">${a(rdh,'r','Reading')}${a('ls','l','Listening')}${a('home','s','Speaking')}${a('w','w','Writing')}${a('vc','v','Vocab')}</div>`};
 function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const day=d=>{const ws=vcDay(d),k=ws.filter(w=>vcSt(w)==='known').length;return `<a class="nl sub" href="#vc-d-${d}" ${cur==='vc-d-'+d?'aria-current="page"':''}><span>Day ${String(d).padStart(2,'0')}<span class="sl">${ws.length}단어</span></span><span class="cnt ${k&&k===ws.length?'full':''}">${k}/${ws.length}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#vc"><span class="mk">iBT</span><span>TOEFL Practice<small>Vocab · Hackers TOEFL VOCA</small></span></a>${secSwitch('v')}
@@ -5256,7 +5273,8 @@ function vcBackup(){setCrumb(['Vocab','기록 옮기기']);
 
 /* ---------- 첫 화면 (landing): 5과목 진행 상황 + 과목 선택 ---------- */
 const HM_SUBJ=[
-  {k:'r',name:'Reading',ko:'리딩',ic:'read',href:'#rd',c:'var(--k-r)'},
+  {k:'r',name:'Reading 중급',ko:'리딩 중급',ic:'read',href:'#rd',c:'var(--k-r)'},
+  {k:'r2',name:'Reading 기본',ko:'리딩 기본',ic:'read',href:'#rb',c:'var(--k-r)'},
   {k:'l',name:'Listening',ko:'리스닝',ic:'listen',href:'#ls',c:'var(--k-l)'},
   {k:'s',name:'Speaking',ko:'스피킹',ic:'speak',href:'#home',c:'var(--k-s)'},
   {k:'w',name:'Writing',ko:'라이팅',ic:'write',href:'#w',c:'var(--k-w)'},
@@ -5273,7 +5291,7 @@ function hmEvents(){const E=[],add=(k,ts,n=1)=>{if(ts)E.push({k,ts,n})};
   return E}
 function hmStat(k){
   const sp=(vals)=>vals.filter(v=>v!=null).slice(-12);
-  if(k==='r'||k==='l'){const H=RLH.hist.filter(x=>x.sec===k),sets=rlSets(k),P=RLSEC[k].pre,
+  if(k==='r'||k==='r2'||k==='l'){const H=RLH.hist.filter(x=>x.sec===k),sets=rlSets(k),P=RLSEC[k].pre,
       best=id=>H.some(x=>x.set===id),done=sets.filter(s=>best(s.id)).length,nx=sets.find(s=>!best(s.id)),bands=H.map(x=>rlBand(x.ok/x.n)),last=H[H.length-1];
     return {done,total:sets.length,unit:'세트',last:last&&last.ts,recent:last?rlBand(last.ok/last.n):null,best:bands.length?Math.max(...bands):null,spark:sp(bands),
       next:nx?{href:`#${P}-s-${nx.id}`,t:nx.title.replace(/ · Hackers .*/,'')}:null,n:H.length}}
@@ -5315,7 +5333,7 @@ function plDays(L){const P=window.PLAN;if(!P)return null;const B=L===30?'30':'20
     out.push(items)}
   return out}
 function plIds(it){const ids=it.ids||[];try{
-  if(it.s==='r'||it.s==='l')return ids.filter(id=>RLH.hist.some(h=>h.set===id)).length;
+  if(it.s==='r'||it.s==='r2'||it.s==='l')return ids.filter(id=>RLH.hist.some(h=>h.set===id)).length;
   if(it.s==='s')return ids.filter(id=>S.best[id]).length;
   if(it.s==='w')return ids.filter(id=>W.best[id]).length}catch(e){}return 0}
 function plDone(it,key,chk){if(it.m)return chk[key]===1;
@@ -5368,7 +5386,7 @@ function renderHome(){
   const todayDone=HM_SUBJ.filter(s=>byDay[today]&&byDay[today][s.k]);
   // recommendation: vocab review first if due, otherwise the subject left alone the longest
   const ranked=HM_SUBJ.filter(s=>s.k!=='v'&&ST[s.k]).sort((a,b)=>(ST[a.k].last||0)-(ST[b.k].last||0));
-  let rec=ST.v&&ST.v.due>=10&&!(byDay[today]||{}).v?{s:HM_SUBJ[4],why:`복습할 단어가 ${ST.v.due}개 쌓였어요`}:ranked[0]?{s:ranked[0],why:ST[ranked[0].k].last?`${hmAgo(ST[ranked[0].k].last)} 마지막으로 했어요 · 가장 오래 쉰 과목`:'아직 한 번도 안 해 본 과목이에요'}:null;
+  let rec=ST.v&&ST.v.due>=10&&!(byDay[today]||{}).v?{s:HM_SUBJ.find(x=>x.k==='v'),why:`복습할 단어가 ${ST.v.due}개 쌓였어요`}:ranked[0]?{s:ranked[0],why:ST[ranked[0].k].last?`${hmAgo(ST[ranked[0].k].last)} 마지막으로 했어요 · 가장 오래 쉰 과목`:'아직 한 번도 안 해 본 과목이에요'}:null;
   {const P=plState();if(P&&P.cur>=1&&P.cur<=P.p.n){const D=P.D[P.cur-1],j=P.stat[P.cur-1].findIndex(x=>!x);if(j>=0){const it=D[j],sj=HM_SUBJ.find(x=>x.k===it.s);rec={s:Object.assign({},sj,{href:it.h||sj.href}),why:`오늘 플랜 · ${it.t}`,plan:1}}}}
   const hr=new Date().getHours(),hi=hr<6?'늦은 밤에도 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
   const pg=plGet(),hf=store.get('hmfrom',''),from=hf?plDate(hf):pg&&pg.start?plDate(pg.start):new Date(HM_FROM),t0=new Date();t0.setHours(0,0,0,0);
@@ -5418,7 +5436,7 @@ function renderHome(){
       <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true" style="color:${s.c}">${ICON(s.ic)}</span><span>${s.name}</span></a>`).join('')}</div>
       <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">${ICON('gear')}</span><span>설정</span></a></div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
-    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.map(s=>`<a href="${s.href}">${ICON(s.ic)}${s.name}</a>`).join('');
+    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.filter(s=>s.k!=='r2').map(s=>`<a href="${s.href}">${ICON(s.ic)}${s.name}</a>`).join('');
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>5과목 한눈에 보기</span>'}
     renderHome();window.scrollTo(0,0);hmMsec();return}
   _routeV();const b=$('#lnb .brand');if(b)b.setAttribute('href','#start');hmMsec()};
@@ -5466,17 +5484,18 @@ function bgStopSay(){try{window.RLSAYSEQ++;speechSynthesis.cancel();if(RLAIA){RL
 function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();setCrumb(['배경지식',t.ko]);const S2=bgSeen();S2[id]=Date.now();store.set('bgseen',S2);
   const sayBtn=(txt,lbl='🔊',ko)=>`<button type="button" class="btn sm quiet bgsay" data-bgsay="${esc(txt)}" ${ko?'data-ko="1"':''} data-l="${esc(lbl)}" aria-label="듣기">${lbl}</button>`;
   const two=(ko,en)=>`<div class="bgov"><div><h3>🇰🇷 한글 ${sayBtn(ko,'🔊 듣기',1)}</h3><p>${esc(ko)}</p></div><div><h3>🇺🇸 English ${sayBtn(en,'🔊 Listen')}</h3><p class="bgoe">${esc(en)}</p></div></div>`;
-  const N=t.n||[];
+  const N=t.n||[],BK=t.bk||[];
   view.innerHTML=`<div class="bgpage" style="--sc:${t.c}">
-    <div class="cathead"><div><a class="small" href="#bg">← 배경지식</a><h1 style="margin-top:6px"><span class="bgtic">${t.ic}</span>${esc(t.ko)} <span class="bgen">${esc(t.en)}</span></h1><p>교재 지문 ${t.ps.length}개 · 개요 → 그림 → 배경지식 노트 → 핵심 개념 → 어휘 → 영상 → 지문 순서로 보세요.</p></div></div>
-    <nav class="bgnav">${[['bgo','개요'],['bgd','그림'],['bgn','배경지식 노트'],['bgc','핵심 개념'],['bgv','어휘'],['bgm','영상'],['bgp','교재 지문']].map(([a,b])=>`<a href="javascript:void 0" data-go="${a}">${b}</a>`).join('')}</nav>
+    <div class="cathead"><div><a class="small" href="#bg">← 배경지식</a><h1 style="margin-top:6px"><span class="bgtic">${t.ic}</span>${esc(t.ko)} <span class="bgen">${esc(t.en)}</span></h1><p>교재 지문 ${t.ps.length}개 · 개요 → 그림 → 배경지식 노트 → 핵심 개념${BK.length?' → 배경지식 사전':''} → 어휘 → 영상 → 지문 순서로 보세요.</p></div></div>
+    <nav class="bgnav">${[['bgo','개요'],['bgd','그림'],['bgn','배경지식 노트'],['bgc','핵심 개념'],...(BK.length?[['bgk','배경지식 사전']]:[]),['bgv','어휘'],['bgm','영상'],['bgp','교재 지문']].map(([a,b])=>`<a href="javascript:void 0" data-go="${a}">${b}</a>`).join('')}</nav>
     <section class="panel ph" id="bgo"><h2>개요 <span class="small muted" style="font-weight:500">한글과 영어를 각각 들을 수 있어요</span></h2>${two(t.ok,t.oe)}${N.length?`<ol class="bgtoc">${N.map((n,i)=>`<li><a href="javascript:void 0" data-go="bgn${i}">${esc(n.h[0])} <em>${esc(n.h[1])}</em></a></li>`).join('')}</ol>`:''}</section>
     <section class="panel ph" id="bgd"><h2>그림으로 보기</h2>${bgFig(t.dg,t.c)}</section>
     <div id="bgn">${N.map((n,i)=>`<section class="panel ph bgnote" id="bgn${i}"><h2><span class="bgno">${i+1}</span><span>${esc(n.h[0])}<em>${esc(n.h[1])}</em></span></h2>${two(n.ko,n.en)}${n.dg?bgFig(n.dg,t.c):''}</section>`).join('')}</div>
     <section class="panel ph" id="bgc"><h2>핵심 개념 <span class="small muted" style="font-weight:500">지문에 그대로 나오는 개념이에요</span></h2><div class="bgcc">${t.cc.map(([en,ko])=>`<div class="bgcard"><p class="bgterm">${esc(en)} ${sayBtn(en.replace(/\s*\(.*?\)/g,''))}</p><p>${esc(ko)}</p></div>`).join('')}</div></section>
+    ${BK.length?`<section class="panel ph" id="bgk"><h2>배경지식 사전 <span class="small muted" style="font-weight:500">기본 교재(Updated Reading)의 주제별 배경지식을 정리했어요 · ${BK.length}개</span></h2><div class="bgbk">${BK.map(k=>`<article class="bgkc"><header><span class="bgkg">${esc(k.g)}</span><h3>${esc(k.ko)}<em>${esc(k.en)}</em></h3>${sayBtn(k.ko+'. '+k.t,'🔊 듣기',1)}</header><p>${esc(k.t)}</p></article>`).join('')}</div></section>`:''}
     <section class="panel ph" id="bgv"><h2>핵심 어휘</h2><div class="bgvv">${t.vv.map(([en,ko])=>`<div class="bgw">${sayBtn(en.split(' / ')[0])}<b>${esc(en)}</b><span class="muted">${esc(ko)}</span></div>`).join('')}</div></section>
     <section class="panel ph" id="bgm"><h2>영상으로 보기 <span class="small muted" style="font-weight:500">새 창에서 YouTube가 열려요 · 자막(영어/한국어)을 켜고 보세요</span></h2><ul class="bgvid">${t.vid.map(v=>`<li><a href="${esc(v.u)}" target="_blank" rel="noopener">${v.v?'📺':'🔎'} ${esc(v.t)}</a></li>`).join('')}</ul></section>
-    <section class="panel ph" id="bgp"><h2>이 주제의 교재 지문 <span class="small muted" style="font-weight:500">누르면 지문·해석이 열려요</span></h2><ol class="bgps">${t.ps.map((p,i)=>`<li><button type="button" class="bgpsb" data-i="${i}"><span class="mtag sm ${p.sec==='r'?'':'alt'}">${p.sec==='r'?'Reading':'Listening'}</span> <b>${esc(p.ko)}</b><span class="small muted bgpsen">${esc(p.en)}</span><span class="small muted">${esc(p.src)}</span></button></li>`).join('')}</ol></section>
+    <section class="panel ph" id="bgp"><h2>이 주제의 교재 지문 <span class="small muted" style="font-weight:500">누르면 지문·해석이 열려요</span></h2><ol class="bgps">${t.ps.map((p,i)=>`<li><button type="button" class="bgpsb" data-i="${i}"><span class="mtag sm ${p.sec==='l'?'alt':''}">${p.sec==='r'?'Reading 중급':p.sec==='r2'?'Reading 기본':'Listening'}</span> <b>${esc(p.ko)}</b><span class="small muted bgpsen">${esc(p.en)}</span><span class="small muted">${esc(p.src)}</span></button></li>`).join('')}</ol></section>
   </div>`;
   $$('[data-go]',view).forEach(a=>a.onclick=()=>{const e=$('#'+a.dataset.go);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})});
   const off=b=>{if(!b)return;b.classList.remove('on');if(b.dataset.l.length>2)b.textContent=b.dataset.l};
