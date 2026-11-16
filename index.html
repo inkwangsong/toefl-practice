@@ -571,7 +571,7 @@ body.testing .shell{display:none}
 .tyxlab{display:block;font-size:12.5px;font-weight:800;color:var(--mute);margin-bottom:2px}.tyxp.on .tyxlab{color:var(--accent)}
 .tyxs.done{color:var(--ink)}.tyxs.now{color:var(--ink)}.tyxdone{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .tyxcur{border-bottom:2px solid var(--accent)}
-.tyxko{display:block;font-size:14px;color:var(--mute);margin:1px 0 4px}
+.tyxtpl{font-weight:800;color:var(--ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent);text-decoration-thickness:2px;text-underline-offset:3px}.tyxs .tyxdone{color:var(--accent)}.tyxlab em{display:block;font-style:normal;font-weight:600;font-size:13px;color:var(--mute);margin-top:1px}.tyxsk{margin:0 0 8px;padding-left:22px;display:grid;gap:8px}.tyxsk li b{margin-right:8px}.tyxsk p{margin:3px 0 0;font-size:15.5px;line-height:1.7;font-family:var(--ui)}.tyxko{display:block;font-size:14px;color:var(--mute);margin:1px 0 4px}
 .tyxans.hide .tyxs:not(.done){letter-spacing:.5px}
 .tyxed textarea{display:block;width:100%;box-sizing:border-box;border:0;border-radius:0;margin:0;resize:vertical;min-height:240px;font-size:17px;line-height:1.65;padding:12px 14px;background:var(--surface);color:var(--ink)}.tyxed textarea:focus{outline:none}.tyxed:focus-within{border-color:var(--accent)}.tyxq summary{cursor:pointer;margin-bottom:10px;list-style-position:inside}
 .tyxctl{align-items:center}
@@ -3627,7 +3627,7 @@ function wCalendar(){const box=el('<div class="cal"></div>'),now=new Date();WCAL
     if(sel){const it=(days[keyOf(y,m,sel)]||[]).slice().sort((a,b)=>a.ts-b.ts),hm=ts=>new Date(ts).toTimeString().slice(0,5);
       $('#wcalday',box).innerHTML=`<h4>${m+1}월 ${sel}일</h4>${it.length?`<ul>${it.map(x=>x.k==='test'?`<li><a href="#w-r-${x.h.ts}"><span class="mono small">${hm(x.ts)}</span> ${esc(x.h.title||'Writing')} <b class="mono">${x.h.band?x.h.band.toFixed(1):'–'}</b> →</a></li>`
         :x.k==='tpl'?`<li><span class="mono small">${hm(x.ts)}</span> 템플릿 연습 · Task ${x.l.task} <span class="small muted">${x.l.words||0}단어${x.l.score!=null?' · '+x.l.score+'점':''}</span></li>`
-        :`<li><span class="mono small">${hm(x.ts)}</span> 따라 쓰기 <span class="small muted">정확도 ${x.l.acc}% · ${x.l.wpm} WPM</span></li>`).join('')}</ul>`:'<p class="small muted">이날은 기록이 없어요.</p>'}`}}
+        :`<li><span class="mono small">${hm(x.ts)}</span> 따라 쓰기 <span class="small muted">정확도 ${x.l.acc}%</span></li>`).join('')}</ul>`:'<p class="small muted">이날은 기록이 없어요.</p>'}`}}
   paint(new Date().getMonth()===WCAL.m&&new Date().getFullYear()===WCAL.y?new Date().getDate():null);return box}
 function renderWDash(){
   setCrumb(['Writing','대시보드']);
@@ -4257,6 +4257,27 @@ function tyCompose(d){const email=d.lines.some(l=>/받는 사람|맺음말/.test
   let out='';const parts=[];L.forEach((l,i)=>{let t=l.t;if(email&&l.sec==='맺음말')t=t.replace(/,\s+/,',\n');
     const sep=i===0?'':email&&(l.sec!==L[i-1].sec||l.sec==='인사')?'\n\n':' ';out+=sep;const a=out.length;out+=t;parts.push({...l,t,a,b:out.length})});return {text:out,parts,email}}
 const tyFlat=s=>tyN(String(s).replace(/\n/g,' '));
+/* what each part of the template does, so the copy is studied as a structure, not typed as a drill */
+const TYROLE={'인사':'받는 사람 부르기 · Dear + 직함 + 성(Mr./Ms./Dr.) + 쉼표','목적':'나를 한 줄로 소개하고, 이메일을 쓰는 이유를 바로 밝혀요','세부 내용':'문제의 요구 사항(• 3개)을 순서대로 하나씩 · 요구마다 한두 문장','마무리':'감사 인사 + 답장/조치 부탁으로 정중하게 닫기','맺음말':'Best regards, / Sincerely, + 내 이름',
+  '도입':'토론 주제를 내 말로 다시 꺼내며 시작','내 의견':'내 입장을 한 문장으로 분명하게','이유':'반대 의견을 먼저 인정하고(While some argue...) 내 이유로 반박','일반적 진술':'이유를 받쳐 주는 요즘 사회의 일반적인 사실','예시':'구체적인 예나 내 경험으로 이유를 증명','요약':'의견과 이유를 한 문장으로 다시 정리'};
+/* the template frame lines (teacher's fixed sentences and email expressions) */
+/* generic template frames (___ = the part you change). Task 3 also uses the teacher's fixed frame sentences. */
+const TYFRG=['Dear Mr. ___,','Dear Ms. ___,','Dear Dr. ___,','Dear Professor ___,','To Whom It May Concern,','I hope this email finds you well.','I hope you are doing great.','My name is ___, and I am ___.','I am writing to ___ regarding ___.','I am writing to ___.','I would like to ___.','I have noticed that ___.','I generally ___, especially because ___.','However, ___.','In some instances, ___.','Would it be possible to ___?','I was wondering if you could ___.','To address this issue, I suggest ___.','To improve the situation, I would like to suggest ___.','I would greatly appreciate it if you could ___.','Thank you for your attention to this matter.','Thank you for your time and consideration.','I look forward to hearing from you.','Please let me know if ___.','Best regards, ___','Sincerely, ___',
+  'In the ongoing debate surrounding ___,','I am of the opinion that ___.','I am of the opinion that it yields superior results.','While some argue that ___, it still ___ in the long run.','While some argue that ___, ___.','The primary factor behind this assertion is that ___.','Recently, given ___, many individuals ___ today than ever before; therefore, ___.','Recently, ___ more than ever before.','For instance, ___.','For example, ___.','Not only ___ but also ___.','My personal experience can substantiate the claim that ___.','Overall, the undeniable benefits ___ make it a compelling and pragmatic choice for ___.','Overall, ___.'];
+let TYFR=null;function tyFrames(){if(TYFR)return TYFR;TYFR=TYFRG.slice();for(const g of WTYPE)for(const d of g.drills)if(d.id==='frame')d.lines.forEach(l=>TYFR.push(tyN(tyName(l.t))));return TYFR}
+/* a sentence with only its template words kept; each run of content words becomes ___ */
+function tySkel(p){const o=[];p.W.forEach((w,j)=>{if(p.M[j])o.push(w);else if(o[o.length-1]!=='___')o.push('___')});return o.every(x=>x==='___')?'(내용 문장 · 자유롭게)':o.join(' ')}
+/* mask sentence by sentence, so a line holding two sentences can match two frames */
+function tyTplMaskAll(W){const out=[];let g=[];const flush=()=>{if(g.length)out.push(...tyTplMask(g.join(' ')));g=[]};W.forEach(w=>{g.push(w);if(/[.?!]['"”]?$/.test(w))flush()});flush();return out}
+const tyTok=w=>w.toLowerCase().replace(/[^a-z0-9']/g,'');
+/* words of a model sentence that come from the template: runs of 2+ words shared, in order, with the closest frame sentence */
+function tyTplMask(t){const W=t.split(' '),A=W.map(tyTok);let best=null,bh=0,bf=0;
+  for(const f of tyFrames()){const B=f.split(' ').map(tyTok),m=A.length,n=B.length,D=Array.from({length:m+1},()=>new Uint16Array(n+1));
+    for(let i=m-1;i>=0;i--)for(let j=n-1;j>=0;j--)D[i][j]=A[i]&&A[i]===B[j]?D[i+1][j+1]+1:Math.max(D[i+1][j],D[i][j+1]);
+    if(D[0][0]<=bh)continue;const pr=[];let i=0,j=0;while(i<m&&j<n){if(A[i]&&A[i]===B[j]){pr.push([i,j]);i++;j++}else if(D[i+1][j]>=D[i][j+1])i++;else j++}
+    const mask=new Array(m).fill(false);let k=0;while(k<pr.length){let e=k;while(e+1<pr.length&&pr[e+1][0]===pr[e][0]+1&&pr[e+1][1]===pr[e][1]+1)e++;if(e>k)for(let x=k;x<=e;x++)mask[pr[x][0]]=true;k=e+1}
+    const h=mask.filter(Boolean).length;if(h>bh){bh=h;best=mask;bf=B.filter(Boolean).length}}
+  return bh>=Math.min(3,bf)&&bh>=2?best:new Array(W.length).fill(false)}
 function renderWTypeExam(id){
   const f=tyFind(id);if(!f||!tyFull(f.d)){renderWTypeRun(id,false);return}
   const {g,d}=f,C=tyCompose(d),T=C.text,TF=tyFlat(T),email=C.email;
@@ -4264,16 +4285,16 @@ function renderWTypeExam(id){
   const P=C.parts.map(p=>({...p,fa:tyFlat(T.slice(0,p.a)).length+(p.a>0?1:0)}));P.forEach((p,i)=>p.fb=i+1<P.length?P[i+1].fa-1:TF.length);
   const secs=[];P.forEach(p=>{const s=secs[secs.length-1];if(s&&s.n===p.sec)s.to=p.fb;else secs.push({n:p.sec,from:p.fa,to:p.fb})});
   setCrumb(['Writing','따라 쓰기',tyName(d.title)]);
-  const st={t0:0,hide:store.get('tyxhide',false),ko:store.get('tyxko',false)};
-  view.innerHTML=`<div class="cathead"><div><a href="#w-type" class="small">← 따라 쓰기 목록</a><h1 style="margin-top:6px">${esc(tyName(d.title))}</h1><p class="small muted">${esc(g.title)} · 시험 화면에서 답안 전체를 따라 써요</p></div>
+  const st={t0:0,hide:store.get('tyxhide',false),ko:store.get('tyxko2',true),tp:store.get('tyxtp',true)};P.forEach(p=>{p.W=p.t.split(/[ \n]/);p.M=tyTplMaskAll(p.W)});
+  view.innerHTML=`<div class="cathead"><div><a href="#w-type" class="small">← 따라 쓰기 목록</a><h1 style="margin-top:6px">${esc(tyName(d.title))}</h1><p class="small muted">${esc(g.title)} · 문제를 보면서 템플릿 구조대로 답안 전체를 따라 써요</p></div>
     <div class="row"><div class="secsw tymode three" role="tablist"><a href="#w-ty-${id}~x" role="tab" aria-selected="true">시험 화면</a><a href="#w-ty-${id}" role="tab" aria-selected="false">한 문장씩</a><a href="#w-ty-${id}~b" role="tab" aria-selected="false">가리고 쓰기</a></div></div></div>
     <div class="tyx">
       <details class="tyxq panel" ${innerWidth>820?'open':''}><summary><b>📝 문제</b> <span class="small muted">눌러서 접기/펼치기</span></summary><div class="wdirbox"><b>Directions</b> ${email?'Read the situation and write an email. You will have 7 minutes in the real test.':'Your professor has posted a question. Write a post that gives and supports your opinion. Aim for at least 100 words; you will have 10 minutes in the real test.'}</div>
         <div class="tyxqt">${esc(tyName(d.q))}</div></details>
       <section class="tyxm panel">
         <div class="tyxsec" role="list" aria-label="템플릿 구조">${secs.map((s,i)=>`<span role="listitem" class="tyxchip" data-s="${i}"><b>${i+1}</b>${esc(s.n)}</span>`).join('<i aria-hidden="true">→</i>')}</div>
-        <div class="tyxtools"><span class="small muted" id="tyxst">모범 답안을 보면서 아래 칸에 그대로 쳐 보세요</span><span style="flex:1"></span>
-          <button type="button" class="btn sm quiet" id="tyxko" aria-pressed="${st.ko}">한글 뜻</button><button type="button" class="btn sm quiet" id="tyxhide" aria-pressed="${st.hide}">답안 가리기</button></div>
+        <div class="tyxtools"><span class="small muted" id="tyxst"><b class="tyxtpl">굵은 글씨</b> = 외워 둘 템플릿 틀 · 나머지 = 문제에 맞게 바꾸는 내용</span><span style="flex:1"></span>
+          <button type="button" class="btn sm quiet" id="tyxtp" aria-pressed="${st.tp}">템플릿 틀 표시</button><button type="button" class="btn sm quiet" id="tyxko" aria-pressed="${st.ko}">한글 뜻</button><button type="button" class="btn sm quiet" id="tyxhide" aria-pressed="${st.hide}">답안 가리기</button></div>
         <div class="tyxans" id="tyxans" aria-label="모범 답안"></div>
         <div class="wedit tyxed"><div class="wtools"><b class="small">Your Response</b><span class="wwc"><span class="small muted" id="tyxacc"></span> <b class="mono" id="tyxwc">0 words</b></span></div>
           <textarea id="tyxin" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" aria-label="답안 따라 쓰기" placeholder="위 모범 답안을 보면서 여기에 그대로 쳐 보세요"></textarea></div>
@@ -4285,10 +4306,11 @@ function renderWTypeExam(id){
   function scan(){const v=tyFlat(inp.value);let i=0,bad=0;const n=Math.min(v.length,TF.length);for(;i<n;i++)if(v[i].toLowerCase()!==TF[i].toLowerCase())bad++;return {pos:v.length,bad}}
   function paint(){const {pos,bad}=scan();const cur=P.findIndex(p=>pos<=p.fb)<0?P.length-1:P.findIndex(p=>pos<=p.fb);
     box.classList.toggle('hide',st.hide);
-    let h='',lastSec=null;P.forEach((p,i)=>{if(p.sec!==lastSec){if(lastSec!==null)h+='</div>';h+=`<div class="tyxp${p.sec===P[cur].sec?' on':''}"><span class="tyxlab">${esc(p.sec)}</span>`;lastSec=p.sec}
-      const done=pos>=p.fb,now=i===cur;
-      let t;if(now&&!st.hide){const k=Math.max(0,Math.min(p.t.length,pos-p.fa));t=`<span class="tyxdone">${esc(p.t.slice(0,k))}</span><span class="tyxcur">${esc(p.t.slice(k,k+1))}</span>${esc(p.t.slice(k+1))}`}
-      else if(st.hide&&!done)t=esc(p.t.replace(/([A-Za-z])([A-Za-z'’-]*)/g,(m,a,b)=>now?a+b.replace(/./g,'_'):m.replace(/./g,'_')));else t=esc(p.t);
+    let h='',lastSec=null;P.forEach((p,i)=>{if(p.sec!==lastSec){if(lastSec!==null)h+='</div>';h+=`<div class="tyxp${p.sec===P[cur].sec?' on':''}"><span class="tyxlab">${esc(p.sec)}${TYROLE[p.sec]?`<em>${esc(TYROLE[p.sec])}</em>`:''}</span>`;lastSec=p.sec}
+      const done=pos>=p.fb,now=i===cur,k=now?Math.max(0,pos-p.fa):done?1e9:0;let o=0;
+      /* hidden answer: template words stay visible (they are what you memorise), content words become blanks */
+      const t=p.W.map((w,j)=>{const a=o;o+=w.length+1;const tp=st.tp&&p.M[j],hid=st.hide&&!done&&!(tp&&!now)&&a>=k;
+        const x=hid?esc(w.replace(/[A-Za-z]/g,(c,ix)=>ix===0&&now?c:'_')):esc(w);return `<span class="${[tp?'tyxtpl':'',a<k?'tyxdone':''].join(' ').trim()}">${x}</span>`}).join(' ');
       h+=`<span class="tyxs${done?' done':''}${now?' now':''}" data-i="${i}">${t}${st.ko&&p.ko?`<small class="tyxko">${esc(p.ko)}</small>`:''}</span> `});
     box.innerHTML=h+'</div>';
     $$('.tyxchip').forEach((c,i)=>{const s=secs[i];c.classList.toggle('done',pos>=s.to);c.classList.toggle('on',pos>=s.from&&pos<s.to||(i===secs.length-1&&pos>=s.to&&pos<TF.length))});
@@ -4296,7 +4318,8 @@ function renderWTypeExam(id){
     const w=inp.value.trim()?inp.value.trim().split(/\s+/).length:0;$('#tyxwc').textContent=w+' words';
     $('#tyxacc').textContent=pos?(bad?`오타 ${bad}자 · `:'오타 없음 · ')+Math.min(100,Math.round(Math.min(pos,TF.length)/TF.length*100))+'%':''}
   inp.addEventListener('input',()=>{if(!st.t0&&inp.value)st.t0=Date.now();paint()});
-  $('#tyxko').onclick=e=>{st.ko=!st.ko;store.set('tyxko',st.ko);e.currentTarget.setAttribute('aria-pressed',st.ko);paint()};
+  $('#tyxtp').onclick=e=>{st.tp=!st.tp;store.set('tyxtp',st.tp);e.currentTarget.setAttribute('aria-pressed',st.tp);paint()};
+  $('#tyxko').onclick=e=>{st.ko=!st.ko;store.set('tyxko2',st.ko);e.currentTarget.setAttribute('aria-pressed',st.ko);paint()};
   $('#tyxhide').onclick=e=>{st.hide=!st.hide;store.set('tyxhide',st.hide);e.currentTarget.setAttribute('aria-pressed',st.hide);paint();inp.focus()};
   $('#tyxreset').onclick=()=>{inp.value='';st.t0=0;paint();inp.focus()};
   $('#tyxdone').onclick=()=>{if(!inp.value.trim()){inp.focus();return}finish()};
@@ -4308,7 +4331,9 @@ function renderWTypeExam(id){
     {const TL=store.get('wtylog',[]);TL.unshift({ts:Date.now(),id,acc,wpm});store.set('wtylog',TL.slice(0,300))}
     const mc={};miss.forEach(w=>mc[w]=(mc[w]||0)+1);const mw=Object.entries(mc).sort((x,y)=>y[1]-x[1]).slice(0,15);
     $('.tyx').outerHTML=`<div class="panel ph tyres"><h2 style="margin:0 0 10px">채점 결과 · ${acc>=95?'완벽해요 👏':acc>=80?'잘했어요':'한 번 더 해 볼까요?'}</h2>
-      <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>단어 정확도</span></div><div class="kpi"><b>${b.length}</b><span>쓴 단어 수 (모범 ${a.length})</span></div><div class="kpi"><b>${wpm||'—'}</b><span>WPM (분당 단어)</span></div><div class="kpi"><b>${Math.floor(sec/60)}분 ${Math.round(sec%60)}초</b><span>걸린 시간</span></div></div>
+      <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>모범 답안과 일치</span></div><div class="kpi"><b>${b.length}</b><span>쓴 단어 수 (모범 ${a.length})</span></div><div class="kpi"><b>${secs.length}단계</b><span>템플릿 구조</span></div></div>
+      <h4>이 답안의 뼈대 <span class="small muted" style="font-weight:500">템플릿 틀만 남기고 내용은 ___ 로 비웠어요. 다른 문제에도 이 틀에 내용만 바꿔 넣으면 돼요</span></h4>
+      <ol class="tyxsk">${secs.map(sc=>`<li><b>${esc(sc.n)}</b><span class="small muted">${esc(TYROLE[sc.n]||'')}</span><p>${P.filter(p=>p.sec===sc.n).map(p=>esc(tySkel(p))).join('<br>')}</p></li>`).join('')}</ol>
       <h4>구조별 정확도</h4><ol class="tyxres">${rows.map(r=>`<li><span>${esc(r.n)}</span><i style="--w:${r.acc}%"></i><b>${r.acc}%</b></li>`).join('')}</ol>
       ${mw.length?`<h4>놓치거나 틀린 단어</h4><p class="tymiss">${mw.map(([w,n])=>`<span class="mtag sm">${esc(w)}${n>1?' ×'+n:''}</span>`).join(' ')}</p>`:''}
       <details class="tyxcmp"><summary><b>모범 답안과 내 답안 비교</b></summary><div class="tyxtwo"><div><h4>모범 답안</h4><p>${esc(T)}</p></div><div><h4>내 답안</h4><p>${esc(v)}</p></div></div></details>
@@ -4327,9 +4352,9 @@ function tyLcs(a,b){const m=a.length,n=b.length,D=Array.from({length:m+1},()=>ne
 function renderWType(){
   setCrumb(['Writing','따라 쓰기']);const P=store.get('wtype',{});
   view.innerHTML=`<div class="cathead"><div><span class="badge">Task 2 · 3 템플릿</span><h1>따라 쓰기 (템플릿 필사)</h1>
-    <p>선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 그대로 쳐 보는 연습이에요. 이메일 답안과 모범 에세이는 <b>시험 화면으로 쓰기</b>로 실제 시험처럼 문제를 보면서 답안 전체를 한 번에 따라 쓸 수 있어요. 오른쪽에 템플릿 구조(인사 → 목적 → 항목 → 맺음말, 도입 → 의견 → 이유 → 예시 → 요약)가 함께 보여요. 에세이·이메일 답안은 <b>문제</b>와 함께, 모든 문장은 <b>한글 직역</b>과 함께 나와서 뜻을 생각하며 쓸 수 있어요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
+    <p>타자 연습이 아니라 <b>템플릿 구조를 이해하고 손에 익히는</b> 공부예요. 선생님 부교재의 템플릿 문장, 이유별 표현, 모범 에세이, 이메일 표현을 뜻과 구조를 생각하며 그대로 써 봐요. 이메일 답안과 모범 에세이는 <b>시험 화면으로 쓰기</b>로 실제 시험처럼 문제를 보면서 답안 전체를 한 번에 따라 쓸 수 있어요. 오른쪽에 템플릿 구조(인사 → 목적 → 항목 → 맺음말, 도입 → 의견 → 이유 → 예시 → 요약)가 함께 보여요. 에세이·이메일 답안은 <b>문제</b>와 함께, 모든 문장은 <b>한글 직역</b>과 함께 나와서 뜻을 생각하며 쓸 수 있어요. <b>보고 쓰기</b>로 손에 익히고, 익숙해지면 <b>가리고 쓰기</b>로 외워서 쳐 보세요.</p></div></div>
     ${WTYPE.length?WTYPE.map(g=>`<section class="section"><h2>${esc(g.title)} <span class="small muted">Task ${g.task} · ${g.drills.length}세트</span></h2><p class="small muted" style="margin:-4px 0 8px">${esc(g.desc)}</p><div class="panel list">${g.drills.map(d=>{const p=P[d.id];
-      return `<div class="li wli"><div class="lmain"><b>${esc(tyName(d.title))}</b><span class="small muted">${d.lines.length}문장${p?` · 최고 정확도 <b style="color:var(--accent)">${p.acc}%</b> · ${p.wpm} WPM · ${p.n}회${p.blind?' · 가리고 쓰기 ✓':''}`:''}</span></div><div class="lside">${tyFull(d)?`<a class="btn sm primary" href="#w-ty-${d.id}~x">시험 화면으로 쓰기</a>`:''}<a class="btn sm${tyFull(d)?' quiet':''}" href="#w-ty-${d.id}">한 문장씩</a><a class="btn sm quiet" href="#w-ty-${d.id}~b">가리고 쓰기</a></div></div>`}).join('')}</div></section>`).join('')
+      return `<div class="li wli"><div class="lmain"><b>${esc(tyName(d.title))}</b><span class="small muted">${d.lines.length}문장${p?` · 최고 정확도 <b style="color:var(--accent)">${p.acc}%</b> · ${p.n}회${p.blind?' · 가리고 쓰기 ✓':''}`:''}</span></div><div class="lside">${tyFull(d)?`<a class="btn sm primary" href="#w-ty-${d.id}~x">시험 화면으로 쓰기</a>`:''}<a class="btn sm${tyFull(d)?' quiet':''}" href="#w-ty-${d.id}">한 문장씩</a><a class="btn sm quiet" href="#w-ty-${d.id}~b">가리고 쓰기</a></div></div>`}).join('')}</div></section>`).join('')
       :'<div class="empty">따라 쓰기 데이터가 없어요. 설정 → 교재 데이터에서 새 데이터 팩을 다시 가져와 주세요.</div>'}`;
 }
 function renderWTypeRun(id,blind){
@@ -4374,7 +4399,7 @@ function renderWTypeRun(id,blind){
     const P=store.get('wtype',{}),p=P[id]||{acc:0,wpm:0,n:0};P[id]={acc:Math.max(p.acc,acc),wpm:Math.max(p.wpm,wpm),n:p.n+1,blind:p.blind||(blind&&acc>=90),ts:Date.now()};store.set('wtype',P);{const TL=store.get('wtylog',[]);TL.unshift({ts:Date.now(),id,acc,wpm});store.set('wtylog',TL.slice(0,300))}
     const miss={};R.forEach(r=>r.miss.forEach(w=>miss[w]=(miss[w]||0)+1));const mw=Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,15);
     $('.tybox').outerHTML=`<div class="panel ph tyres"><h2 style="margin:0 0 10px">끝! ${acc>=95?'완벽해요 👏':acc>=80?'잘했어요':'한 번 더 해 볼까요?'}</h2>
-      <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>단어 정확도</span></div><div class="kpi"><b>${ex}/${R.length}</b><span>완벽히 일치한 문장</span></div><div class="kpi"><b>${wpm||'—'}</b><span>WPM (분당 단어)</span></div><div class="kpi"><b>${Math.round(sec)}초</b><span>걸린 시간</span></div></div>
+      <div class="wkstats big"><div class="kpi"><b>${acc}%</b><span>단어 정확도</span></div><div class="kpi"><b>${ex}/${R.length}</b><span>완벽히 일치한 문장</span></div></div>
       ${mw.length?`<h4>놓치거나 틀린 단어</h4><p class="tymiss">${mw.map(([w,n])=>`<span class="mtag sm">${esc(w)}${n>1?' ×'+n:''}</span>`).join(' ')}</p>`:''}
       <h4>문장별 결과</h4><ol class="tyrl">${R.map(r=>`<li class="${r.exact?'done':r.skip?'skip':'part'}"><span class="tsn">${esc(r.k)}</span> <b>${r.skip?'건너뜀':r.acc+'%'}</b><div>${esc(r.t)}</div>${r.ko?`<div class="small muted">${esc(r.ko)}</div>`:''}${!r.exact&&!r.skip?`<div class="small muted">내 입력: ${esc(r.v)}</div>`:''}</li>`).join('')}</ol>
       <div class="row" style="margin-top:12px"><a class="btn primary" href="#w-ty-${id}${blind?'~b':''}" onclick="setTimeout(route,0)">다시 하기</a>${!blind?`<a class="btn" href="#w-ty-${id}~b">가리고 쓰기 도전</a>`:''}<a class="btn quiet" href="#w-type">목록으로</a></div></div>`;
