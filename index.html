@@ -5255,8 +5255,8 @@ function vcCardHTML(w){const e=VC.ety[w.id];
      ${w.derived?`<p class="small">파생어 · ${esc(w.derived)}</p>`:''}${w.src?`<p class="small muted">출처 · ${esc(w.src)}${w.vref?` · 해커스 보카 Day ${w.vref.day}에도 있어요`:''}</p>`:''}${w.note?`<p class="vcnote">💡 ${esc(w.note)}</p>`:''}</div></div>`}
 function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
   const deckOf=()=>filt==='new'?ws.filter(w=>vcSt(w)==='new'):filt==='miss'?ws.filter(w=>vcSt(w)==='learning'):filt==='meh'?ws.filter(w=>vcSt(w)==='unsure'):filt==='notknown'?ws.filter(w=>vcSt(w)!=='known'):ws.slice();
-  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0,apOpen=false,BT=0;
-  const draw=()=>{vcStop();BT++;
+  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0,apOpen=false,BT=0,held=false;
+  const draw=()=>{vcStop();BT++;held=false;
     if(!deck.length){host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="empty">이 조건에 맞는 단어가 없어요.</div>`;wireFilt();return}
     if(i>=deck.length){const p=okN/(okN+noN||1);host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="panel ph vcdone"><h2>🎉 ${deck.length}단어 끝!</h2><p>외움 <b>${okN}</b> · 애매 <b>${mehN}</b> · 모름 <b>${noN}</b></p><div class="row"><button class="btn primary" id="vcagain">모름·애매만 다시</button><button class="btn" id="vcall">처음부터</button></div></div>`;
       if(p>=.8){try{rlConfetti();SFX.done()}catch(e){}}wireFilt();
@@ -5271,19 +5271,22 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
       <p class="small muted center">키보드: Space 뒤집기 · ← 몰라요 · ↓ 애매해요 · → 외웠어요 · S 소리</p>`;
     wireFilt();const card=$('.vccard',host),flip=()=>{const b=$('.vcb',card);if(b.hidden){b.hidden=false;card.classList.add('on');try{SFX.flip()}catch(e){}}};
     card.onclick=e=>{if(e.target.closest('[data-say]')||e.target.closest('details'))return;flip()};
-    $('[data-psg]',host)?.addEventListener('click',e=>{e.stopPropagation();try{rlShowPassage(w)}catch(_){}});
-    $$('[data-rxp]',host).forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const x=(w.rx||[])[+b.dataset.rxp];if(x)try{rlShowBlock(x[2],x[3],x[4],w.word)}catch(_){}}));
-    $$('[data-say]',host).forEach(b=>b.onclick=e=>{e.stopPropagation();BT++;b.dataset.say==='k'&&b.dataset.si==null?vcPlayK(w):vcPlay(w,b.dataset.say,+(b.dataset.si||0))});
+    $('[data-psg]',host)?.addEventListener('click',e=>{e.stopPropagation();hold();try{rlShowPassage(w)}catch(_){}});
+    $$('[data-rxp]',host).forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();hold();const x=(w.rx||[])[+b.dataset.rxp];if(x)try{rlShowBlock(x[2],x[3],x[4],w.word)}catch(_){}}));
+    $$('[data-say]',host).forEach(b=>b.onclick=e=>{e.stopPropagation();BT++;hold();b.dataset.say==='k'&&b.dataset.si==null?vcPlayK(w):vcPlay(w,b.dataset.say,+(b.dataset.si||0))});
     const mark=k=>{vcMark(w,k);k===true?okN++:k==='meh'?mehN++:noN++;try{k===true?SFX.ok():k==='meh'?SFX.flip():SFX.bad()}catch(e){}i++;draw()};
     $('#vcyes').onclick=()=>mark(true);$('#vcno').onclick=()=>mark(false);$('#vcmeh').onclick=()=>mark('meh');
     $('[data-peek]',host)?.addEventListener('click',e=>{e.stopPropagation();e.currentTarget.outerHTML=`<p class="vcfkr">${esc(vcKr(w))}</p>`});
     $('#vcnext').onclick=()=>{i++;draw()};$('#vcprev').onclick=()=>{if(i){i--;draw()}};
-    $('#vcauto').onclick=()=>{auto=!auto;VCGEN++;if(auto)draw();else{vcStop();const b=$('#vcauto');b.setAttribute('aria-pressed','false');b.textContent='▶ 자동 재생'}};
+    const chip=()=>{const b=$('#vcauto',host);if(!b)return;b.setAttribute('aria-pressed',String(auto&&!held));b.textContent=!auto?'▶ 자동 재생':held?'▶ 이어서 자동 재생':'⏸ 자동 재생 중'};
+    /* a sound or passage tapped by hand during auto-play pauses the chain, so the tapped clip is heard instead of being cut off */
+    var hold=()=>{if(!auto||held)return;held=true;VCGEN++;chip()};
+    $('#vcauto').onclick=()=>{if(held){held=false;i++;draw();return}auto=!auto;VCGEN++;if(auto)draw();else{vcStop();chip()}};
     $('#vcapb').onclick=()=>{const p=$('#vcap',host);p.hidden=!p.hidden;apOpen=!p.hidden;$('#vcapb').setAttribute('aria-expanded',String(apOpen))};
     $$('[data-vb]',host).forEach(b=>b.onclick=()=>{const k=b.dataset.vb,v=JSON.parse(b.dataset.v);store.set(k,v);$$(`[data-vb="${k}"]`,host).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(k!=='vcbasic')draw()});
     vcApWire($('#vcap',host),()=>{if(auto){VCGEN++;draw()}});
     const g=++VCGEN,alive=()=>g===VCGEN&&document.body.contains(host),wait=ms=>new Promise(r=>setTimeout(r,ms));
-    $('[data-sayall]',host)?.addEventListener('click',async e=>{e.stopPropagation();VCGEN++;const g2=VCGEN;flip();for(let si=0;si<w.senses.length;si++){if(g2!==VCGEN)return;if(!w.senses[si].ex)continue;await vcPlay(w,'s',si);await wait(350)}});
+    $('[data-sayall]',host)?.addEventListener('click',async e=>{e.stopPropagation();hold();VCGEN++;const g2=VCGEN;flip();for(let si=0;si<w.senses.length;si++){if(g2!==VCGEN)return;if(!w.senses[si].ex)continue;await vcPlay(w,'s',si);await wait(350)}});
     const run=async()=>{const me=w,o=vcAp(),gap=o.gap*1000,ok=()=>auto&&alive();if(!ok())return;
       for(let r=0;r<o.w;r++){await vcPlay(me,'w');if(!ok())return;await wait(r<o.w-1?450:gap*.6);if(!ok())return}
       flip();
@@ -5301,7 +5304,7 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
     if(auto)run();else basic()};
   const wireFilt=()=>$$('[data-filt]',host).forEach(b=>b.onclick=()=>{filt=b.dataset.filt;store.set('vcfilt',filt);deck=deckOf();i=0;okN=noN=mehN=0;draw()});
   host.onkeydown=null;document.onkeydown=e=>{if(!document.body.contains(host)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-    if(e.key===' '){e.preventDefault();$('.vccard',host)?.click()}else if(e.key==='ArrowRight')$('#vcyes',host)?.click();else if(e.key==='ArrowLeft')$('#vcno',host)?.click();else if(e.key==='ArrowDown'){e.preventDefault();$('#vcmeh',host)?.click()}else if(e.key==='s'||e.key==='S'){const w=deck[i];if(w)vcPlay(w,'w')}};
+    if(e.key===' '){e.preventDefault();$('.vccard',host)?.click()}else if(e.key==='ArrowRight')$('#vcyes',host)?.click();else if(e.key==='ArrowLeft')$('#vcno',host)?.click();else if(e.key==='ArrowDown'){e.preventDefault();$('#vcmeh',host)?.click()}else if(e.key==='s'||e.key==='S'){const w=deck[i];if(w){$('[data-say="w"]',host)?.click()}}};
   draw()}
 const VCAPD={w:1,k:true,y:true,ex:'all',next:true,gap:1};
 const vcAp=()=>Object.assign({},VCAPD,store.get('vcap',{}));
