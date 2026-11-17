@@ -529,6 +529,19 @@ body.testing .shell{display:none}
 .citem h3{margin:0 0 4px;font-size:18px}
 .citem p{margin:0 0 8px;font-size:16px;color:#555}
 .warn{color:#b42318;font-size:16px}
+
+/* exam bar on phones: row 1 = brand · question · timer, row 2 = controls (Back/Next on the right where the thumb is) */
+@media (max-width:560px){
+ .rlxbar{position:relative;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"l c" "r r";column-gap:10px;row-gap:8px;padding-bottom:8px}
+ .rlxbar .l{grid-area:l;white-space:nowrap}.rlxbar .l b{font-size:15px;line-height:24px}
+ .rlxbar .c{grid-area:c;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:24px;text-align:center;padding-right:52px}
+ .rlxbar .r{grid-area:r;display:flex;align-items:center;gap:6px;justify-content:flex-start}
+ .rlxbar #rltm{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:calc(8px + env(safe-area-inset-top,0px));line-height:24px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+ .rlxbar .r>#rlx{margin-right:auto}.rlxbar:not(:has(#rltm)) .c{padding-right:0}
+ .rlxbar .tbtn{padding:6px 10px;font-size:14px;white-space:nowrap;min-height:36px}
+ .rlxbar #rln{min-width:72px;justify-content:center}
+ .rlxbar .volpop{left:0;right:auto}
+}
 @media (max-width:560px){.tbar{grid-template-columns:auto minmax(0,1fr) auto}.tbar .l span,.tvl{display:none}.tbar .c{text-align:center;font-size:15px}.tprompt{font-size:20px}}
 .kv .v.pend{font:500 16px/1.5 var(--ui);color:var(--mute)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
@@ -4747,8 +4760,8 @@ function rlStreak(st,ok){if(st.mode!=='prac')return;if(window.RLBULK){st.streak=
 function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam',left:rlTime(set),tm:null,done:{},i:0},N=rlQs(set).length;
   const steps=[];set.blocks.forEach(b=>{if(b.kind==='cw'){steps.push({b,qs:b.qs});return}if(isL)steps.push({b,audio:true});b.qs.forEach(q=>steps.push({b,qs:[q]}))});
   document.body.classList.add('testing');tst.hidden=false;
-  tst.innerHTML=`<div class="tbar"><div class="l"><b>TOEFL iBT</b><span>${S_.name}</span></div><div class="c" id="rlq"></div>
-    <div class="r">${isL?'':'<span class="rltime" id="rltm"></span><button class="tbtn" id="rlht">Hide Time</button>'}
+  tst.innerHTML=`<div class="tbar rlxbar"><div class="l"><b>TOEFL iBT</b><span>${S_.name}</span></div><div class="c" id="rlq"></div>
+    <div class="r">${isL?'':'<span class="rltime" id="rltm"></span><button class="tbtn" id="rlht">Hide<span class="tvl"> Time</span></button>'}
       <div class="volwrap"><button class="tbtn" id="rlvol" aria-label="볼륨">🔊<span class="tvl"> Volume</span></button><div class="volpop" id="rlvolpop" hidden><span>🔈</span><input type="range" id="rlvolr" min="0" max="100" value="${Math.round(Math.min(1,S.vol??1)*100)}" aria-label="볼륨"><span>🔊</span></div></div>
       <button class="tbtn" id="rlx">Exit</button>${isL?'':'<button class="tbtn" id="rlb">Back</button>'}<button class="tbtn primary" id="rln">Next</button></div></div>
     <div class="tprog"><i id="rlpg" style="width:0"></i></div><div class="tmain"><div class="tinner rlexam ${isL?'lis':'rd'}" id="rlbody"></div></div>`;
@@ -4761,12 +4774,12 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
     if(!s.audio&&!isL&&false)return;
     if(st.i===steps.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!confirm(`답하지 않은 문항이 ${miss}개 있어요. 이 섹션을 마칠까요?`))return;finish()}
     else{if(isL&&!s.audio&&st.ans[s.qs[0].n]==null&&!confirm('답을 고르지 않았어요. 다음으로 넘어갈까요? (리스닝은 이전 문항으로 돌아갈 수 없어요)'))return;st.i++;show()}};
-  if(!isL){$('#rlht').onclick=()=>{const t=$('#rltm');t.classList.toggle('hid');$('#rlht').textContent=t.classList.contains('hid')?'Show Time':'Hide Time'};
+  if(!isL){$('#rlht').onclick=()=>{const t=$('#rltm');t.classList.toggle('hid');$('#rlht').innerHTML=(t.classList.contains('hid')?'Show':'Hide')+'<span class="tvl"> Time</span>'};
     const tick=()=>{const e=$('#rltm');if(!e)return;e.textContent=Math.floor(st.left/60)+':'+String(st.left%60).padStart(2,'0');e.classList.toggle('warn',st.left<=60);if(st.left<=60)e.classList.remove('hid')};
     tick();st.tm=setInterval(()=>{st.left--;tick();if(st.left<=0){clearInterval(st.tm);alertBox('시간이 끝났어요. 채점할게요.');finish()}},1000)}
   function alertBox(m){toast(m)}
   function show(){const s=steps[st.i],host=$('#rlbody'),qn=s.qs?s.qs[0].n:s.b.qs[0].n;
-    $('#rlq').textContent=s.audio?`${S_.name} | Questions ${s.b.qs[0].n}${s.b.qs.length>1?'–'+s.b.qs[s.b.qs.length-1].n:''} of ${N}`:`Question ${s.qs.length>1?s.qs[0].n+'–'+s.qs[s.qs.length-1].n:qn} of ${N}`;
+    $('#rlq').innerHTML=s.audio?`<span class="tvl">${S_.name} | </span>Questions ${s.b.qs[0].n}${s.b.qs.length>1?'–'+s.b.qs[s.b.qs.length-1].n:''} of ${N}`:`Question ${s.qs.length>1?s.qs[0].n+'–'+s.qs[s.qs.length-1].n:qn} of ${N}`;
     $('#rlpg').style.width=(st.i/steps.length*100)+'%';$('#rlb')&&($('#rlb').disabled=st.i===0);
     rlStopAudio();rlStopSpeak();clearTimeout(st.ct);host.scrollTop=0;tst.querySelector('.tmain').scrollTop=0;
     if(s.audio){$('#rln').disabled=!st.done[s.b.audio];
