@@ -796,7 +796,13 @@ button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
 .vcsynl{font:700 13px var(--ui);letter-spacing:.02em;color:var(--accent-ink);background:var(--accent);border-radius:6px;padding:3px 7px}
 .vcsc{font:600 16px var(--ui);color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:99px;padding:3px 10px}
 .vcsyn.sm .vcsc{font-size:14px;padding:1px 8px}.vcsyn.sm .vcsynl{font-size:12px;padding:2px 6px}
-.vcap{padding:12px 14px;margin:8px 0}.vcaprow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}.vcapk{min-width:72px;font-weight:700}
+.vcap{padding:12px 14px;margin:0 0 12px}.vcaprow{display:flex;align-items:center;gap:10px;margin:6px 0}.vcapk{min-width:64px;font-weight:700;flex-shrink:0}
+.vcaph{margin:14px 0 4px;font-size:13px;font-weight:700;color:var(--mute)}.vcaph:first-child{margin-top:0}
+.vctools{display:flex;gap:8px;margin:0 0 12px}
+.vcchip{flex:1;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:inherit;font:inherit;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer}
+.vcchip[aria-pressed="true"],.vcchip[aria-expanded="true"]{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.vcfilt{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}.vcfilt::-webkit-scrollbar{display:none}.vcfilt button{white-space:nowrap;flex-shrink:0}
+@media(max-width:560px){.vcaprow{flex-direction:column;align-items:stretch;gap:4px;margin:8px 0}.vcaprow .rlrate{display:flex;width:100%}.vcaprow .rlrate button{flex:1;padding-left:4px;padding-right:4px}.vcprog{gap:10px}}
 .vcqdirs{margin-left:auto}.vcqw.syn{color:var(--accent)}.vcqhint{margin:0 0 6px}
 @media (max-width:640px){.vcqdirs{margin-left:0;width:100%;overflow-x:auto}}
 .vcspell{font-size:28px;line-height:2;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:6px 0 2px;word-break:break-all}.vcfirst{font-weight:700;color:var(--accent)}.vcsep{white-space:pre}
@@ -5249,17 +5255,16 @@ function vcCardHTML(w){const e=VC.ety[w.id];
      ${w.derived?`<p class="small">파생어 · ${esc(w.derived)}</p>`:''}${w.src?`<p class="small muted">출처 · ${esc(w.src)}${w.vref?` · 해커스 보카 Day ${w.vref.day}에도 있어요`:''}</p>`:''}${w.note?`<p class="vcnote">💡 ${esc(w.note)}</p>`:''}</div></div>`}
 function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
   const deckOf=()=>filt==='new'?ws.filter(w=>vcSt(w)==='new'):filt==='miss'?ws.filter(w=>vcSt(w)==='learning'):filt==='meh'?ws.filter(w=>vcSt(w)==='unsure'):filt==='notknown'?ws.filter(w=>vcSt(w)!=='known'):ws.slice();
-  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0;
-  const draw=()=>{vcStop();
+  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0,apOpen=false,BT=0;
+  const draw=()=>{vcStop();BT++;
     if(!deck.length){host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="empty">이 조건에 맞는 단어가 없어요.</div>`;wireFilt();return}
     if(i>=deck.length){const p=okN/(okN+noN||1);host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="panel ph vcdone"><h2>🎉 ${deck.length}단어 끝!</h2><p>외움 <b>${okN}</b> · 애매 <b>${mehN}</b> · 모름 <b>${noN}</b></p><div class="row"><button class="btn primary" id="vcagain">모름·애매만 다시</button><button class="btn" id="vcall">처음부터</button></div></div>`;
       if(p>=.8){try{rlConfetti();SFX.done()}catch(e){}}wireFilt();
       $('#vcagain').onclick=()=>{deck=deck.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');i=0;okN=noN=mehN=0;draw()};$('#vcall').onclick=()=>{deck=deckOf();i=0;okN=noN=mehN=0;draw()};return}
     const w=deck[i];
-    host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span>
-      <label class="small vcauto"><input type="checkbox" id="vcauto" ${auto?'checked':''}> 자동 재생</label><button type="button" class="btn sm quiet" id="vcapb" aria-expanded="false">⚙ ${esc(vcApLabel())}</button>
-      <label class="small vcauto"><input type="checkbox" id="vckrf" ${store.get('vckrfront',false)?'checked':''}> 앞면에 한글 뜻</label><label class="small vcauto"><input type="checkbox" id="vcsynf" ${store.get('vcsynfront',false)?'checked':''}> 앞면에 동의어</label></div>
-      <div class="panel vcap" id="vcap" hidden>${vcApHTML()}</div>
+    host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span></div>
+      <div class="vctools"><button type="button" class="vcchip" id="vcauto" aria-pressed="${auto}">${auto?'⏸ 자동 재생 중':'▶ 자동 재생'}</button><button type="button" class="vcchip" id="vcapb" aria-expanded="${apOpen}">⚙ 소리·보기 설정</button></div>
+      <div class="panel vcap" id="vcap" ${apOpen?'':'hidden'}>${vcBasicHTML()}${vcApHTML()}</div>
       ${vcCardHTML(w)}
       <div class="vcbtns"><button class="btn" id="vcprev" ${i?'':'disabled'}>←</button><button class="btn" data-say="w">🔊 단어</button><button class="btn" data-say="k">🔊 뜻</button>${(w.senses||[]).filter(s=>s.ex).length>1?`<button class="btn" data-sayall>🔊 예문 전부</button>`:''}
         <button class="btn vcno" id="vcno">✕ 몰라요</button><button class="btn vcmeh" id="vcmeh">△ 애매해요</button><button class="btn primary vcyes" id="vcyes">✓ 외웠어요</button><button class="btn" id="vcnext">→</button></div>
@@ -5268,15 +5273,15 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
     card.onclick=e=>{if(e.target.closest('[data-say]')||e.target.closest('details'))return;flip()};
     $('[data-psg]',host)?.addEventListener('click',e=>{e.stopPropagation();try{rlShowPassage(w)}catch(_){}});
     $$('[data-rxp]',host).forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const x=(w.rx||[])[+b.dataset.rxp];if(x)try{rlShowBlock(x[2],x[3],x[4],w.word)}catch(_){}}));
-    $$('[data-say]',host).forEach(b=>b.onclick=e=>{e.stopPropagation();b.dataset.say==='k'&&b.dataset.si==null?vcPlayK(w):vcPlay(w,b.dataset.say,+(b.dataset.si||0))});
+    $$('[data-say]',host).forEach(b=>b.onclick=e=>{e.stopPropagation();BT++;b.dataset.say==='k'&&b.dataset.si==null?vcPlayK(w):vcPlay(w,b.dataset.say,+(b.dataset.si||0))});
     const mark=k=>{vcMark(w,k);k===true?okN++:k==='meh'?mehN++:noN++;try{k===true?SFX.ok():k==='meh'?SFX.flip():SFX.bad()}catch(e){}i++;draw()};
     $('#vcyes').onclick=()=>mark(true);$('#vcno').onclick=()=>mark(false);$('#vcmeh').onclick=()=>mark('meh');
     $('[data-peek]',host)?.addEventListener('click',e=>{e.stopPropagation();e.currentTarget.outerHTML=`<p class="vcfkr">${esc(vcKr(w))}</p>`});
-    $('#vckrf').onchange=e=>{store.set('vckrfront',e.target.checked);draw()};$('#vcnext').onclick=()=>{i++;draw()};$('#vcprev').onclick=()=>{if(i){i--;draw()}};
-    $('#vcauto').onchange=e=>{auto=e.target.checked;if(auto){VCGEN++;draw()}else{VCGEN++;vcStop()}};
-    $('#vcsynf').onchange=e=>{store.set('vcsynfront',e.target.checked);draw()};
-    $('#vcapb').onclick=()=>{const p=$('#vcap',host);p.hidden=!p.hidden;$('#vcapb').setAttribute('aria-expanded',String(!p.hidden))};
-    vcApWire($('#vcap',host),()=>{$('#vcapb').textContent='⚙ '+vcApLabel();if(auto){VCGEN++;const k=$('#vcap',host).hidden;draw();if(!k){$('#vcap',host).hidden=false}}});
+    $('#vcnext').onclick=()=>{i++;draw()};$('#vcprev').onclick=()=>{if(i){i--;draw()}};
+    $('#vcauto').onclick=()=>{auto=!auto;VCGEN++;if(auto)draw();else{vcStop();const b=$('#vcauto');b.setAttribute('aria-pressed','false');b.textContent='▶ 자동 재생'}};
+    $('#vcapb').onclick=()=>{const p=$('#vcap',host);p.hidden=!p.hidden;apOpen=!p.hidden;$('#vcapb').setAttribute('aria-expanded',String(apOpen))};
+    $$('[data-vb]',host).forEach(b=>b.onclick=()=>{const k=b.dataset.vb,v=JSON.parse(b.dataset.v);store.set(k,v);$$(`[data-vb="${k}"]`,host).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(k!=='vcbasic')draw()});
+    vcApWire($('#vcap',host),()=>{if(auto){VCGEN++;draw()}});
     const g=++VCGEN,alive=()=>g===VCGEN&&document.body.contains(host),wait=ms=>new Promise(r=>setTimeout(r,ms));
     $('[data-sayall]',host)?.addEventListener('click',async e=>{e.stopPropagation();VCGEN++;const g2=VCGEN;flip();for(let si=0;si<w.senses.length;si++){if(g2!==VCGEN)return;if(!w.senses[si].ex)continue;await vcPlay(w,'s',si);await wait(350)}});
     const run=async()=>{const me=w,o=vcAp(),gap=o.gap*1000,ok=()=>auto&&alive();if(!ok())return;
@@ -5290,7 +5295,10 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
         if(o.ex!=='none'&&ss[si].ex&&(o.ex==='all'||si===0)){await vcPlay(me,'s',si);if(!ok())return;await wait(gap*.5);if(!ok())return}
         if(o.ex==='first'&&!o.y)break}
       if(!o.next)return;await wait(gap);if(!ok())return;i++;draw()};
-    if(auto)run();else vcPlay(w,'w')};
+    const basic=async()=>{const m=store.get('vcbasic','wk');if(m==='off')return;const t=++BT,ok=()=>t===BT&&!auto&&alive();
+      await vcPlay(w,'w');if(m!=='wk'||!ok())return;await wait(500);if(!ok())return;
+      const n=VC.am.ks?(w.senses||[]).length:1;for(let si=0;si<n;si++){await vcPlay(w,'k',si);if(!ok())return;await wait(250);if(!ok())return}};
+    if(auto)run();else basic()};
   const wireFilt=()=>$$('[data-filt]',host).forEach(b=>b.onclick=()=>{filt=b.dataset.filt;store.set('vcfilt',filt);deck=deckOf();i=0;okN=noN=mehN=0;draw()});
   host.onkeydown=null;document.onkeydown=e=>{if(!document.body.contains(host)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
     if(e.key===' '){e.preventDefault();$('.vccard',host)?.click()}else if(e.key==='ArrowRight')$('#vcyes',host)?.click();else if(e.key==='ArrowLeft')$('#vcno',host)?.click();else if(e.key==='ArrowDown'){e.preventDefault();$('#vcmeh',host)?.click()}else if(e.key==='s'||e.key==='S'){const w=deck[i];if(w)vcPlay(w,'w')}};
@@ -5298,8 +5306,12 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
 const VCAPD={w:1,k:true,y:true,ex:'all',next:true,gap:1};
 const vcAp=()=>Object.assign({},VCAPD,store.get('vcap',{}));
 function vcApLabel(){const o=vcAp();return ['단어'+(o.w>1?'×'+o.w:''),o.k&&'뜻',o.y&&'동의어',o.ex==='all'?'예문 전부':o.ex==='first'?'예문 1개':'',o.next?'다음':'멈춤'].filter(Boolean).join('→')}
+function vcBasicHTML(){const row=(k,lab,cur,opts)=>`<div class="vcaprow"><span class="small vcapk">${lab}</span><span class="rlrate" role="group" aria-label="${lab}">${opts.map(([v,t])=>`<button type="button" data-vb="${k}" data-v='${JSON.stringify(v)}' aria-pressed="${cur===v}">${t}</button>`).join('')}</span></div>`;
+  return `<p class="vcaph">카드 넘길 때</p>${row('vcbasic','소리',store.get('vcbasic','wk'),[['wk','단어 + 뜻'],['w','단어만'],['off','끄기']])}
+   <p class="vcaph">앞면에 보이기</p>${row('vckrfront','한글 뜻',store.get('vckrfront',false),[[true,'보이기'],[false,'숨기기']])}${row('vcsynfront','동의어',store.get('vcsynfront',false),[[true,'보이기'],[false,'숨기기']])}
+   <p class="vcaph">자동 재생 순서</p>`}
 function vcApHTML(){const o=vcAp(),grp=(k,lab,opts)=>`<div class="vcaprow"><span class="small vcapk">${lab}</span><span class="rlrate" role="group" aria-label="${lab}">${opts.map(([v,t])=>`<button type="button" data-ap="${k}" data-v='${JSON.stringify(v)}' aria-pressed="${o[k]===v}">${t}</button>`).join('')}</span></div>`;
-  return `<p class="small muted" style="margin:0 0 8px">자동 재생 순서를 고르세요. 여러 뜻이 있는 단어는 뜻마다 동의어·예문을 차례로 읽어요.</p>
+  return `<p class="small muted" style="margin:0 0 6px">여러 뜻이 있는 단어는 뜻마다 동의어·예문을 차례로 읽어요.</p>
    ${grp('w','① 단어',[[1,'1번'],[2,'2번'],[3,'3번']])}${grp('k','② 한글 뜻',[[true,'읽기'],[false,'건너뛰기']])}${grp('y','③ 동의어',[[true,'읽기'],[false,'건너뛰기']])}
    ${grp('ex','④ 예문',[['all','전부'],['first','첫 번째만'],['none','건너뛰기']])}${grp('next','⑤ 끝나면',[[true,'다음 카드로'],[false,'멈춤']])}${grp('gap','간격',[[0.5,'짧게'],[1,'보통'],[2,'길게']])}`}
 function vcApWire(p,cb){if(!p)return;$$('[data-ap]',p).forEach(b=>b.onclick=()=>{const o=vcAp();o[b.dataset.ap]=JSON.parse(b.dataset.v);store.set('vcap',o);
