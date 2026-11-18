@@ -861,7 +861,7 @@ button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
 .vcsyn.sm .vcsc{font-size:14px;padding:1px 8px}.vcsyn.sm .vcsynl{font-size:12px;padding:2px 6px}
 .vcap{padding:12px 14px;margin:0 0 12px}.vcaprow{display:flex;align-items:center;gap:10px;margin:6px 0}.vcapk{min-width:64px;font-weight:700;flex-shrink:0}
 .vcaph{margin:14px 0 4px;font-size:13px;font-weight:700;color:var(--mute)}.vcaph:first-child{margin-top:0}
-.vctools{display:flex;gap:8px;margin:0 0 12px}
+.vctools{display:flex;gap:8px;margin:0 0 12px}.vcchip.vcstop{flex:0 0 auto}
 .vcchip{flex:1;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:inherit;font:inherit;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer}
 .vcchip[aria-pressed="true"],.vcchip[aria-expanded="true"]{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .vcfilt{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}.vcfilt::-webkit-scrollbar{display:none}.vcfilt button{white-space:nowrap;flex-shrink:0}
@@ -1754,7 +1754,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
     <header class="topbar"><button class="menubtn" id="menubtn" aria-label="메뉴 열기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="navtoggle" id="navtoggle" aria-label="메뉴 접기/펼치기" title="메뉴 접기/펼치기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="mbrand"><span class="mk">iBT</span></span><div class="crumb" id="crumb"></div><span class="envchip" id="env"></span><button class="themebtn" id="themebtn" type="button" title="화면 모드 바꾸기" aria-label="화면 모드 바꾸기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.4"/><path d="M12 20.4a8.4 8.4 0 0 0 0-16.8z" fill="currentColor" stroke="none"/></svg></button><a class="gear" href="#settings" aria-label="설정"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.4"/><path d="M12 2.4v2.4M12 19.2v2.4M19.8 7.8l-2.1 1.2M6.3 15l-2.1 1.2M19.8 16.2l-2.1-1.2M6.3 9 4.2 7.8"/></svg></a><nav class="msecsw" id="msecsw" aria-label="영역 선택"><a href="#rd" data-s="r">Reading</a><a href="#ls" data-s="l">Listening</a><a href="#home" data-s="s">Speaking</a><a href="#w" data-s="w">Writing</a><a href="#vc" data-s="v">Vocab</a></nav></header>
     <main id="view"></main>
     <nav class="btabs" aria-label="하단 메뉴">
-      <a href="#home" data-tab="home"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/></svg>스피킹</a>
+      <a href="#home" data-tab="home"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="2.7" width="6" height="11.1" rx="3"/><path d="M5.4 11.4a6.6 6.6 0 0 0 13.2 0M12 18v3.3M8.6 21.3h6.8"/></svg>메인</a>
       <a href="#practice" data-tab="practice"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.8 20.2 5 15.9 15.7 5.2a2.4 2.4 0 0 1 3.4 3.4L8.4 19.3z"/></svg>연습</a>
       <a href="#mock" data-tab="mock"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.6 5.3 18.8 12 7.6 18.7z"/></svg>모의고사</a>
       <a href="#history" data-tab="history"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6.6h16M4 12h16M4 17.4h10"/></svg>기록</a>
@@ -2778,7 +2778,7 @@ function renderLnb(cur){
   const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const catLink=c=>{const d=doneCount(c),n=c.sets.length;return `<a class="nl sub" href="#${c.id}" ${cur===c.id?'aria-current="page"':''}><span>${esc(c.label)}<span class="sl">${esc(c.sub)}</span></span><span class="cnt ${d===n?'full':''}">${d}/${n}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#home"><span class="mk">iBT</span><span>TOEFL Practice<small>Speaking · Hackers Intermediate</small></span></a>
-    ${link('home','◧','대시보드')}${link('mock','▶','실전 모의고사',`<span class="cnt">${MOCKS.length+1}</span>`)}
+    ${link('home','◧','메인')}${link('mock','▶','실전 모의고사',`<span class="cnt">${MOCKS.length+1}</span>`)}
     <div class="navgrp"><div class="gh">Task 1 · Listen and Repeat</div>${CATS.filter(c=>c.task===1).map(catLink).join('')}</div>
     <div class="navgrp"><div class="gh">Task 2 · Take an Interview</div>${link('tpl','✎','답변 템플릿 연습',`<span class="cnt">6</span>`)}${CATS.filter(c=>c.task===2).map(catLink).join('')}</div>
     <div class="navgrp"><div class="gh">내 학습</div>${link('history','☰','응시 기록',`<span class="cnt">${S.hist.length}</span>`)}${link('settings','⚙','설정')}</div>
@@ -2821,11 +2821,11 @@ function navBack(){if(document.body.classList.contains('testing'))return;toggleL
 function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))return;const h=location.hash.slice(1);if(h===''||h==='start')return;
   const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
   t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back" role="button" aria-label="이전 화면">${ICON('back')}이전</a>`);
-  if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('grid')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
+  if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btabs .bt-back,.btabs .bt-list');if(!b)return;e.preventDefault();if(b.classList.contains('bt-back'))navBack();else toggleLnb(true)});
 (function(){const go=()=>{const t=$('.btabs');if(!t)return setTimeout(go,300);new MutationObserver(()=>btabsDecor()).observe(t,{childList:true});btabsDecor()};go()})();
 $('#menubtn').onclick=()=>toggleLnb(true);$('#lnbscrim').onclick=()=>toggleLnb(false);
-function setCrumb(parts){/* the home button already says 홈, so the trail never repeats it */parts=parts.filter((p,i)=>!(i===0&&p==='홈'));{const hb=$('#hmbtn');if(hb){const on=!parts.length;hb.toggleAttribute('aria-current',on);if(on)hb.setAttribute('aria-current','page')}}$('#crumb').innerHTML=parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)+' <span aria-hidden="true">›</span>').join(' ');
+function setCrumb(parts){/* the home button already says 홈, so the trail never repeats it */parts=parts.filter((p,i)=>!(i===0&&(p==='홈'||p==='대시보드')));{const hb=$('#hmbtn');if(hb){const on=!parts.length;hb.toggleAttribute('aria-current',on);if(on)hb.setAttribute('aria-current','page')}}$('#crumb').innerHTML=parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)+' <span aria-hidden="true">›</span>').join(' ');
   const e=envState(),c=$('#env');c.className='envchip'+(e.ok?'':' warn');c.innerHTML=`<i></i><span>${esc(e.msg)}</span>`;c.title=e.msg}
 
 /* ---------- router ---------- */
@@ -2862,7 +2862,7 @@ function lightbox(src){const l=el(`<div class="lightbox" role="dialog" aria-labe
 
 /* ---------- dashboard ---------- */
 function renderDash(){
-  setCrumb(['Speaking','대시보드']);
+  setCrumb(['Speaking','메인']);
   const last=S.hist[S.hist.length-1],bands=S.hist.filter(h=>h.band).map(h=>h.band);
   const doneN=Object.keys(S.best).filter(k=>!k.includes('+')).length;
   const nx=nextSet();
@@ -3810,15 +3810,15 @@ function renderWLnb(cur){
   const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const catLink=c=>{const d=wdone(c),n=c.sets.length;return `<a class="nl sub" href="#${c.id}" ${cur===c.id?'aria-current="page"':''}><span>${esc(c.label)}<span class="sl">${esc(c.sub)}</span></span><span class="cnt ${n&&d===n?'full':''}">${d}/${n}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#w"><span class="mk">iBT</span><span>TOEFL Practice<small>Writing · Hackers Intermediate</small></span></a>${secSwitch(true)}
-    ${link('w','◧','대시보드')}${link('w-mock','▶','실전 모의고사',`<span class="cnt">${WCATS.filter(c=>c.kind==='full').reduce((n,c)=>n+c.sets.length,0)+1}</span>`)}
+    ${link('w','◧','메인')}${link('w-mock','▶','실전 모의고사',`<span class="cnt">${WCATS.filter(c=>c.kind==='full').reduce((n,c)=>n+c.sets.length,0)+1}</span>`)}
     ${[1,2,3].map(t=>`<div class="navgrp"><div class="gh">Task ${t} · ${WTASK[t]}</div>${t===2?link('w-tpl2','✎','이메일 템플릿 연습')+link('w-type','⌨','따라 쓰기 (템플릿 필사)'):t===3?link('w-tpl3','✎','토론 템플릿 연습')+link('w-type','⌨','따라 쓰기 (템플릿 필사)'):''}${WCATS.filter(c=>c.task===t).map(catLink).join('')}</div>`).join('')}
     <div class="navgrp"><div class="gh">내 학습</div>${link('w-hist','☰','응시 기록',`<span class="cnt">${W.hist.length}</span>`)}${link('settings','⚙','설정')}</div>
     <div class="lnbfoot">Hackers Updated TOEFL Writing Intermediate 교재 기반 연습용</div>`;
   $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
 }
 function wTabs(w){const t=$('.btabs');if(!t)return;
-  t.innerHTML=w?`<a href="#w" data-tab="w">${ICON('write')}라이팅</a><a href="#w-practice" data-tab="w-practice">${ICON('pencil')}연습</a><a href="#w-mock" data-tab="w-mock">${ICON('play')}모의고사</a><a href="#w-hist" data-tab="w-hist">${ICON('list')}기록</a>`
-   :`<a href="#home" data-tab="home">${ICON('speak')}스피킹</a><a href="#practice" data-tab="practice">${ICON('pencil')}연습</a><a href="#mock" data-tab="mock">${ICON('play')}모의고사</a><a href="#history" data-tab="history">${ICON('list')}기록</a>`}
+  t.innerHTML=w?`<a href="#w" data-tab="w">${ICON('write')}메인</a><a href="#w-practice" data-tab="w-practice">${ICON('pencil')}연습</a><a href="#w-mock" data-tab="w-mock">${ICON('play')}모의고사</a><a href="#w-hist" data-tab="w-hist">${ICON('list')}기록</a>`
+   :`<a href="#home" data-tab="home">${ICON('speak')}메인</a><a href="#practice" data-tab="practice">${ICON('pencil')}연습</a><a href="#mock" data-tab="mock">${ICON('play')}모의고사</a><a href="#history" data-tab="history">${ICON('list')}기록</a>`}
 /* hook the speaking router: Writing routes start with "w" */
 const _route=route;
 route=function(){
@@ -3875,7 +3875,7 @@ function wCalendar(){const box=el('<div class="cal"></div>'),now=new Date();WCAL
         :`<li><span class="mono small">${hm(x.ts)}</span> 따라 쓰기 <span class="small muted">정확도 ${x.l.acc}%</span></li>`).join('')}</ul>`:'<p class="small muted">이날은 기록이 없어요.</p>'}`}}
   paint(new Date().getMonth()===WCAL.m&&new Date().getFullYear()===WCAL.y?new Date().getDate():null);return box}
 function renderWDash(){
-  setCrumb(['Writing','대시보드']);
+  setCrumb(['Writing','메인']);
   const H=W.hist,last=H[H.length-1],full=H.filter(h=>h.band),bands=full.map(h=>h.band);
   const all=WCATS.flatMap(c=>c.sets),done=all.filter(s=>W.best[s.id]).length,next=all.find(s=>!W.best[s.id]),dt=(wcat('w-dt')||{sets:[]}).sets[0];
   const t1r=(()=>{const a=H.filter(h=>h.t1);return a.length?Math.round(a.reduce((s,h)=>s+h.t1.c/h.t1.n,0)/a.length*100)+'%':'–'})();
@@ -4675,12 +4675,12 @@ function rlLnb(sec,cur){const S_=RLSEC[sec],P=S_.pre;
   const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const best=id=>{const h=RLH.hist.filter(x=>x.set===id);return h.length?Math.max(...h.map(x=>x.ok))+'/'+h[0].n:'—'};
   $('#lnb').innerHTML=`<a class="brand" href="#${P}"><span class="mk">iBT</span><span>TOEFL Practice<small>${S_.name} · ${S_.sub}</small></span></a>${secSwitch(sec)}${rlIsR(sec)?`<div class="rlvsw" role="tablist" aria-label="리딩 교재 선택"><a href="#rd" role="tab" aria-selected="${sec==='r'}"><b>중급</b><small>Intermediate</small></a><a href="#rb" role="tab" aria-selected="${sec==='r2'}"><b>기본</b><small>Updated Reading</small></a></div>`:''}
-   ${link(P,'◧','대시보드')}
+   ${link(P,'◧','메인')}
    ${[...rlGroups(sec)].map(([k,ss])=>`<div class="navgrp"><div class="gh">${esc(RLCAT[k]||k)}</div>${ss.map(s=>`<a class="nl sub" href="#${P}-s-${s.id}" ${cur===P+'-s-'+s.id?'aria-current="page"':''}><span>${esc(s.title.replace(/ · Hackers /,' · '))}<span class="sl">${esc((s.page||'').split(' · ')[0])}</span></span><span class="cnt">${best(s.id)}</span></a>`).join('')}</div>`).join('')}
    <div class="navgrp"><div class="gh">내 학습</div>${link(P+'-hist','☰','풀이 기록',`<span class="cnt">${RLH.hist.filter(x=>x.sec===sec).length}</span>`)}${link(P+'-voc','★','단어장',`<span class="cnt">${Object.values(RLH.voc).filter(v=>v.sec===sec).length}</span>`)}${link('settings','⚙','설정')}</div>
    <div class="lnbfoot">${esc(S_.book)} 교재 기반 연습용</div>`;
   $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
-  const t=$('.btabs');if(t)t.innerHTML=`<a href="#${P}">${ICON(P==='ls'?'listen':'read')}${P==='ls'?'리스닝':'리딩'}</a><a href="#${P}-hist">${ICON('list')}기록</a><a href="#${P}-voc">${ICON('star')}단어장</a>`;
+  const t=$('.btabs');if(t)t.innerHTML=`<a href="#${P}">${ICON(P==='ls'?'listen':'read')}메인</a><a href="#${P}-hist">${ICON('list')}기록</a><a href="#${P}-voc">${ICON('star')}단어장</a>`;
 }
 /* ---- router hook ---- */
 const _routeW=route;
@@ -4709,12 +4709,13 @@ async function rlAudioURL(id){const pb=window.PACKBLOB&&PACKBLOB['audio/'+id+'.m
 function rlStopAudio(){if(rlAud){rlAud.pause();rlAud=null}try{if(typeof RLTTS!=='undefined'&&RLTTS.on)rlTtsStop()}catch(e){}}
 async function rlPlayer(host,id,{auto=false,once=false,onEnd}={}){
   const a=new Audio(await rlAudioURL(id));a.volume=Math.min(1,S.vol??1);rlAud=a;
-  host.innerHTML=`<div class="rlplay"><button class="btn sm" data-a="pp">▶ 재생</button><div class="rlbar"><i></i></div><span class="small muted" data-a="tm">0:00</span>${once?'':'<button class="btn sm quiet" data-a="back">↺ 5초</button>'}<span class="rlrate" role="group" aria-label="재생 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span></div>`;
+  host.innerHTML=`<div class="rlplay"><button class="btn sm" data-a="pp">▶ 재생</button>${once?'':'<button class="btn sm quiet" data-a="stop" aria-label="정지" title="정지 (처음으로)">■ 정지</button>'}<div class="rlbar"><i></i></div><span class="small muted" data-a="tm">0:00</span>${once?'':'<button class="btn sm quiet" data-a="back">↺ 5초</button>'}<span class="rlrate" role="group" aria-label="재생 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span></div>`;
   const pp=$('[data-a=pp]',host),bar=$('.rlbar i',host),tm=$('[data-a=tm]',host),f=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   a.ontimeupdate=()=>{if(a.duration){bar.style.width=(a.currentTime/a.duration*100)+'%';tm.textContent=f(a.currentTime)+' / '+f(a.duration)}};
   a.onplay=()=>pp.textContent=once?'🔊 재생 중…':'❚❚ 일시정지';a.onpause=()=>pp.textContent='▶ 재생';
   a.onended=()=>{pp.textContent=once?'✓ 재생 끝':'▶ 다시 듣기';if(once)pp.disabled=true;onEnd&&onEnd()};
   pp.onclick=()=>{if(once&&!a.paused)return;a.paused?a.play():a.pause()};
+  $('[data-a=stop]',host)?.addEventListener('click',()=>{a.pause();a.currentTime=0;bar.style.width='0%';pp.textContent='▶ 재생';if(a.duration)tm.textContent='0:00 / '+f(a.duration)});
   $('[data-a=back]',host)?.addEventListener('click',()=>a.currentTime=Math.max(0,a.currentTime-5));
   if(!once){const rb=$('.rlbar',host);rb.classList.add('seek');rb.title='눌러서(끌어서) 위치 이동';rb.setAttribute('role','slider');rb.setAttribute('aria-label','재생 위치');rb.tabIndex=0;
     const to=e=>{if(!a.duration)return;const r=rb.getBoundingClientRect(),x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));a.currentTime=x*a.duration;bar.style.width=x*100+'%';tm.textContent=f(a.currentTime)+' / '+f(a.duration)};
@@ -4725,6 +4726,22 @@ async function rlPlayer(host,id,{auto=false,once=false,onEnd}={}){
   $$('.rlrate button',host).forEach(b=>b.onclick=()=>{const r=+b.dataset.r;store.set('rlrate',r);a.playbackRate=r;a.defaultPlaybackRate=r;$$('.rlrate button',host).forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
   if(auto)a.play().catch(()=>{});return a}
 
+/* ---- 재생 · 일시정지 · 정지 (짧은 글 읽어 주기 버튼용) ----
+   녹음이 있으면 멈춘 자리에서 이어 듣고, 녹음이 없으면 기기 음성으로 처음부터 다시 읽어요. */
+const RLSC={b:null,a:null,paused:false,reset:null};
+function rlSayCtlStop(){const b=RLSC.b;RLSC.b=null;RLSC.paused=false;try{if(RLSC.a){RLSC.a.pause();RLSC.a=null}window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;speechSynthesis.cancel()}catch(e){}if(b&&RLSC.reset)RLSC.reset(b)}
+function rlSayCtl(b,text,opt={}){const lab=b.dataset.l||b.textContent,short=[...lab].length<=2;b.dataset.l=lab;
+  let st=b.nextElementSibling&&b.nextElementSibling.classList.contains('sayst')?b.nextElementSibling:null;
+  if(!st){b.insertAdjacentHTML('afterend',`<button type="button" class="${b.className.replace(/\bon\b/,'')} sayst" hidden aria-label="정지" title="정지">${short?'■':'■ 정지'}</button>`);st=b.nextElementSibling;st.onclick=e=>{e.stopPropagation();if(RLSC.b===b)rlSayCtlStop()}}
+  const show=()=>{const on=RLSC.b===b;b.classList.toggle('on',on);st.hidden=!on;b.textContent=!on?lab:RLSC.paused?(short?'▶':'▶ 이어 듣기'):(short?'❚❚':'❚❚ 일시정지')};
+  RLSC.reset=x=>{x.classList.remove('on');x.textContent=x.dataset.l;const s=x.nextElementSibling;if(s&&s.classList.contains('sayst'))s.hidden=true};
+  const done=()=>{if(RLSC.b===b){RLSC.b=null;RLSC.a=null;RLSC.paused=false;show()}};
+  const start=()=>{const pv=rlPV(),u=rlClipUrl(text,(opt.ko||!RLPV[pv].rec)?'af':pv);RLSC.b=b;RLSC.paused=false;
+    if(u){const a=rlAiEl(u);RLSC.a=a;RLAIA=a;a.playbackRate=opt.rate||rlRate();a.onended=done;a.onerror=done;a.play().catch(()=>{RLSC.a=null;rlSayE(text,opt.eng,opt.rate,opt).then(()=>{if(!RLSC.paused)done()})})}
+    else{RLSC.a=null;rlSayE(text,opt.eng,opt.rate,opt).then(()=>{if(RLSC.b===b&&!RLSC.paused)done()})}show()};
+  if(RLSC.b!==b){rlSayCtlStop();start();return}
+  if(!RLSC.paused){RLSC.paused=true;try{if(RLSC.a)RLSC.a.pause();else{window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;speechSynthesis.cancel()}}catch(e){}show();return}
+  RLSC.paused=false;if(RLSC.a&&!RLSC.a.ended){RLSC.a.play().catch(()=>start());show()}else start()}
 /* ---- passage read-aloud (browser TTS, practice only) ---- */
 const RLTTS={on:false};
 const RLACC={US:{f:'🇺🇸',k:'미국',lang:'en-US',re:/^en[-_]US/i},UK:{f:'🇬🇧',k:'영국',lang:'en-GB',re:/^en[-_](GB|UK)/i},AU:{f:'🇦🇺',k:'호주',lang:'en-AU',re:/^en[-_]AU/i}};
@@ -4904,7 +4921,7 @@ function rlTrend(H){if(!H.length)return el('<div class="empty">세트를 풀면 
   b.appendChild(lineChart({series:ser,labels,tips,ymin:0,ymax:100,ticks:[0,25,50,75,100],fmt:v=>Math.round(v)+'%',hi:H.length-1}));
   w.append(a,b);return w}
 function rlDash(sec){const S_=RLSEC[sec],P=S_.pre,H=RLH.hist.filter(x=>x.sec===sec),last=H[H.length-1],sets=rlSets(sec);
-  setCrumb([S_.name,'대시보드']);
+  setCrumb([S_.name,'메인']);
   const best=id=>{const h=H.filter(x=>x.set===id);return h.length?Math.max(...h.map(x=>x.ok/x.n)):null};
   const done=sets.filter(s=>best(s.id)!=null),nx=sets.find(s=>best(s.id)==null),dt=sets.find(s=>/DT$/.test(s.id));
   const bands=H.map(x=>rlBand(x.ok/x.n)),G=[...rlGroups(sec)],ats=sets.filter(s=>s.cat===sec+'-at');
@@ -5504,6 +5521,8 @@ addEventListener('hashchange',()=>{if(PINK.key&&location.hash!==PINK.hash)inkPag
   try{renderWTypeExam=W('renderWTypeExam',id=>'pink:wtx:'+id)||renderWTypeExam}catch(e){}
 })();
 
+addEventListener('hashchange',()=>{try{rlSayCtlStop()}catch(e){}});
+
 /* ================= Vocab · VocaDay (Hackers TOEFL Vocabulary, 30 Days) =================
    Word data is injected at build time as window.VOCA (never stored in this repo).
    Progress uses the same shape as the VocaDay app ({status, box, due, misses, t}) so the
@@ -5520,7 +5539,7 @@ function vcSpMiss(){const out=[];for(const [id,p] of Object.entries(VCSP)){if(!p
     if(w)out.push(w)}
   return out.sort((a,b)=>(VCSP[b.id].misses||0)-(VCSP[a.id].misses||0))}
 function vcSpPage(mode){mode=['spell','card','list'].includes(mode)?mode:'spell';const ws=vcSpMiss();setCrumb(['Vocab','철자 오답 노트']);
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">✍ 철자 오답 노트</h1><p>${ws.length}단어 · 철자 쓰기에서 틀리거나 힌트를 쓴 단어 (보카 + 리딩·리스닝). 두 번 연속 한 번에 맞히면 빠져요.</p></div></div>
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">✍ 철자 오답 노트</h1><p>${ws.length}단어 · 철자 쓰기에서 틀리거나 힌트를 쓴 단어 (보카 + 리딩·리스닝). 두 번 연속 한 번에 맞히면 빠져요.</p></div></div>
     <div class="secsw vtabs vcmodes" role="tablist">${[['spell','다시 쓰기'],['card','카드'],['list','목록']].map(([k,t])=>`<a href="#vc-sp~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div><div id="vcbody"></div>`;
   if(!ws.length){$('#vcbody').innerHTML='<div class="empty">철자 오답이 없어요 👍 Day별 ‘철자 쓰기’에서 연습해 보세요.</div>';return}
   vcVoiceMount(ws[0]);const host=$('#vcbody');if(mode==='spell')vcSpell(host,ws);else if(mode==='card')vcCards(host,ws,{scope:'sp'});else vcList(host,ws)}
@@ -5589,12 +5608,12 @@ secSwitch=function(w){const cur=w===true?'w':w===false?'s':w==='r2'?'r':w;const 
 function vcLnb(cur){const link=(href,ic,label,extra='')=>`<a class="nl" href="#${href}" ${cur===href?'aria-current="page"':''}><span class="ic" aria-hidden="true">${NAVIC(ic)}</span><span>${label}</span>${extra}</a>`;
   const day=d=>{const ws=vcDay(d),k=ws.filter(w=>vcSt(w)==='known').length;return `<a class="nl sub" href="#vc-d-${d}" ${cur==='vc-d-'+d?'aria-current="page"':''}><span>Day ${String(d).padStart(2,'0')}<span class="sl">${ws.length}단어</span></span><span class="cnt ${k&&k===ws.length?'full':''}">${k}/${ws.length}</span></a>`};
   $('#lnb').innerHTML=`<a class="brand" href="#vc"><span class="mk">iBT</span><span>TOEFL Practice<small>Vocab · Hackers TOEFL VOCA</small></span></a>${secSwitch('v')}
-   ${link('vc','◧','대시보드')}${link('vc-rev','↻','오늘의 복습',`<span class="cnt">${vcDue().length}</span>`)}${link('vc-miss','✕','모름 · 애매',`<span class="cnt">${VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure').length}</span>`)}${link('vc-sp','✍','철자 오답 노트',`<span class="cnt">${vcSpMiss().length}</span>`)}${link('vc-find','⌕','단어 검색')}
+   ${link('vc','◧','메인')}${link('vc-rev','↻','오늘의 복습',`<span class="cnt">${vcDue().length}</span>`)}${link('vc-miss','✕','모름 · 애매',`<span class="cnt">${VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure').length}</span>`)}${link('vc-sp','✍','철자 오답 노트',`<span class="cnt">${vcSpMiss().length}</span>`)}${link('vc-find','⌕','단어 검색')}
    ${[[1,10],[11,20],[21,30]].map(([a,b])=>`<div class="navgrp"><div class="gh">Day ${a}–${b}</div>${Array.from({length:b-a+1},(_,i)=>day(a+i)).join('')}</div>`).join('')}
    <div class="navgrp"><div class="gh">내 학습</div>${link('vc-bk','💾','기록 옮기기 · 백업')}${link('settings','⚙','설정')}</div>
    <div class="lnbfoot">해커스 토플 보카 30일 · VocaDay 단어 데이터</div>`;
   $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
-  const t=$('.btabs');if(t)t.innerHTML=`<a href="#vc">${ICON('vocab')}보카</a><a href="#vc-rev">${ICON('refresh')}복습</a><a href="#vc-find">${ICON('search')}검색</a>`}
+  const t=$('.btabs');if(t)t.innerHTML=`<a href="#vc">${ICON('vocab')}메인</a><a href="#vc-rev">${ICON('refresh')}복습</a><a href="#vc-find">${ICON('search')}검색</a>`}
 {const _routeR=route;
  route=function(){if(RUN.active||document.body.classList.contains('testing'))return;
   const h=location.hash.slice(1)||'home';
@@ -5628,7 +5647,7 @@ function vcCalendar(){const box=el('<div class="cal"></div>'),now=new Date();VCC
       $('#vccalday',box).innerHTML=`<h4>${m+1}월 ${sel}일</h4>${n?`<p class="small">카드·퀴즈·철자에서 <b>${n}번</b> 답했어요${ws.length?` · 이날 마지막으로 공부한 단어 <b>${ws.length}개</b>`:''}</p>${ws.length?`<p class="small muted vclegend"><span class="vcst known">외움</span> <span class="vcst unsure">애매</span> <span class="vcst learning">모름</span> = 지금 그 단어의 상태</p>`:''}${ws.length?`<p class="small">${ws.slice(0,40).map(w=>`<span class="vcst ${vcSt(w)}">${esc(w.word)}</span>`).join(' ')}${ws.length>40?' …':''}</p>`:''}`:'<p class="small muted">이날은 기록이 없어요.</p>'}`}}
   paint(new Date().getMonth()===VCCAL.m&&new Date().getFullYear()===VCCAL.y?new Date().getDate():null);return box}
 /* ---------- dashboard ---------- */
-function vcDash(){setCrumb(['Vocab','대시보드']);
+function vcDash(){setCrumb(['Vocab','메인']);
   const total=VC.data.length,known=VC.data.filter(w=>vcSt(w)==='known').length,miss=VC.data.filter(w=>vcSt(w)==='learning').length,meh=VC.data.filter(w=>vcSt(w)==='unsure').length,due=vcDue().length,L=store.get('vclog',{}),today=L[vcKey(new Date())]||0;
   const next=Array.from({length:30},(_,i)=>i+1).find(d=>vcDay(d).some(w=>vcSt(w)!=='known'))||1;
   const recent=VC.data.filter(w=>VCP[w.id]&&VCP[w.id].t).sort((a,b)=>VCP[b.id].t-VCP[a.id].t).slice(0,8);
@@ -5677,14 +5696,14 @@ function vcVoiceMount(sample,rl){const head=$('.cathead',view);if(!head||$('.vcv
 const VCM={card:'카드',quiz:'퀴즈',spell:'철자 쓰기',list:'목록'};
 function vcDayPage(d,mode){mode=mode&&VCM[mode]?mode:store.get('vcmode','card');store.set('vcmode',mode);
   const ws=vcDay(d);setCrumb(['Vocab','Day '+d]);
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">Day ${String(d).padStart(2,'0')}</h1><p>${ws.length}단어 · 외움 ${ws.filter(w=>vcSt(w)==='known').length} · 애매 ${ws.filter(w=>vcSt(w)==='unsure').length} · 모름 ${ws.filter(w=>vcSt(w)==='learning').length}</p></div>
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">Day ${String(d).padStart(2,'0')}</h1><p>${ws.length}단어 · 외움 ${ws.filter(w=>vcSt(w)==='known').length} · 애매 ${ws.filter(w=>vcSt(w)==='unsure').length} · 모름 ${ws.filter(w=>vcSt(w)==='learning').length}</p></div>
      <div class="row">${d>1?`<a class="btn sm" href="#vc-d-${d-1}~${mode}">← Day ${d-1}</a>`:''}${d<30?`<a class="btn sm" href="#vc-d-${d+1}~${mode}">Day ${d+1} →</a>`:''}</div></div>
     <div class="secsw vtabs vcmodes" role="tablist">${Object.entries(VCM).map(([k,t])=>`<a href="#vc-d-${d}~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div>
     <div id="vcbody"></div>`;
   vcVoiceMount(ws[0]);const host=$('#vcbody');
   if(mode==='card')vcCards(host,ws,{scope:'day'});else if(mode==='quiz')vcQuiz(host,ws);else if(mode==='spell')vcSpell(host,ws);else vcList(host,ws)}
 function vcStudy(kind){const ws=kind==='rev'?vcDue():VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');setCrumb(['Vocab',kind==='rev'?'오늘의 복습':'모르는 단어']);
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">${kind==='rev'?'↻ 오늘의 복습':'✕ 모름 · 애매 단어'}</h1><p>${ws.length}단어 · ${kind==='rev'?'간격 반복으로 오늘 다시 볼 단어':'‘모름’·‘애매’로 표시한 단어'}</p></div></div><div id="vcbody"></div>`;
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">${kind==='rev'?'↻ 오늘의 복습':'✕ 모름 · 애매 단어'}</h1><p>${ws.length}단어 · ${kind==='rev'?'간격 반복으로 오늘 다시 볼 단어':'‘모름’·‘애매’로 표시한 단어'}</p></div></div><div id="vcbody"></div>`;
   if(!ws.length){$('#vcbody').innerHTML=`<div class="empty">${kind==='rev'?'오늘 복습할 단어가 없어요 🎉 새 Day를 시작해 보세요.':'모르는 단어가 없어요 👍'}</div>`;return}
   vcVoiceMount(ws[0]);vcCards($('#vcbody'),ws.slice().sort(()=>Math.random()-.5),{scope:kind})}
 
@@ -5711,7 +5730,7 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
       $('#vcagain').onclick=()=>{deck=deck.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');i=0;okN=noN=mehN=0;draw()};$('#vcall').onclick=()=>{deck=deckOf();i=0;okN=noN=mehN=0;draw()};return}
     const w=deck[i];
     host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span></div>
-      <div class="vctools"><button type="button" class="vcchip" id="vcauto" aria-pressed="${auto}">${auto?'⏸ 자동 재생 중':'▶ 자동 재생'}</button><button type="button" class="vcchip" id="vcapb" aria-expanded="${apOpen}">⚙ 소리·보기 설정</button></div>
+      <div class="vctools"><button type="button" class="vcchip" id="vcauto" aria-pressed="${auto}">${auto?'❚❚ 일시정지':'▶ 자동 재생'}</button><button type="button" class="vcchip vcstop" id="vcstopb" ${auto?'':'hidden'}>■ 정지</button><button type="button" class="vcchip" id="vcapb" aria-expanded="${apOpen}">⚙ 소리·보기 설정</button></div>
       <div class="panel vcap" id="vcap" ${apOpen?'':'hidden'}>${vcBasicHTML()}${vcApHTML()}</div>
       ${vcCardHTML(w)}
       <div class="vcbtns"><button class="btn" id="vcprev" ${i?'':'disabled'}>←</button><button class="btn" data-say="w">🔊 단어</button><button class="btn" data-say="k">🔊 뜻</button>${(w.senses||[]).filter(s=>s.ex).length>1?`<button class="btn" data-sayall>🔊 예문 전부</button>`:''}
@@ -5726,10 +5745,14 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
     $('#vcyes').onclick=()=>mark(true);$('#vcno').onclick=()=>mark(false);$('#vcmeh').onclick=()=>mark('meh');
     $('[data-peek]',host)?.addEventListener('click',e=>{e.stopPropagation();e.currentTarget.outerHTML=`<p class="vcfkr">${esc(vcKr(w))}</p>`});
     $('#vcnext').onclick=()=>{i++;draw()};$('#vcprev').onclick=()=>{if(i){i--;draw()}};
-    const chip=()=>{const b=$('#vcauto',host);if(!b)return;b.setAttribute('aria-pressed',String(auto&&!held));b.textContent=!auto?'▶ 자동 재생':held?'▶ 이어서 자동 재생':'⏸ 자동 재생 중'};
+    /* 자동 재생: ▶ 자동 재생 → ❚❚ 일시정지 ↔ ▶ 이어 재생, 옆의 ■ 정지로 완전히 멈춰요 */
+    const chip=()=>{const b=$('#vcauto',host),s=$('#vcstopb',host);if(!b)return;b.setAttribute('aria-pressed',String(auto&&!held));b.textContent=!auto?'▶ 자동 재생':held?'▶ 이어 재생':'❚❚ 일시정지';if(s)s.hidden=!auto};
     /* a sound or passage tapped by hand during auto-play pauses the chain, so the tapped clip is heard instead of being cut off */
-    var hold=()=>{if(!auto||held)return;held=true;VCGEN++;chip()};
-    $('#vcauto').onclick=()=>{if(held){held=false;i++;draw();return}auto=!auto;VCGEN++;if(auto)draw();else{vcStop();chip()}};
+    var hold=(by='tap')=>{if(!auto||held)return;held=by;VCGEN++;chip()};
+    $('#vcauto').onclick=()=>{if(!auto){auto=true;VCGEN++;draw();return}
+      if(held){const next=held==='tap';held=false;if(next)i++;draw();return}   // 소리를 눌러 멈췄으면 다음 카드부터, 일시정지였으면 이 카드부터 다시
+      hold('btn');vcStop()};
+    $('#vcstopb')?.addEventListener('click',()=>{auto=false;held=false;VCGEN++;vcStop();chip()});
     $('#vcapb').onclick=()=>{const p=$('#vcap',host);p.hidden=!p.hidden;apOpen=!p.hidden;$('#vcapb').setAttribute('aria-expanded',String(apOpen))};
     $$('[data-vb]',host).forEach(b=>b.onclick=()=>{const k=b.dataset.vb,v=JSON.parse(b.dataset.v);store.set(k,v);$$(`[data-vb="${k}"]`,host).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(k!=='vcbasic')draw()});
     vcApWire($('#vcap',host),()=>{if(auto){VCGEN++;draw()}});
@@ -5841,7 +5864,7 @@ function vcList(host,ws,{showDay=false}={}){
   $$('[data-say]',host).forEach(b=>b.onclick=()=>vcPlay(ws[+b.dataset.say],'w'))}
 
 function vcFind(){setCrumb(['Vocab','단어 검색']);
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">⌕ 단어 검색</h1><p>영어 단어나 한국어 뜻으로 찾아요.</p></div></div>
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">⌕ 단어 검색</h1><p>영어 단어나 한국어 뜻으로 찾아요.</p></div></div>
     <input id="vcq" class="vcin wide" placeholder="예: exploit, 이용하다" autocomplete="off"><div id="vcres" style="margin-top:14px"></div>`;
   const q=$('#vcq'),run=()=>{const v=q.value.trim().toLowerCase();if(!v){$('#vcres').innerHTML='';return}
     const r=VC.data.filter(w=>w.word.toLowerCase().includes(v)||vcKr(w).includes(v)||(w.senses||[]).some(s=>(s.en||'').toLowerCase().includes(v))).slice(0,80);
@@ -5851,7 +5874,7 @@ function vcFind(){setCrumb(['Vocab','단어 검색']);
 function vcBackup(){setCrumb(['Vocab','기록 옮기기']);
   const words={};for(const k in VCP)if(VCP[k]&&VCP[k].status&&VCP[k].status!=='new')words[k]=VCP[k];
   const code='VOCADAY1 '+JSON.stringify({words,spell:VCSP,at:new Date().toISOString()});
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 대시보드</a><h1 style="margin-top:6px">💾 기록 옮기기 · 백업</h1><p>VocaDay 앱과 같은 코드(VOCADAY1 …)를 써요. VocaDay 앱 ⚙️ › <b>진행 기록 옮기기</b>에서 복사한 코드를 아래에 붙여넣으면 외움·모름 기록이 합쳐져요(더 최근 기록이 남아요). 반대로 이 코드를 VocaDay에 붙여넣어도 돼요.</p></div></div>
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">💾 기록 옮기기 · 백업</h1><p>VocaDay 앱과 같은 코드(VOCADAY1 …)를 써요. VocaDay 앱 ⚙️ › <b>진행 기록 옮기기</b>에서 복사한 코드를 아래에 붙여넣으면 외움·모름 기록이 합쳐져요(더 최근 기록이 남아요). 반대로 이 코드를 VocaDay에 붙여넣어도 돼요.</p></div></div>
     <section class="section"><h2>이 기기의 기록 코드</h2><div class="panel ph"><textarea class="vcin wide" rows="4" readonly id="vcout">${esc(code)}</textarea><div class="row" style="margin-top:8px"><button class="btn primary" id="vccopy">복사</button><span class="small muted">기록 ${Object.keys(words).length}단어</span></div></div></section>
     <section class="section"><h2>VocaDay에서 가져오기</h2><div class="panel ph"><textarea class="vcin wide" rows="4" id="vcinp" placeholder="VOCADAY1 {…} 전체를 붙여넣으세요"></textarea><div class="row" style="margin-top:8px"><button class="btn primary" id="vcimp">가져오기</button><span id="vcimpr" class="small"></span></div></div></section>`;
   $('#vccopy').onclick=()=>{const t=$('#vcout');t.select();try{navigator.clipboard.writeText(t.value);toast('복사했어요')}catch(e){document.execCommand('copy');toast('복사했어요')}};
@@ -5967,7 +5990,7 @@ function hmPlanWire(){const box=$('.hmplan');if(!box)return;
   $$('.plitems input',box).forEach(c=>c.onchange=()=>{const p=plGet();p.chk=p.chk||{};p.chk[c.dataset.k]=c.checked?1:0;plSet(p);const y=scrollY;renderHome();scrollTo(0,y)});
   const t=$('.plday.today',box)||$('.plday[aria-selected="true"]',box);if(t&&t.parentElement)t.parentElement.scrollLeft=t.offsetLeft-t.parentElement.clientWidth/2}
 function renderHome(){
-  setCrumb(['홈']);store.set('sec','');
+  setCrumb(['대시보드']);store.set('sec','');
   const E=hmEvents(),today=hmKey(new Date()),byDay={};E.forEach(e=>{const k=hmKey(new Date(e.ts));(byDay[k]=byDay[k]||{})[e.k]=(byDay[k][e.k]||0)+e.n});
   let streak=0;{const d=new Date();if(!byDay[hmKey(d)])d.setDate(d.getDate()-1);while(byDay[hmKey(d)]){streak++;d.setDate(d.getDate()-1)}}
   const week=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return byDay[hmKey(d)]?1:0}).reduce((a,b)=>a+b,0);
@@ -5999,11 +6022,11 @@ function renderHome(){
       const kp=t.vocab?`<div><b class="mono">${t.due}</b><span>복습 대기</span></div><div><b class="mono">${t.streak}<small>일</small></b><span>연속</span></div>`
         :`<div><b class="mono">${t.recent!=null?t.recent.toFixed(1):'–'}</b><span>최근 밴드</span></div><div><b class="mono">${t.best!=null?t.best.toFixed(1):'–'}</b><span>최고 밴드</span></div>`;
       return `<article class="hmcard panel" style="--sc:${s.c}">
-        <a class="hmcard-hit" href="${s.href}" aria-label="${s.name} 대시보드로 가기"></a>
+        <a class="hmcard-hit" href="${s.href}" aria-label="${s.name} 메인으로 가기"></a>
         <header><span class="hmic">${ICON(s.ic)}</span><div><h2>${s.name}</h2><span class="small muted">${s.ko} · ${hmAgo(t.last)}</span></div>${(byDay[today]||{})[s.k]?'<span class="hmtoday">오늘 ✓</span>':''}</header>
         <div class="hmmid">${hmRing(p,s.c)}<div class="hmkpi">${kp}<div class="hmprog"><span class="mono">${t.done}</span> / ${t.total} ${t.unit} ${t.vocab?'외움':'완료'}${t.extra?` · ${esc(t.extra)}`:''}</div></div></div>
         <div class="hmsp"><span class="small muted">${t.vocab?'최근 2주 학습량':'점수 흐름'}</span>${hmSpark(t.spark,s.c,t.vocab)}</div>
-        <footer>${t.next?`<a class="btn sm hmnext" href="${t.next.href}">▶ ${esc(t.next.t)}</a>`:'<span class="small muted">모든 세트 완료 🎉</span>'}<a class="btn sm quiet" href="${s.href}">대시보드</a></footer>
+        <footer>${t.next?`<a class="btn sm hmnext" href="${t.next.href}">▶ ${esc(t.next.t)}</a>`:'<span class="small muted">모든 세트 완료 🎉</span>'}<a class="btn sm quiet" href="${s.href}">메인</a></footer>
       </article>`}).join('')}</section>
     <section class="panel ph hmact"><div class="plhead" style="margin-bottom:8px"><h2 style="flex:1">학습 기록 · ${days[0].getMonth()+1}/${days[0].getDate()} – ${days[N-1].getMonth()+1}/${days[N-1].getDate()} <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2><label class="small hmfrom">시작일 <input type="date" id="hmfrom" value="${hmKey(days[0])}"></label></div>
       <div class="hmtbl" role="table" aria-label="과목별 학습 기록" style="--n:${N}">
@@ -6021,7 +6044,7 @@ function renderHome(){
   const h=location.hash.slice(1);
   if(h===''||h==='start'){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}
     $('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>Hackers Intermediate</small></span></a>${secSwitch('')}
-      <a class="nl" href="#start" aria-current="page"><span class="ic" aria-hidden="true">${ICON('home')}</span><span>홈</span></a>
+      <a class="nl" href="#start" aria-current="page"><span class="ic" aria-hidden="true">${ICON('grid')}</span><span>대시보드</span></a>
       <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true" style="color:${s.c}">${ICON(s.ic)}</span><span>${s.name}</span></a>`).join('')}</div>
       <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">${ICON('gear')}</span><span>설정</span></a></div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
@@ -6032,7 +6055,7 @@ function renderHome(){
  window.removeEventListener('hashchange',_routeV);window.addEventListener('hashchange',route)}
 function hmMsec(){const h=location.hash.slice(1);if(h===''||h==='start'||h==='bg'||h.startsWith('bg-'))$$('#msecsw a').forEach(a=>a.setAttribute('aria-selected','false'))}
 /* a home button in the top bar */
-try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="홈으로" title="홈 (5과목 한눈에 보기)">'+ICON('home')+'<span class="hmbtn-t">홈</span></a>')}catch(e){}
+try{const tb=$('#crumb');if(tb&&!$('#hmbtn'))tb.insertAdjacentHTML('beforebegin','<a id="hmbtn" class="hmbtn" href="#start" aria-label="대시보드로" title="대시보드 (5과목 한눈에 보기)">'+ICON('grid')+'<span class="hmbtn-t">대시보드</span></a>')}catch(e){}
 
 /* ---------- 배경지식 (background knowledge for the Reading/Listening academic passages) ---------- */
 /* data: window.BG (from the private pack) — topics with overview (ko/en), concepts, vocab, a diagram spec, videos and passage refs */
@@ -6069,7 +6092,7 @@ function bgFig(dg,c){if(!dg)return '';let body='';const s=dg.s||[];
     body=`<div class="bgcmpw"><table class="bgcmp"><thead><tr>${two?'':'<th></th>'}${dg.h.map(h=>`<th>${esc(h[0])}<em>${esc(h[1])}</em></th>`).join('')}</tr></thead><tbody>${dg.r.map(r=>`<tr><th scope="row">${esc(r[0][0])}<em>${esc(r[0][1])}</em></th>${cell(r[1])}${cell(r[2])}</tr>`).join('')}</tbody></table></div>`}
   return `<figure class="bgfg" style="--sc:${c}"><figcaption><b>${esc(dg.t[0])}</b><em>${esc(dg.t[1])}</em></figcaption>${dg.cap?`<div class="bgcap"><p>💡 ${esc(dg.cap[0])}</p><p class="e">${esc(dg.cap[1])}</p></div>`:''}${body}</figure>`}
 let BGSAYB=null;
-function bgStopSay(){try{window.RLSAYSEQ++;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}}
+function bgStopSay(){try{rlSayCtlStop()}catch(e){}try{window.RLSAYSEQ++;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}}
 function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();setCrumb(['배경지식',t.ko]);const S2=bgSeen();S2[id]=Date.now();store.set('bgseen',S2);
   const sayBtn=(txt,lbl='🔊',ko)=>`<button type="button" class="btn sm quiet bgsay" data-bgsay="${esc(txt)}" ${ko?'data-ko="1"':''} data-l="${esc(lbl)}" aria-label="듣기">${lbl}</button>`;
   const two=(ko,en)=>`<div class="bgov"><div><h3>🇰🇷 한글 ${sayBtn(ko,'🔊 듣기',1)}</h3><p>${esc(ko)}</p></div><div><h3>🇺🇸 English ${sayBtn(en,'🔊 Listen')}</h3><p class="bgoe">${esc(en)}</p></div></div>`;
@@ -6088,23 +6111,19 @@ function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();
   </div>`;
   $$('[data-go]',view).forEach(a=>a.onclick=()=>{const e=$('#'+a.dataset.go);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})});
   const off=b=>{if(!b)return;b.classList.remove('on');if(b.dataset.l.length>2)b.textContent=b.dataset.l};
-  $$('[data-bgsay]',view).forEach(b=>b.onclick=()=>{try{const tx=b.dataset.bgsay,ko=!!b.dataset.ko;
-    if(BGSAYB===b){bgStopSay();off(b);BGSAYB=null;return}
-    off(BGSAYB);BGSAYB=b;b.classList.add('on');if(b.dataset.l.length>2)b.textContent=ko?'⏹ 멈춤':'⏹ Stop';
-    const eng=typeof vcEngRL==='function'?vcEngRL():'dev';
-    Promise.resolve(rlSayE(tx,eng,ko?1:0,ko?{ko:1}:{})).catch(()=>{}).then(()=>{if(BGSAYB===b){off(b);BGSAYB=null}})}catch(e){}});
+  $$('[data-bgsay]',view).forEach(b=>b.onclick=()=>{try{const ko=!!b.dataset.ko;rlSayCtl(b,b.dataset.bgsay,{ko,rate:ko?1:undefined,eng:typeof vcEngRL==='function'?vcEngRL():'dev'})}catch(e){}});
   $$('.bgpsb',view).forEach(b=>b.onclick=()=>{const p=t.ps[+b.dataset.i];try{rlShowBlock(p.sec,p.set,p.bi,'')}catch(e){toast('지문을 열지 못했어요')}})}
 function bgIndex(){setCrumb(['배경지식']);const D=bgData(),seen=bgSeen();
   if(!D.length){view.innerHTML='<div class="empty">배경지식 데이터가 없어요. 최신 toefl-pack.bin을 불러와 주세요.</div>';return}
   const n=D.reduce((a,t)=>a+t.ps.length,0);
-  view.innerHTML=`<div class="cathead"><div><a class="small" href="#start">← 홈</a><h1 style="margin-top:6px">배경지식</h1><p>리딩·리스닝 학술 지문 ${n}개를 주제별로 묶었어요. 주제마다 한글·영어 개요, 그림, 핵심 개념과 어휘, 영상, 교재 지문 목록이 있어요. 지문을 풀기 전에 훑어 두면 처음 보는 내용도 훨씬 빨리 읽혀요.</p></div></div>
+  view.innerHTML=`<div class="cathead"><div><a class="small" href="#start">← 대시보드</a><h1 style="margin-top:6px">배경지식</h1><p>리딩·리스닝 학술 지문 ${n}개를 주제별로 묶었어요. 주제마다 한글·영어 개요, 그림, 핵심 개념과 어휘, 영상, 교재 지문 목록이 있어요. 지문을 풀기 전에 훑어 두면 처음 보는 내용도 훨씬 빨리 읽혀요.</p></div></div>
     <div class="bggrid">${D.map(t=>`<a class="bgtile panel" href="#bg-${t.id}" style="--sc:${t.c}"><span class="bgic">${t.ic}</span><span class="bgt"><b>${esc(t.ko)}</b><small>${esc(t.en)}</small></span><span class="bgn small muted">지문 ${t.ps.length}개${seen[t.id]?' · ✓ 읽음':''}</span></a>`).join('')}</div>`}
 {const _routeH=route;
  route=function(){if(RUN.active||document.body.classList.contains('testing'))return;
   const h=location.hash.slice(1);
   if(h==='bg'||h.startsWith('bg-')){try{stopPlay()}catch(e){}try{rlStopAudio()}catch(e){}try{vcStop()}catch(e){}try{bgStopSay();BGSAYB=null}catch(e){}
     const D=bgData();$('#lnb').innerHTML=`<a class="brand" href="#start"><span class="mk">iBT</span><span>TOEFL Practice<small>배경지식</small></span></a>${secSwitch('')}
-      <a class="nl" href="#start"><span class="ic" aria-hidden="true">${ICON('home')}</span><span>홈</span></a><a class="nl" href="#bg" ${h==='bg'?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ICON('book')}</span><span>배경지식 전체</span></a>
+      <a class="nl" href="#start"><span class="ic" aria-hidden="true">${ICON('grid')}</span><span>대시보드</span></a><a class="nl" href="#bg" ${h==='bg'?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ICON('book')}</span><span>배경지식 전체</span></a>
       <div class="navgrp"><div class="gh">주제</div>${D.map(t=>`<a class="nl sub" href="#bg-${t.id}" ${h==='bg-'+t.id?'aria-current="page"':''}><span>${t.ic} ${esc(t.ko)}</span><span class="cnt">${t.ps.length}</span></a>`).join('')}</div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>배경지식 · 리딩·리스닝 학술 지문</span>'}
