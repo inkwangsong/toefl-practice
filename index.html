@@ -1440,6 +1440,8 @@ html,body{overflow-x:clip;overscroll-behavior-x:none}   /* clip(hidden 아님): 
   .btabs a[aria-current="page"]{color:var(--accent)}
   .btabs a[aria-current="page"] .i{stroke-width:2}
   .btabs .bt-back{color:var(--ink2,var(--mute))}
+  .btabs .bt-dash{color:var(--ink2,var(--mute))}
+  @media (max-width:420px){.btabs a{font-size:11px;letter-spacing:-.02em;white-space:nowrap}}
   .gear{display:inline-grid}
   main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 }
@@ -2881,7 +2883,7 @@ function navBack(){if(document.body.classList.contains('testing'))return;toggleL
   const home=$('.btabs a[data-home]')?.getAttribute('href')||'#start';location.hash=location.hash===home?'#start':home}
 function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))return;const h=location.hash.slice(1);if(h===''||h==='start')return;
   const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
-  t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back" role="button" aria-label="이전 화면">${ICON('back')}이전</a>`);
+  t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back" role="button" aria-label="이전 화면">${ICON('back')}이전</a><a href="#start" class="bt-dash" aria-label="대시보드로">${ICON('grid')}대시보드</a>`);
   setTimeout(btBackFace,0);
   if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
 /* 풀이 화면에서는 하단 버튼 이름을 '나가기'로 바꿔 보여 줘요 */
