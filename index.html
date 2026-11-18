@@ -5948,6 +5948,11 @@ function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])d
   const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);K=opt.pos?opt.pos+':'+dir:null;order=mk();i=ok=0;wrong=[];resumed=false;resume();draw()});
   draw()}
 
+/* 펜슬 손글씨(Scribble)가 글자를 숫자·기호로 잘못 읽으면 글자로 되돌려요: 0→o, 1→l, 5→s … 
+   그 자리에 와야 할 글자와 헷갈리는 모양이면 그 글자로, 아니면 가장 비슷한 글자로 바꾸고, 글자와 닮지 않은 기호는 지워요. */
+const VCCONF={'0':'oO','1':'lIi','|':'lI','!':'il','¡':'i','5':'sS','$':'s','2':'zZ','7':'tT','+':'t','8':'B','6':'b','9':'gq','4':'a','3':'e','€':'e','@':'a','(':'c','[':'c','{':'c','<':'c','¢':'c','ß':'B','µ':'u','×':'x','*':'x','°':'o','º':'o','·':'','.':'',',':'',"'":'','`':'','‘':'','’':'','"':'','-':'','_':'','~':'n'};
+function vcLettersOnly(v,a){a=String(a||'');let out='';for(const ch of String(v||'').normalize('NFKC')){if(/\p{L}/u.test(ch)){out+=ch;continue}const c=VCCONF[ch];if(!c)continue;const want=a[out.length];
+    out+=want&&c.toLowerCase().includes(want.toLowerCase())?want:c[0].toLowerCase()}return out}
 function vcSpell(host,ws,opt={}){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok=0,wrong=[],round=1,resumed=false;const SK=opt.pos||null;
   {const r=vcPosLoad(SK,ws);if(r){order=r.order;i=r.i;ok=r.ok;wrong=r.wrong;resumed=true}}
   const start=list=>{order=list.slice().sort(()=>Math.random()-.5);i=ok=0;wrong=[];resumed=false;draw()};
@@ -5972,7 +5977,7 @@ function vcSpell(host,ws,opt={}){let order=ws.slice().sort(()=>Math.random()-.5)
     $('#vcspimg',host).onchange=e=>{store.set('vcspimg',e.target.checked);const q=$('.vcq',host),a=$('.vcqart',host);if(e.target.checked&&!a){q.insertAdjacentHTML('afterbegin',`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`);q.classList.add('withimg')}else if(!e.target.checked&&a){a.remove();q.classList.remove('withimg')}(ins.find(x=>!x.value)||ins[0])?.focus()};
     /* 틀리거나 힌트를 쓰면 목록에 바로 '애매'로 표시돼요(세 번 다 틀리면 '모름'). 그래서 '애매만'·'아직 못 외움'으로 다시 공부할 수 있어요 */
     const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;const st=vcSt(w);if(st==='known'||st==='new')vcMark(w,'meh');vcPosSave(SK,order,i,ok,wrong)};
-    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');/* 아이폰·아이패드 키보드나 펜슬 손글씨가 첫 글자를 대문자로 바꿔도, 정답이 소문자면 소문자로 고쳐요 */if(x.dataset.a===x.dataset.a.toLowerCase()&&x.value!==x.value.toLowerCase())x.value=x.value.toLowerCase();const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
+    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');/* 아이폰·아이패드 키보드나 펜슬 손글씨가 첫 글자를 대문자로 바꿔도, 정답이 소문자면 소문자로 고쳐요 */x.value=vcLettersOnly(x.value,x.dataset.a);if(x.dataset.a===x.dataset.a.toLowerCase()&&x.value!==x.value.toLowerCase())x.value=x.value.toLowerCase();const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
       x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#vcsn',host)?$('#vcsn',host).click():check()}else if(e.key==='Backspace'&&!x.value&&ins[j-1]){e.preventDefault();ins[j-1].focus();ins[j-1].value=ins[j-1].value.slice(0,-1)}}});
     $('#vchint',host).onclick=()=>{tries.n++;miss();vcSave();for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
     const check=()=>{const v=val().trim().toLowerCase(),good=v===ans.toLowerCase();
