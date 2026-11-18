@@ -784,6 +784,10 @@ main{margin-inline:auto}
 #view{position:relative}.pinkcv{position:absolute;left:0;top:0;pointer-events:none;z-index:6}
 .inkdock{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:8px}
 @media(min-width:721px){.inkdock{bottom:24px}}
+.inkdock.moved{right:auto;bottom:auto}.inkdock.moved.below{flex-direction:column}.inkdock.moved.left{align-items:flex-start}
+.inkdock.dragging .inkdk-t{cursor:grabbing;transform:scale(1.06);box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.inkdk-t{cursor:grab;-webkit-user-select:none;user-select:none}
+.inkdk-t::after{content:'⋮⋮';font-size:11px;letter-spacing:-2px;color:var(--mute);margin-left:2px}
 body.testing .inkdock{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .inkdk-t{min-width:56px;height:48px;padding:0 12px;border-radius:24px;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.14);font-size:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .inkdk-t i{width:14px;height:14px;border-radius:50%;display:inline-block}.inkdk-t i.hl{width:18px;height:9px;border-radius:3px}
@@ -5024,10 +5028,22 @@ function rlInkBar(){const t=store.get('rlinkt','k'),touch=rlCoarse();
     <div class="inkopt">${touch?`<label class="small inkm"><input type="checkbox" data-inkfinger ${store.get('rlinkf',false)?'checked':''}> 노트에 손가락으로 쓰기</label>`:`<label class="small inkm"><input type="checkbox" data-inkmouse ${store.get('rlinkm',false)?'checked':''}> 마우스로 쓰기</label>`}
     <span class="small muted inkh">${touch?'점선 안 어디든 펜슬로 쓰세요 · 펜슬로 빈 곳 톡톡 두 번 = 지우개 ↔ 펜 · 손가락은 스크롤':'점선 안에 펜(태블릿)이나 마우스로 쓸 수 있어요'}</span></div></div>`}
 function inkFace(){const f=$('.inkdock .inkdk-t');if(!f)return;const t=store.get('rlinkt','k');f.innerHTML=t==='e'?'🧽':`<i style="background:${RLINKC[t]||RLINKC.k}" class="${RLINKHL.has(t)?'hl':''}"></i>✏️`}
-function inkDock(){if($('.inkdock'))return;document.body.insertAdjacentHTML('beforeend',`<div class="inkdock"><button type="button" class="inkdk-t" aria-expanded="false" aria-label="필기 도구 열기" title="필기 도구"></button><div class="inkdk-p" hidden>${rlInkBar()}</div></div>`);
+function inkDock(){if($('.inkdock'))return;document.body.insertAdjacentHTML('beforeend',`<div class="inkdock"><button type="button" class="inkdk-t" aria-expanded="false" aria-label="필기 도구 열기 · 끌어서 옮기기" title="필기 도구 · 끌어서 옮길 수 있어요"></button><div class="inkdk-p" hidden>${rlInkBar()}</div></div>`);
   const d=$('.inkdock'),bar=$('.rlinkbar',d),tg=$('.inkdk-t',d),pn=$('.inkdk-p',d);
   const open=o=>{const fl=$('[data-inkfinger]',bar)?.closest('label');if(fl)fl.hidden=!document.querySelector('.lnotepad');pn.hidden=!o;tg.setAttribute('aria-expanded',String(o));document.body.classList.toggle('inkshow',o);store.set('rlinkopen',o)};
-  tg.onclick=()=>open(pn.hidden);open(store.get('rlinkopen',false));inkFace();
+  /* 버튼을 끌어서 아무 데나 옮길 수 있어요. 짧게 누르면 열고 닫기. 자리는 기억해요. */
+  const place=()=>{const pos=store.get('rlinkpos',null),bw=tg.offsetWidth||56,bh=tg.offsetHeight||48;if(!pos){d.style.left=d.style.top='';d.classList.remove('moved','below','left');return}
+    const x=Math.min(Math.max(8,pos.x*innerWidth),innerWidth-bw-8),y=Math.min(Math.max(8,pos.y*innerHeight),innerHeight-bh-8);
+    d.classList.add('moved');d.style.left=x+'px';d.style.top=y+'px';d.classList.toggle('below',y<innerHeight*.45);d.classList.toggle('left',x+bw/2<innerWidth/2);const bar0=$('.rlinkbar',pn);if(bar0)bar0.style.maxWidth=Math.min(600,Math.max(260,d.classList.contains('left')?innerWidth-x-12:x+bw-12))+'px'};
+  let drag=null;tg.style.touchAction='none';
+  tg.addEventListener('pointerdown',e=>{if(e.button>0)return;const r=tg.getBoundingClientRect();drag={id:e.pointerId,sx:e.clientX,sy:e.clientY,dx:e.clientX-r.left,dy:e.clientY-r.top,moved:false};tg.setPointerCapture?.(e.pointerId)});
+  tg.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<8)return;drag.moved=true;d.classList.add('dragging');
+    store.set('rlinkpos',{x:(e.clientX-drag.dx)/innerWidth,y:(e.clientY-drag.dy)/innerHeight});place()});
+  const up=e=>{if(!drag||e.pointerId!==drag.id)return;const m=drag.moved;drag=null;d.classList.remove('dragging');if(!m)open(pn.hidden)};
+  tg.addEventListener('pointerup',up);tg.addEventListener('pointercancel',()=>{drag=null;d.classList.remove('dragging')});
+  tg.addEventListener('dblclick',e=>{e.preventDefault()});
+  addEventListener('resize',place);place();
+  open(store.get('rlinkopen',false));inkFace();
   $$('[data-ink]',bar).forEach(b=>b.onclick=()=>inkTool(b.dataset.ink));
   $('[data-inkundo]',bar).onclick=()=>{const f=INK.undo.pop();if(f)f();else toast('되돌릴 필기가 없어요',1200)};
   $('[data-inkclr]',bar).onclick=()=>{const live=[...INK.areas].filter(a=>a.alive());const snaps=live.map(a=>[a,a.get()]);if(!snaps.some(([,s])=>s.length))return;
