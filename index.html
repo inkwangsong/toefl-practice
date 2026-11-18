@@ -581,8 +581,8 @@ body.testing .shell{display:none}
 .citem p{margin:0 0 8px;font-size:16px;color:#555}
 .warn{color:#b42318;font-size:16px}
 
-/* exam bar on phones: row 1 = brand · question · timer, row 2 = controls (Back/Next on the right where the thumb is) */
-@media (max-width:560px){
+/* exam bar on phones and tablets in portrait: row 1 = brand · question · timer, row 2 = controls (Back/Next on the right where the thumb is) */
+@media (max-width:900px){
  .rlxbar{position:relative;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"l c" "r r";column-gap:10px;row-gap:8px;padding-bottom:8px}
  .rlxbar .l{grid-area:l;white-space:nowrap}.rlxbar .l b{font-size:15px;line-height:24px}
  .rlxbar .c{grid-area:c;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:24px;text-align:center;padding-right:52px}
@@ -2217,7 +2217,10 @@ const saveCfg=()=>store.set('cfg',S.cfg);
 try{if(!store.get('themev40')){store.set('themev40',1);if(!S.cfg.theme||S.cfg.theme==='soft'||S.cfg.theme==='cute')S.cfg.theme='light';store.set('cfg',S.cfg)}}catch(e){}
 /* '기기 설정 따라'일 때도 지금 기기가 어두우면 data-theme="dark"를 붙여서, 어두운 화면용 규칙이 빠짐없이 똑같이 적용돼요 */
 const THEMQ=matchMedia('(prefers-color-scheme: dark)');THEMQ.addEventListener?.('change',()=>{if((S.cfg.theme||'light')==='system')applyTheme()});
-function applyTheme(){const t=S.cfg.theme||'light',r=document.documentElement;r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
+/* 시험 화면은 실제 시험처럼 늘 밝게: 시험을 시작하면 잠깐 밝은 화면으로 바꾸고, 끝나면 고른 화면 모드로 돌아가요 */
+(function(){const run=()=>{const t=document.body.classList.contains('testing');if(t&&!window.__thHold){window.__thHold=1;document.documentElement.setAttribute('data-theme','light')}else if(!t&&window.__thHold){window.__thHold=0;applyTheme()}};
+  const go=()=>{if(!document.body)return setTimeout(go,50);new MutationObserver(run).observe(document.body,{attributes:true,attributeFilter:['class']});run()};go()})();
+function applyTheme(){if(window.__thHold)return;const t=S.cfg.theme||'light',r=document.documentElement;r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0c0e12':'#f2f4f6'}
 const THEMES=[['light','밝게','sun'],['dark','어둡게','moon'],['system','기기 설정 따라','theme']];
 function themeBtnSync(){const b=document.getElementById('themebtn');if(!b)return;const t=THEMES.find(x=>x[0]===S.cfg.theme)||THEMES[0];b.innerHTML=ICON(t[2]);b.title='화면 모드: '+t[1]+' (눌러서 바꾸기)'}
