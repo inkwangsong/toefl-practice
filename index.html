@@ -862,7 +862,7 @@ button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
 .vcsyn.sm .vcsc{font-size:14px;padding:1px 8px}.vcsyn.sm .vcsynl{font-size:12px;padding:2px 6px}
 .vcap{padding:12px 14px;margin:0 0 12px}.vcaprow{display:flex;align-items:center;gap:10px;margin:6px 0}.vcapk{min-width:64px;font-weight:700;flex-shrink:0}
 .vcaph{margin:14px 0 4px;font-size:13px;font-weight:700;color:var(--mute)}.vcaph:first-child{margin-top:0}
-.vctools{display:flex;gap:8px;margin:0 0 12px}.vcchip.vcstop{flex:0 0 auto}
+.vctools{display:flex;gap:8px;margin:0 0 12px}.vcresume{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:8px 12px;border-radius:12px;background:var(--accent-soft);color:var(--ink);font-size:14px}#vcdf{margin:0 0 10px}.vcchip.vcstop{flex:0 0 auto}
 .vcchip{flex:1;min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:inherit;font:inherit;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer}
 .vcchip[aria-pressed="true"],.vcchip[aria-expanded="true"]{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .vcfilt{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}.vcfilt::-webkit-scrollbar{display:none}.vcfilt button{white-space:nowrap;flex-shrink:0}
@@ -5753,7 +5753,14 @@ function vcDayPage(d,mode){mode=mode&&VCM[mode]?mode:store.get('vcmode','card');
     <div class="secsw vtabs vcmodes" role="tablist">${Object.entries(VCM).map(([k,t])=>`<a href="#vc-d-${d}~${k}" role="tab" aria-selected="${k===mode}">${t}</a>`).join('')}</div>
     <div id="vcbody"></div>`;
   vcVoiceMount(ws[0]);const host=$('#vcbody');
-  if(mode==='card')vcCards(host,ws,{scope:'day'});else if(mode==='quiz')vcQuiz(host,ws);else if(mode==='spell')vcSpell(host,ws);else vcList(host,ws)}
+  if(mode==='card'){vcCards(host,ws,{scope:'day',pos:'d'+d+':card'});return}
+  /* 퀴즈·철자·목록도 카드와 같은 범위(전체·못 외움·모름만…)로 골라 풀 수 있어요 */
+  host.insertAdjacentHTML('beforebegin','<div id="vcdf"></div>');const fb=$('#vcdf');
+  const run=()=>{const f=store.get('vcfilt','all'),sub=vcFiltered(ws,f);fb.innerHTML=vcFiltHTML(f);
+    $$('[data-filt]',fb).forEach(b=>b.onclick=()=>{store.set('vcfilt',b.dataset.filt);run()});
+    if(!sub.length){host.innerHTML='<div class="empty">이 범위에 맞는 단어가 없어요.</div>';return}
+    if(mode==='quiz')vcQuiz(host,sub,{pos:'d'+d+':quiz:'+f,pool:ws});else if(mode==='spell')vcSpell(host,sub,{pos:'d'+d+':spell:'+f});else vcList(host,sub)};
+  run()}
 function vcStudy(kind){const ws=kind==='rev'?vcDue():VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');setCrumb(['Vocab',kind==='rev'?'오늘의 복습':'모르는 단어']);
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">${kind==='rev'?'↻ 오늘의 복습':'✕ 모름 · 애매 단어'}</h1><p>${ws.length}단어 · ${kind==='rev'?'간격 반복으로 오늘 다시 볼 단어':'‘모름’·‘애매’로 표시한 단어'}</p></div></div><div id="vcbody"></div>`;
   if(!ws.length){$('#vcbody').innerHTML=`<div class="empty">${kind==='rev'?'오늘 복습할 단어가 없어요 🎉 새 Day를 시작해 보세요.':'모르는 단어가 없어요 👍'}</div>`;return}
@@ -5772,23 +5779,24 @@ function vcCardHTML(w){const e=VC.ety[w.id];
      ${w.mnemonic?`<p class="vcmn">🧠 ${esc(w.mnemonic)}</p>`:''}
      ${e?`<details class="vcety"><summary>🌱 어원</summary><p>${(e.p||[]).map(([a,b])=>`<span class="mtag sm">${esc(a)}</span> ${esc(b)}`).join(' + ')}</p>${e.s?`<p>${esc(e.s)}</p>`:''}${e.o?`<p class="small muted">${esc(e.o)}</p>`:''}${(e.f||[]).length?`<p class="small">같은 뿌리: ${e.f.map(([a,b])=>`<b>${esc(a)}</b> ${esc(b)}`).join(' · ')}</p>`:''}</details>`:''}
      ${w.derived?`<p class="small">파생어 · ${esc(w.derived)}</p>`:''}${w.src?`<p class="small muted">출처 · ${esc(w.src)}${w.vref?` · 해커스 보카 Day ${w.vref.day}에도 있어요`:''}</p>`:''}${w.note?`<p class="vcnote">💡 ${esc(w.note)}</p>`:''}</div></div>`}
-function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
-  const deckOf=()=>filt==='new'?ws.filter(w=>vcSt(w)==='new'):filt==='miss'?ws.filter(w=>vcSt(w)==='learning'):filt==='meh'?ws.filter(w=>vcSt(w)==='unsure'):filt==='notknown'?ws.filter(w=>vcSt(w)!=='known'):ws.slice();
-  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0,apOpen=false,BT=0,held=false;
+function vcCards(host,ws,{scope,pos}){let filt=store.get('vcfilt','all');const PK=()=>pos?'vcpos:'+pos+':'+filt:null;
+  const deckOf=()=>vcFiltered(ws,filt);
+  let deck=deckOf(),i=0,auto=false,okN=0,noN=0,mehN=0,apOpen=false,BT=0,held=false,resumed=false;
+  const posLoad=()=>{const k=PK(),sv=k&&store.get(k,null);if(sv&&sv.n===deck.length&&sv.i>0&&sv.i<deck.length){i=sv.i;resumed=true}};posLoad();
   const draw=()=>{vcStop();BT++;held=false;
     if(!deck.length){host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="empty">이 조건에 맞는 단어가 없어요.</div>`;wireFilt();return}
-    if(i>=deck.length){const p=okN/(okN+noN||1);host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="panel ph vcdone"><h2>🎉 ${deck.length}단어 끝!</h2><p>외움 <b>${okN}</b> · 애매 <b>${mehN}</b> · 모름 <b>${noN}</b></p><div class="row"><button class="btn primary" id="vcagain">모름·애매만 다시</button><button class="btn" id="vcall">처음부터</button></div></div>`;
+    if(i>=deck.length){if(PK())localStorage.removeItem(PK());const p=okN/(okN+noN||1);host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="panel ph vcdone"><h2>🎉 ${deck.length}단어 끝!</h2><p>외움 <b>${okN}</b> · 애매 <b>${mehN}</b> · 모름 <b>${noN}</b></p><div class="row"><button class="btn primary" id="vcagain">모름·애매만 다시</button><button class="btn" id="vcall">처음부터</button></div></div>`;
       if(p>=.8){try{rlConfetti();SFX.done()}catch(e){}}wireFilt();
       $('#vcagain').onclick=()=>{deck=deck.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');i=0;okN=noN=mehN=0;draw()};$('#vcall').onclick=()=>{deck=deckOf();i=0;okN=noN=mehN=0;draw()};return}
-    const w=deck[i];
-    host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span></div>
+    const w=deck[i];{const k=PK();if(k){if(i>0)store.set(k,{i,n:deck.length});else localStorage.removeItem(k)}}
+    host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}${resumed?vcResumeHTML(i,deck.length):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span></div>
       <div class="vctools"><button type="button" class="vcchip" id="vcauto" aria-pressed="${auto}">${auto?'❚❚ 일시정지':'▶ 자동 재생'}</button><button type="button" class="vcchip vcstop" id="vcstopb" ${auto?'':'hidden'}>■ 정지</button><button type="button" class="vcchip" id="vcapb" aria-expanded="${apOpen}">⚙ 소리·보기 설정</button></div>
       <div class="panel vcap" id="vcap" ${apOpen?'':'hidden'}>${vcBasicHTML()}${vcApHTML()}</div>
       ${vcCardHTML(w)}
       <div class="vcbtns"><button class="btn" id="vcprev" ${i?'':'disabled'}>←</button><button class="btn" data-say="w">🔊 단어</button><button class="btn" data-say="k">🔊 뜻</button>${(w.senses||[]).filter(s=>s.ex).length>1?`<button class="btn" data-sayall>🔊 예문 전부</button>`:''}
         <button class="btn vcno" id="vcno">✕ 몰라요</button><button class="btn vcmeh" id="vcmeh">△ 애매해요</button><button class="btn primary vcyes" id="vcyes">✓ 외웠어요</button><button class="btn" id="vcnext">→</button></div>
       <p class="small muted center">키보드: Space 뒤집기 · ← 몰라요 · ↓ 애매해요 · → 외웠어요 · S 소리</p>`;
-    wireFilt();const card=$('.vccard',host),flip=()=>{const b=$('.vcb',card);if(b.hidden){b.hidden=false;card.classList.add('on');try{SFX.flip()}catch(e){}}};
+    wireFilt();$('#vcrestart',host)?.addEventListener('click',()=>{if(PK())localStorage.removeItem(PK());i=0;resumed=false;draw()});resumed=false;const card=$('.vccard',host),flip=()=>{const b=$('.vcb',card);if(b.hidden){b.hidden=false;card.classList.add('on');try{SFX.flip()}catch(e){}}};
     card.onclick=e=>{if(e.target.closest('[data-say]')||e.target.closest('details'))return;flip()};
     $('[data-psg]',host)?.addEventListener('click',e=>{e.stopPropagation();hold();try{rlShowPassage(w)}catch(_){}});
     $$('[data-rxp]',host).forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();hold();const x=(w.rx||[])[+b.dataset.rxp];if(x)try{rlShowBlock(x[2],x[3],x[4],w.word)}catch(_){}}));
@@ -5825,7 +5833,7 @@ function vcCards(host,ws,{scope}){let filt=store.get('vcfilt','all');
       await vcPlay(w,'w');if(m!=='wk'||!ok())return;await wait(500);if(!ok())return;
       const n=VC.am.ks?(w.senses||[]).length:1;for(let si=0;si<n;si++){await vcPlay(w,'k',si);if(!ok())return;await wait(250);if(!ok())return}};
     if(auto)run();else basic()};
-  const wireFilt=()=>$$('[data-filt]',host).forEach(b=>b.onclick=()=>{filt=b.dataset.filt;store.set('vcfilt',filt);deck=deckOf();i=0;okN=noN=mehN=0;draw()});
+  const wireFilt=()=>$$('[data-filt]',host).forEach(b=>b.onclick=()=>{filt=b.dataset.filt;store.set('vcfilt',filt);deck=deckOf();i=0;okN=noN=mehN=0;resumed=false;posLoad();draw()});
   host.onkeydown=null;document.onkeydown=e=>{if(!document.body.contains(host)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
     if(e.key===' '){e.preventDefault();$('.vccard',host)?.click()}else if(e.key==='ArrowRight')$('#vcyes',host)?.click();else if(e.key==='ArrowLeft')$('#vcno',host)?.click();else if(e.key==='ArrowDown'){e.preventDefault();$('#vcmeh',host)?.click()}else if(e.key==='s'||e.key==='S'){const w=deck[i];if(w){$('[data-say="w"]',host)?.click()}}};
   draw()}
@@ -5842,7 +5850,15 @@ function vcApHTML(){const o=vcAp(),grp=(k,lab,opts)=>`<div class="vcaprow"><span
    ${grp('ex','④ 예문',[['all','전부'],['first','첫 번째만'],['none','건너뛰기']])}${grp('next','⑤ 끝나면',[[true,'다음 카드로'],[false,'멈춤']])}${grp('gap','간격',[[0.5,'짧게'],[1,'보통'],[2,'길게']])}`}
 function vcApWire(p,cb){if(!p)return;$$('[data-ap]',p).forEach(b=>b.onclick=()=>{const o=vcAp();o[b.dataset.ap]=JSON.parse(b.dataset.v);store.set('vcap',o);
   $$(`[data-ap="${b.dataset.ap}"]`,p).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb&&cb()})}
-function vcFiltHTML(f){return `<div class="rlrate vcfilt" role="group" aria-label="카드 범위">${[['all','전체'],['notknown','아직 못 외움'],['new','새 단어'],['miss','모름만'],['meh','애매만']].map(([k,t])=>`<button type="button" data-filt="${k}" aria-pressed="${k===f}">${t}</button>`).join('')}</div>`}
+const vcFiltered=(ws,f)=>f==='wrong'?ws.filter(w=>{const t=vcSt(w);return t==='learning'||t==='unsure'}):f==='new'?ws.filter(w=>vcSt(w)==='new'):f==='miss'?ws.filter(w=>vcSt(w)==='learning'):f==='meh'?ws.filter(w=>vcSt(w)==='unsure'):f==='notknown'?ws.filter(w=>vcSt(w)!=='known'):ws.slice();
+/* 하던 자리 기억: Day·방식·범위마다 순서와 위치를 저장해서 다음에 (다른 기기에서도) 이어서 해요 */
+function vcPosLoad(K,ws){if(!K)return null;const sv=store.get('vcpos:'+K,null);if(!sv||!Array.isArray(sv.ids)||sv.i>=sv.ids.length)return null;const m=new Map(ws.map(w=>[String(w.id),w]));
+  const order=sv.ids.map(id=>m.get(String(id)));if(order.some(x=>!x))return null;return {order,i:sv.i|0,ok:sv.ok|0,wrong:(sv.wrong||[]).map(id=>m.get(String(id))).filter(Boolean)}}
+const vcPosSave=(K,order,i,ok,wrong)=>{if(K)store.set('vcpos:'+K,{ids:order.map(w=>w.id),i,ok,wrong:wrong.map(w=>w.id),t:Date.now()})};
+const vcPosClear=K=>{if(K)localStorage.removeItem('vcpos:'+K)};
+const vcResumeHTML=(i,n)=>`<div class="vcresume"><span>↻ 지난번에 하던 <b>${i+1}번째</b>부터 이어서 해요 (전체 ${n})</span><button type="button" class="btn sm quiet" id="vcrestart">처음부터</button></div>`;
+function vcWrongHTML(W){return W.length?`<div class="vcspw">${W.map(w=>`<span class="vcspc"><b>${esc(w.word)}</b> <span class="small muted">${esc(vcKr(w))}</span></span>`).join('')}</div>`:''}
+function vcFiltHTML(f){return `<div class="rlrate vcfilt" role="group" aria-label="카드 범위">${[['all','전체'],['wrong','틀린 단어 (모름·애매)'],['notknown','아직 못 외움'],['new','새 단어'],['miss','모름만'],['meh','애매만']].map(([k,t])=>`<button type="button" data-filt="${k}" aria-pressed="${k===f}">${t}</button>`).join('')}</div>`}
 
 const VCQD={en:'영→한',kr:'한→영',syn:'단어→동의어',synr:'동의어→단어'};
 function vcQItem(w,ws,dir){const sh=a=>a.slice().sort(()=>Math.random()-.5),others=sh(ws.filter(x=>x.id!==w.id));
@@ -5853,15 +5869,19 @@ function vcQItem(w,ws,dir){const sh=a=>a.slice().sort(()=>Math.random()-.5),othe
     return {q:w.word,opts:sh([{t:ans,ok:true},...d.map(t=>({t,ok:false}))])}}
   const cue=sh(mine).slice(0,2),bad=others.filter(o=>!vcSynAll(o).some(y=>ml.has(y.toLowerCase()))).slice(0,3);
   return {q:'≈ '+cue.join(' / '),opts:sh([{t:w.word,ok:true},...bad.map(o=>({t:o.word,ok:false}))])}}
-function vcQuiz(host,ws){let dir=store.get('vcqdir','en');if(!VCQD[dir])dir='en';
-  const mk=()=>ws.slice().sort(()=>Math.random()-.5).filter(w=>dir==='en'||dir==='kr'||vcSynAll(w).length);
-  let order=mk(),i=0,ok=0;
+function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])dir='en';
+  const mk=(src=ws)=>src.slice().sort(()=>Math.random()-.5).filter(w=>dir==='en'||dir==='kr'||vcSynAll(w).length);
+  let order=mk(),i=0,ok=0,wrong=[],K=opt.pos?opt.pos+':'+dir:null,resumed=false;
+  const resume=()=>{const r=vcPosLoad(K,ws);if(r){order=r.order;i=r.i;ok=r.ok;wrong=r.wrong;resumed=true}};resume();
   const draw=()=>{vcStop();delete host.dataset.lock;
     const dirs=`<span class="rlrate vcqdirs" role="group" aria-label="퀴즈 유형">${Object.entries(VCQD).map(([k,t])=>`<button type="button" data-dir="${k}" aria-pressed="${dir===k}">${t}</button>`).join('')}</span>`;
-    if(i>=order.length){host.innerHTML=`<div class="vcprog">${dirs}</div><div class="panel ph vcdone"><h2>${ok===order.length?'🎯 만점!':'✅ 끝!'}</h2><p>${order.length}문제 중 <b>${ok}</b>개 정답</p><button class="btn primary" id="vcqa">다시 풀기</button></div>`;if(ok/(order.length||1)>=.8){try{rlConfetti();SFX.done()}catch(e){}}$('#vcqa').onclick=()=>{order=mk();i=ok=0;draw()};wireD();return}
-    const w=order[i],it=vcQItem(w,ws,dir);if(!it){i++;return draw()}
+    if(i>=order.length){vcPosClear(K);const W=wrong.slice();host.innerHTML=`<div class="vcprog">${dirs}</div><div class="panel ph vcdone"><h2>${ok===order.length?'🎯 만점!':'✅ 끝!'}</h2><p>${order.length}문제 중 <b>${ok}</b>개 정답${W.length?` · 틀린 단어 <b class="badc">${W.length}</b>개 (‘모름’으로 표시했어요)`:''}</p>${vcWrongHTML(W)}
+        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcqw">✕ 틀린 것만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcqa">처음부터 다시</button></div></div>`;
+      if(ok/(order.length||1)>=.8){try{rlConfetti();SFX.done()}catch(e){}}$('#vcqa').onclick=()=>{order=mk();i=ok=0;wrong=[];draw()};const qw=$('#vcqw');if(qw){qw.onclick=()=>{order=mk(W);i=ok=0;wrong=[];draw()};qw.focus()}wireD();return}
+    const w=order[i],it=vcQItem(w,(opt.pool&&opt.pool.length>=4)?opt.pool:(ws.length>=4?ws:VC.data.filter(x=>!x.rk).slice(0,400)),dir);if(!it){i++;return draw()}
     const syn=dir==='syn'||dir==='synr',img=store.get('vcqimg',false);
-    host.innerHTML=`<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span>${dirs}<label class="small vcauto vcqimgt"><input type="checkbox" id="vcqimg" ${img?'checked':''}> 🖼 그림 힌트</label></div>
+    vcPosSave(K,order,i,ok,wrong);
+    host.innerHTML=`${resumed?vcResumeHTML(i,order.length):''}<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span>${dirs}<label class="small vcauto vcqimgt"><input type="checkbox" id="vcqimg" ${img?'checked':''}> 🖼 그림 힌트</label></div>
       <div class="panel ph vcq ${img?'withimg':''}">${img?`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`:''}${syn?`<p class="small muted vcqhint">${dir==='syn'?'뜻이 가장 가까운 단어(동의어)를 고르세요 — 토플 리딩 Vocabulary 문제처럼':'이 동의어들과 뜻이 같은 단어를 고르세요'}</p>`:''}
       <p class="vcqw ${dir==='synr'?'syn':''}">${esc(it.q)} ${dir!=='kr'&&dir!=='synr'?`<button class="btn sm quiet" data-say="w">🔊</button>`:''}</p>
       <div class="rlopts">${it.opts.map((o,k)=>`<button class="rlopt" data-ok="${o.ok?1:0}"><span class="rlL">${'ABCD'[k]}</span><span>${esc(o.t)}</span></button>`).join('')}</div><div id="vcqf"></div></div>`;
@@ -5869,24 +5889,27 @@ function vcQuiz(host,ws){let dir=store.get('vcqdir','en');if(!VCQD[dir])dir='en'
     $('[data-say]',host)?.addEventListener('click',()=>vcPlay(w,'w'));if(dir==='en'||dir==='syn')vcPlay(w,'w');
     $$('.rlopt',host).forEach(b=>b.onclick=()=>{if(host.dataset.lock)return;host.dataset.lock=1;const good=b.dataset.ok==='1';
       $$('.rlopt',host).forEach(x=>{if(x.dataset.ok==='1')x.classList.add('ok');else if(x===b)x.classList.add('bad')});
-      if(good){ok++;try{SFX.ok()}catch(e){}}else{vcMark(w,false);try{SFX.bad()}catch(e){}}
+      if(good){ok++;try{SFX.ok()}catch(e){}}else{vcMark(w,false);if(!wrong.includes(w))wrong.push(w);try{SFX.bad()}catch(e){}}
       $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}<button class="btn primary" id="vcqn">다음 →</button>`;
-      $('#vcqn').onclick=()=>{i++;draw()};$('#vcqn').focus()})};
-  const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);order=mk();i=ok=0;draw()});
+      $('#vcqn').onclick=()=>{i++;resumed=false;draw()};$('#vcqn').focus()});
+    $('#vcrestart',host)?.addEventListener('click',()=>{vcPosClear(K);order=mk();i=ok=0;wrong=[];resumed=false;draw()})};
+  const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);K=opt.pos?opt.pos+':'+dir:null;order=mk();i=ok=0;wrong=[];resumed=false;resume();draw()});
   draw()}
 
-function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok=0,wrong=[],round=1;
-  const start=list=>{order=list.slice().sort(()=>Math.random()-.5);i=ok=0;wrong=[];draw()};
-  const draw=()=>{vcStop();if(i>=order.length){const W=wrong;
+function vcSpell(host,ws,opt={}){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok=0,wrong=[],round=1,resumed=false;const SK=opt.pos||null;
+  {const r=vcPosLoad(SK,ws);if(r){order=r.order;i=r.i;ok=r.ok;wrong=r.wrong;resumed=true}}
+  const start=list=>{order=list.slice().sort(()=>Math.random()-.5);i=ok=0;wrong=[];resumed=false;draw()};
+  const draw=()=>{vcStop();if(i>=order.length){vcPosClear(SK);const W=wrong;
       host.innerHTML=`<div class="panel ph vcdone"><h2>⌨ 끝!${round>1?` <span class="small muted">· ${round}번째 도전</span>`:''}</h2><p>${order.length}단어 중 <b>${ok}</b>개를 한 번에 맞혔어요${W.length?` · 틀리거나 힌트를 쓴 단어 <b class="badc">${W.length}</b>개`:' · 모두 한 번에 맞혔어요 🎉'}</p>
         ${W.length?`<div class="vcspw">${W.map(w=>`<span class="vcspc"><b>${esc(w.word)}</b> <span class="small muted">${esc(vcKr(w))}</span></span>`).join('')}</div>`:''}
         <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcsw">✍ 틀린 단어만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcsa">처음부터 다시</button><a class="btn quiet" href="#vc-sp">철자 오답 노트 →</a></div>
         <p class="small muted" style="margin:10px 0 0">틀린 단어는 ‘철자 오답 노트’에 남아요. 두 번 연속 한 번에 맞히면 노트에서 빠져요. 카드에서 ‘안다’로 표시한 단어도 여기서 틀리면 ‘애매’로 바뀌어 다시 복습에 나와요.</p></div>`;
-      $('#vcsa').onclick=()=>{round=1;start(ws)};const b=$('#vcsw');if(b){b.onclick=()=>{round++;start(W)};b.focus()}return}
+      $('#vcsa').onclick=()=>{round=1;start(ws)};vcPosClear(SK);const b=$('#vcsw');if(b){b.onclick=()=>{round++;start(W)};b.focus()}return}
     const w=order[i],ans=w.word,tries={n:0};
     // reveal 1–3 leading letters depending on word length (always leaves at least 2 blanks in the first word)
     const L=ans.replace(/[^A-Za-z]/g,'').length,ft=(ans.split(/[ \-'’.]+/)[0]||ans),K=Math.max(1,Math.min(L<=5?1:L<=9?2:3,ft.length-2));
-    host.innerHTML=`<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span><label class="small vcauto vcqimgt"><input type="checkbox" id="vcspimg" ${store.get('vcspimg',false)?'checked':''}> 🖼 그림 힌트</label></div>
+    vcPosSave(SK,order,i,ok,wrong);
+    host.innerHTML=`${resumed?vcResumeHTML(i,order.length):''}<div class="vcprog"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span class="small mono">${i+1} / ${order.length} · 정답 ${ok}</span><label class="small vcauto vcqimgt"><input type="checkbox" id="vcspimg" ${store.get('vcspimg',false)?'checked':''}> 🖼 그림 힌트</label></div>
       <div class="panel ph vcq ${store.get('vcspimg',false)?'withimg':''}">${store.get('vcspimg',false)?`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`:''}<p class="vcqw">${esc(vcKr(w))}</p><p class="small muted">${esc(vcPos(w))} · ${ans.length}글자 · 앞 ${K}글자 <b>${esc(ft.slice(0,K))}</b> <button class="btn sm quiet" data-say="w">🔊 발음 듣기</button></p>
       <div class="vcspell" id="vcsp">${(()=>{let h='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){h+=`<span class="vcsep">${/^ +$/.test(t)?'&nbsp;':esc(t)}</span>`;return}
           if(first){first=false;h+=`<b class="vcfirst">${esc(t.slice(0,K))}</b>`;t=t.slice(K);if(!t)return}
@@ -5895,18 +5918,19 @@ function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok
     const ins=$$('.vcl',host),val=()=>{let k=0,out='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){out+=t;return}if(first){first=false;out+=t.slice(0,K);if(t.length<=K)return}out+=(ins[k++]?.value||'')});return out};
     ins[0]?.focus();$('[data-say]',host).onclick=()=>vcPlay(w,'w');
     $('#vcspimg',host).onchange=e=>{store.set('vcspimg',e.target.checked);const q=$('.vcq',host),a=$('.vcqart',host);if(e.target.checked&&!a){q.insertAdjacentHTML('afterbegin',`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`);q.classList.add('withimg')}else if(!e.target.checked&&a){a.remove();q.classList.remove('withimg')}(ins.find(x=>!x.value)||ins[0])?.focus()};
-    const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;if(vcSt(w)==='known')vcMark(w,'meh')};
+    /* 틀리거나 힌트를 쓰면 목록에 바로 '애매'로 표시돼요(세 번 다 틀리면 '모름'). 그래서 '애매만'·'아직 못 외움'으로 다시 공부할 수 있어요 */
+    const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;const st=vcSt(w);if(st==='known'||st==='new')vcMark(w,'meh');vcPosSave(SK,order,i,ok,wrong)};
     ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');/* 아이폰·아이패드 키보드나 펜슬 손글씨가 첫 글자를 대문자로 바꿔도, 정답이 소문자면 소문자로 고쳐요 */if(x.dataset.a===x.dataset.a.toLowerCase()&&x.value!==x.value.toLowerCase())x.value=x.value.toLowerCase();const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
       x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#vcsn',host)?$('#vcsn',host).click():check()}else if(e.key==='Backspace'&&!x.value&&ins[j-1]){e.preventDefault();ins[j-1].focus();ins[j-1].value=ins[j-1].value.slice(0,-1)}}});
     $('#vchint',host).onclick=()=>{tries.n++;miss();vcSave();for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
     const check=()=>{const v=val().trim().toLowerCase(),good=v===ans.toLowerCase();
       if(good){if(!tries.n)ok++;VCSP[w.id]={ok:(VCSP[w.id]?.ok||0)+1,misses:VCSP[w.id]?.misses||0,streak:tries.n?0:(VCSP[w.id]?.streak||0)+1,t:Date.now()};vcSave();vcLogAdd();try{SFX.ok()}catch(e){}ins.forEach(x=>x.classList.add('ok'));
-        $('#vcsf',host).innerHTML=`<p class="okc"><b>정답!</b> ${esc(ans)}</p><button class="btn primary" id="vcsn">다음 →</button>`;vcPlay(w,'w');$('#vcsn').onclick=()=>{i++;draw()};$('#vcsn').focus()}
+        $('#vcsf',host).innerHTML=`<p class="okc"><b>정답!</b> ${esc(ans)}</p><button class="btn primary" id="vcsn">다음 →</button>`;vcPlay(w,'w');$('#vcsn').onclick=()=>{i++;resumed=false;draw()};$('#vcsn').focus()}
       else{tries.n++;VCSP[w.id]={ok:VCSP[w.id]?.ok||0,misses:(VCSP[w.id]?.misses||0)+1,streak:0,t:Date.now()};miss();vcSave();try{SFX.bad()}catch(e){}
         ins.forEach(x=>{const a=x.dataset.a.toLowerCase(),vv=x.value.toLowerCase();x.classList.toggle('bad',vv!==a);x.classList.toggle('ok',vv===a)});
         $('#vcsf',host).innerHTML=tries.n>=3?`<p class="badc">정답은 <b>${esc(ans)}</b></p><button class="btn" id="vcsn">다음 →</button>`:`<p class="badc">다시 해 보세요 (${3-tries.n}번 남음) · 빨간 칸이 틀렸어요</p>`;
-        if(tries.n>=3){vcMark(w,false);$('#vcsn').onclick=()=>{i++;draw()};$('#vcsn').focus()}}};
-    $('#vcchk',host).onclick=check};
+        if(tries.n>=3){vcMark(w,false);$('#vcsn').onclick=()=>{i++;resumed=false;draw()};$('#vcsn').focus()}}};
+    $('#vcchk',host).onclick=check;$('#vcrestart',host)?.addEventListener('click',()=>{vcPosClear(SK);round=1;start(ws)})};
   draw()}
 
 function vcList(host,ws,{showDay=false}={}){
