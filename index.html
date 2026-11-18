@@ -6094,7 +6094,7 @@ function renderHome(){
       <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true" style="color:${s.c}">${ICON(s.ic)}</span><span>${s.name}</span></a>`).join('')}</div>
       <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">${ICON('gear')}</span><span>설정</span></a></div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
-    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.filter(s=>s.k!=='r2').map(s=>`<a href="${s.href}">${ICON(s.ic)}${s.name}</a>`).join('');
+    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.map(s=>`<a href="${s.href}" aria-label="${s.name}">${ICON(s.k==='r2'?'book':s.ic)}${s.k==='v'?'보카':s.ko}</a>`).join('');
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>5과목 한눈에 보기</span>'}
     renderHome();window.scrollTo(0,0);hmMsec();return}
   _routeV();const b=$('#lnb .brand');if(b)b.setAttribute('href','#start');hmMsec()};
