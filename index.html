@@ -1325,6 +1325,11 @@ h3{font-size:17px;font-weight:700}
 .navtoggle,.themebtn,.hmbtn{display:inline-grid}
 .gear{display:none}
 @media (max-width:720px){.gear{display:inline-grid}.menubtn{display:inline-grid}}
+/* 아이패드·폰: 옆으로 밀려 흔들리지 않게 가로 스크롤과 가로 튕김을 막고, 입력칸을 누를 때 iOS가 화면을 확대하지 않게 글자를 16px 이상으로 */
+html,body{overflow-x:clip;overscroll-behavior-x:none}   /* clip(hidden 아님): sticky 상단바가 그대로 붙어 있게 */
+@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea,select{font-size:max(16px,1em)}}
+/* 태블릿(721–900px): 사이드바가 서랍이 되는 폭이라 접기 버튼은 숨기고 ☰ 하나만 보여요 */
+@media (max-width:900px){.navtoggle{display:none!important}}
 .menubtn:hover,.navtoggle:hover,.themebtn:hover,.gear:hover,.hmbtn:hover{background:var(--sunken);color:var(--ink);border-color:transparent}
 .mbrand .mk,.brand .mk{border-radius:9px;background:var(--ink);color:var(--surface);font:800 12px/1 var(--ui);letter-spacing:.02em}
 :root[data-theme="soft"] .brand .mk{background:var(--ink);color:var(--surface);box-shadow:none}
