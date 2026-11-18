@@ -780,7 +780,14 @@ main{margin-inline:auto}
 .rlinkbar .inkm{display:inline-flex;gap:5px;align-items:center;color:var(--mute)}
 .rlinkbar .inkg{display:inline-flex;align-items:center;gap:4px;padding-right:6px;margin-right:2px;border-right:1px solid var(--line)}.rlinkbar .inkg:last-of-type{border-right:0}
 .rlinkbar [data-inkundo]{min-width:92px}
-.inkbox.inkfinger{touch-action:none}.inkbox.inkmouse.inkerase{cursor:none}
+.inkbox.inkfinger{touch-action:none}
+#view{position:relative}.pinkcv{position:absolute;left:0;top:0;pointer-events:none;z-index:6}
+.pinkfab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:8px}
+@media(min-width:721px){.pinkfab{bottom:24px}}
+.pinkt{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);box-shadow:0 6px 18px rgba(0,0,0,.14);font-size:22px;cursor:pointer}
+.pinkt[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.pinkp .rlinkbar{margin:0;max-width:min(560px,calc(100vw - 32px));box-shadow:0 10px 30px rgba(0,0,0,.16);background:var(--surface)}
+body.testing .pinkfab{display:none}.inkbox.inkmouse.inkerase{cursor:none}
 .lnote{margin-top:14px;display:grid;gap:8px}.lnoteh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.lnote .rlinkbar{margin:0}
 .lnotepad{min-height:320px;border:1px solid var(--line);border-radius:12px;background-color:#fffef8;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#dbe4f0 31px 32px);background-position:0 16px;overflow:hidden}
 :root[data-theme="dark"] .lnotepad{background-color:#1b1f2a;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#2c3446 31px 32px)}
@@ -5028,10 +5035,13 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   const hit=(s,px,py,R)=>{for(let i=0;i<s.p.length;i+=2)if(Math.hypot(s.p[i]-px,s.p[i+1]-py)<R+s.w/2)return true;
     for(let i=2;i<s.p.length;i+=2){const ax=s.p[i-2],ay=s.p[i-1],bx=s.p[i],by=s.p[i+1],dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1e-9,t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/l));if(Math.hypot(ax+t*dx-px,ay+t*dy-py)<R+s.w/2)return true}return false};
   const eraseAt=(x,y)=>{const w=W(),[px,py]=pt(x,y);eraser=[px,py];const n=strokes.length;strokes=strokes.filter(s=>!hit(s,px,py,ER/w));if(strokes.length!==n)redraw();else live()};
-  const begin=(x,y)=>{const t=tool();if(t==='e'){erasing=true;eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y),hl=RLINKHL.has(t);cur={t:hl?'h':'p',c:t,w:(hl?16:opt.pad?2.4:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};live()};
-  const move=(x,y)=>{if(erasing){eraseAt(x,y);return}if(!cur)return;const [px,py]=pt(x,y),p=cur.p,w=W();if(Math.hypot((px-p[p.length-2])*w,(py-p[p.length-1])*w)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));
+  const begin=(x,y)=>{t0=Date.now();x0=x;y0=y;far=false;const t=tool();if(t==='e'){erasing=true;eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y),hl=RLINKHL.has(t);cur={t:hl?'h':'p',c:t,w:(hl?16:opt.pad?2.4:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};live()};
+  const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(erasing){eraseAt(x,y);return}if(!cur)return;const [px,py]=pt(x,y),p=cur.p,w=W();if(Math.hypot((px-p[p.length-2])*w,(py-p[p.length-1])*w)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));
     if(opt.pad&&py*w>box.clientHeight-120)redraw();else live()};
-  const end=()=>{if(erasing){erasing=false;eraser=null;live();save();return}if(!cur)return;strokes.push(cur);cur=null;save();redraw()};
+  let t0=0,x0=0,y0=0,far=false;
+  const end=(x,y)=>{if(erasing){erasing=false;eraser=null;live();save();return}if(!cur)return;
+    if(!far&&Date.now()-t0<300&&x!=null){const c=cur;cur=null;live();const el=document.elementFromPoint(x0,y0);if(el&&!el.classList.contains('inkcv')){el.focus?.();el.click?.()}return}
+    strokes.push(cur);cur=null;save();redraw()};
   /* 펜슬을 띄운 채로 대거나(호버) 마우스를 올리면 지우개 동그라미를 미리 보여 줘요 */
   const hover=e=>{if(erasing||cur)return;if(tool()!=='e'||!(e.pointerType==='pen'||(e.pointerType==='mouse'&&mouseOK()))){if(eraser){eraser=null;live()}return}eraser=pt(e.clientX,e.clientY);live()};
   box.addEventListener('pointerleave',()=>{if(!erasing&&eraser){eraser=null;live()}});
@@ -5039,12 +5049,12 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   let tid=null;const finger=()=>opt.pad&&store.get('rlinkf',false);
   box.addEventListener('touchstart',e=>{const t=[...e.changedTouches].find(t=>t.touchType==='stylus')||(finger()&&e.touches.length===1?e.changedTouches[0]:null);if(!t)return;e.preventDefault();tid=t.identifier;begin(t.clientX,t.clientY)},{passive:false});
   box.addEventListener('touchmove',e=>{if(tid==null)return;const t=[...e.changedTouches].find(t=>t.identifier===tid);if(!t)return;e.preventDefault();move(t.clientX,t.clientY)},{passive:false});
-  const tend=e=>{if(tid==null)return;if([...e.changedTouches].some(t=>t.identifier===tid)){tid=null;end()}};box.addEventListener('touchend',tend);box.addEventListener('touchcancel',tend);
+  const tend=e=>{if(tid==null)return;const t=[...e.changedTouches].find(t=>t.identifier===tid);if(t){tid=null;end(t.clientX,t.clientY)}};box.addEventListener('touchend',tend);box.addEventListener('touchcancel',tend);
   /* 그 밖의 기기: 펜 입력(윈도우·안드로이드)은 늘, 마우스는 노트에서는 늘·지문에서는 '마우스로 쓰기'를 켰을 때만 */
   let pid=null;const mouseOK=()=>opt.pad||store.get('rlinkm',false);
   box.addEventListener('pointerdown',e=>{if(tid!=null||e.button>0)return;const ok=(e.pointerType==='pen'&&!('ontouchstart' in window))||(e.pointerType==='mouse'&&mouseOK());if(!ok)return;e.preventDefault();pid=e.pointerId;box.setPointerCapture?.(pid);begin(e.clientX,e.clientY)});
   box.addEventListener('pointermove',e=>{if(e.pointerId!==pid){hover(e);return}e.preventDefault();(e.getCoalescedEvents?e.getCoalescedEvents():[e]).forEach(c=>move(c.clientX,c.clientY))});
-  const pend=e=>{if(e.pointerId!==pid)return;pid=null;end()};box.addEventListener('pointerup',pend);box.addEventListener('pointercancel',pend);
+  const pend=e=>{if(e.pointerId!==pid)return;pid=null;end(e.pointerType==='pen'?e.clientX:null,e.clientY)};box.addEventListener('pointerup',pend);box.addEventListener('pointercancel',pend);
   box.classList.toggle('inkmouse',mouseOK());box.classList.toggle('inkfinger',finger());
   if(bar){$$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===b.dataset.ink)));$$('.inkbox').forEach(x=>x.classList.toggle('inkerase',b.dataset.ink==='e'))});
     let undoClear=null;
@@ -5054,6 +5064,67 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
     $('[data-inkfinger]',bar)?.addEventListener('change',e=>{store.set('rlinkf',e.target.checked);box.classList.toggle('inkfinger',e.target.checked)})}
   box.classList.toggle('inkerase',tool()==='e');
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(!document.body.contains(box)){ro.disconnect();return}redraw()});ro.observe(box)}redraw()}
+/* ---- 화면 필기 (문제·해설·결과 화면): 펜슬로 문제 어디에나 써요.
+   획은 그 자리의 문단·문항 상자에 붙여 저장해서, 해설이 펼쳐지거나 화면 폭이 바뀌어도 그 상자를 따라 움직여요. ---- */
+const PINK={key:null,strokes:[],cur:null,er:null,erasing:false,undo:[],raf:0,wired:false};
+const PINKA='.rlq,.rlexp,.rlpara,.rlev,.rlwhy,.rlopt,li,p,h1,h2,h3,h4,tr,summary,.panel,section,.card';
+function pinkView(){return document.getElementById('view')}
+function pinkPath(el){const v=pinkView(),out=[];while(el&&el!==v){const pa=el.parentElement;if(!pa)return null;out.unshift([...pa.children].indexOf(el));el=pa}return el===v?out.join('/'):null}
+function pinkAt(path){let el=pinkView();for(const i of String(path).split('/')){if(path==='')break;el=el&&el.children[+i]}return el}
+const pinkHash=el=>{const s=(el.textContent||'').replace(/\s+/g,' ').trim().slice(0,60);let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return (h>>>0).toString(36)};
+function pinkAnchor(t){const v=pinkView();let a=t&&t.closest?t.closest(PINKA):null;if(!a||!v.contains(a))a=v;return a}
+function inkPage(key){const v=pinkView();if(!v)return;PINK.key=key||null;PINK.hash=location.hash;PINK.cur=null;PINK.er=null;PINK.undo=[];
+  let cv=$('#pinkcv'),lv=$('#pinklv');
+  if(!key){cv?.remove();lv?.remove();$('.pinkfab')?.remove();return}
+  PINK.strokes=store.get(key,[]);
+  if(!cv||!v.contains(cv)){cv?.remove();lv?.remove();cv=document.createElement('canvas');cv.id='pinkcv';lv=document.createElement('canvas');lv.id='pinklv';cv.className=lv.className='pinkcv';v.append(cv,lv)}
+  if(!$('.pinkfab')){document.body.insertAdjacentHTML('beforeend',`<div class="pinkfab"><button type="button" class="pinkt" aria-expanded="false" title="필기 도구">✏️</button><div class="pinkp" hidden>${rlInkBar()}</div></div>`);pinkBarWire()}
+  if(!PINK.wired){PINK.wired=true;pinkWire()}
+  pinkRedraw()}
+function pinkBarWire(){const f=$('.pinkfab'),bar=$('.rlinkbar',f);$('.pinkt',f).onclick=()=>{const p=$('.pinkp',f);p.hidden=!p.hidden;$('.pinkt',f).setAttribute('aria-expanded',String(!p.hidden))};
+  $$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===b.dataset.ink)))});
+  $('[data-inkundo]',bar).onclick=()=>{const u=PINK.undo.pop();if(u)PINK.strokes=u;else PINK.strokes.pop();pinkSave();pinkRedraw()};
+  $('[data-inkclr]',bar).onclick=()=>{if(!PINK.strokes.length)return;PINK.undo.push(PINK.strokes);PINK.strokes=[];pinkSave();pinkRedraw();toast('이 화면의 필기를 지웠어요 · ↶ 되돌리기로 살릴 수 있어요')};
+  $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);$$('.inkbox:not(.lnotepad)').forEach(x=>x.classList.toggle('inkmouse',e.target.checked))})}
+const pinkSave=()=>{if(!PINK.key)return;PINK.strokes.length?store.set(PINK.key,PINK.strokes):localStorage.removeItem(PINK.key)};
+function pinkGeo(s){const el=pinkAt(s.a);if(!el||el.offsetParent===null&&el!==pinkView())return null;if(s.h&&pinkHash(el)!==s.h)return null;const r=el.getBoundingClientRect(),vr=pinkView().getBoundingClientRect();if(!r.width)return null;return {x:r.left-vr.left,y:r.top-vr.top,w:r.width}}
+function pinkPts(s,g){const o=[];for(let i=0;i<s.p.length;i+=2)o.push(g.x+s.p[i]*g.w,g.y+s.p[i+1]*g.w);return o}
+function pinkStroke(c,s,g,dark){const p=pinkPts(s,g);c.save();c.lineCap=c.lineJoin='round';
+  if(s.t==='h'){c.globalAlpha=dark?.32:.42;c.globalCompositeOperation=dark?'source-over':'multiply';c.strokeStyle=RLINKC[s.c]||RLINKC.h;c.lineWidth=s.w*g.w;c.lineCap='butt'}else{c.strokeStyle=s.c==='k'&&dark?'#e5e7eb':RLINKC[s.c]||RLINKC.k;c.lineWidth=s.w*g.w}
+  c.beginPath();c.moveTo(p[0],p[1]);if(p.length===2)c.lineTo(p[0]+.1,p[1]);for(let i=2;i<p.length-2;i+=2)c.quadraticCurveTo(p[i],p[i+1],(p[i]+p[i+2])/2,(p[i+1]+p[i+3])/2);if(p.length>2)c.lineTo(p[p.length-2],p[p.length-1]);c.stroke();c.restore()}
+const pinkDark=()=>{const t=document.documentElement.dataset.theme;return t==='dark'||((!t||t==='auto'||t==='system')&&matchMedia('(prefers-color-scheme: dark)').matches)};
+function pinkSize(){const v=pinkView();let cv=$('#pinkcv'),lv=$('#pinklv');if(!v)return null;if(!cv||!v.contains(cv)){cv?.remove();lv?.remove();cv=document.createElement('canvas');cv.id='pinkcv';lv=document.createElement('canvas');lv.id='pinklv';cv.className=lv.className='pinkcv';v.append(cv,lv)}const d=devicePixelRatio||1;cv.style.width=lv.style.width='0px';cv.style.height=lv.style.height='0px';const w=v.scrollWidth,h=v.scrollHeight;
+  for(const c of [cv,lv]){if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}c.style.width=w+'px';c.style.height=h+'px'}return {cv,lv,w,h,d}}
+function pinkRedraw(){if(!PINK.key)return;const z=pinkSize();if(!z)return;PINK.mute=true;const c=z.cv.getContext('2d'),dk=pinkDark();c.setTransform(z.d,0,0,z.d,0,0);c.clearRect(0,0,z.w,z.h);
+  const hs=PINK.strokes.filter(s=>s.t==='h'),ps=PINK.strokes.filter(s=>s.t!=='h');for(const s of hs.concat(ps)){const g=pinkGeo(s);if(g)pinkStroke(c,s,g,dk)}pinkLive();setTimeout(()=>PINK.mute=false,0)}
+function pinkLive(){const lv=$('#pinklv');if(!lv)return;const d=devicePixelRatio||1,c=lv.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,lv.width/d,lv.height/d);
+  if(PINK.cur){const g=pinkGeo(PINK.cur);if(g)pinkStroke(c,PINK.cur,g,pinkDark())}
+  if(PINK.er){c.save();c.beginPath();c.arc(PINK.er[0],PINK.er[1],13,0,Math.PI*2);c.fillStyle=PINK.erasing?'rgba(225,29,72,.14)':'rgba(100,116,139,.10)';c.fill();c.lineWidth=1.5;c.setLineDash([4,3]);c.strokeStyle=PINK.erasing?'#e11d48':'#64748b';c.stroke();c.restore()}}
+function pinkWire(){const v=pinkView();let tid=null,pid=null,t0=0,x0=0,y0=0,far=false;
+  const vxy=(x,y)=>{const r=v.getBoundingClientRect();return [x-r.left,y-r.top]};
+  const skip=t=>!PINK.key||!t||!t.closest||t.closest('.inkbox,input,textarea,select,[contenteditable="true"],.pinkfab');
+  const eraseAt=(x,y)=>{const [vx,vy]=vxy(x,y);PINK.er=[vx,vy];const n=PINK.strokes.length;PINK.strokes=PINK.strokes.filter(s=>{const g=pinkGeo(s);if(!g)return true;const p=pinkPts(s,g),R=13+s.w*g.w/2;for(let i=0;i<p.length;i+=2)if(Math.hypot(p[i]-vx,p[i+1]-vy)<R)return false;for(let i=2;i<p.length;i+=2){const ax=p[i-2],ay=p[i-1],dx=p[i]-ax,dy=p[i+1]-ay,l=dx*dx+dy*dy||1e-9,t=Math.max(0,Math.min(1,((vx-ax)*dx+(vy-ay)*dy)/l));if(Math.hypot(ax+t*dx-vx,ay+t*dy-vy)<R)return false}return true});if(PINK.strokes.length!==n)pinkRedraw();else pinkLive()};
+  const begin=(x,y,target)=>{t0=Date.now();x0=x;y0=y;far=false;const tool=store.get('rlinkt','k');if(tool==='e'){PINK.erasing=true;PINK.undo.push(PINK.strokes.slice());eraseAt(x,y);return}
+    const a=pinkAnchor(document.elementFromPoint(x,y)||target),r=a.getBoundingClientRect(),hl=RLINKHL.has(tool);
+    PINK.cur={a:pinkPath(a)||'',h:a===v?'':pinkHash(a),t:hl?'h':'p',c:tool,w:(hl?16:2.2)/r.width,p:[+((x-r.left)/r.width).toFixed(4),+((y-r.top)/r.width).toFixed(4)],_r:r}};
+  const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(PINK.erasing){eraseAt(x,y);return}const c=PINK.cur;if(!c)return;const a=pinkAt(c.a),r=a.getBoundingClientRect(),px=(x-r.left)/r.width,py=(y-r.top)/r.width,p=c.p;
+    if(Math.hypot((px-p[p.length-2])*r.width,(py-p[p.length-1])*r.width)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));pinkLive()};
+  const end=(x,y)=>{if(PINK.erasing){PINK.erasing=false;PINK.er=null;pinkLive();pinkSave();return}const c=PINK.cur;PINK.cur=null;if(!c)return;
+    /* 펜슬로 톡 치기만 했으면 필기가 아니라 누르기예요: 선택지·버튼이 그대로 눌려요 */
+    if(!far&&Date.now()-t0<300){pinkLive();const el=document.elementFromPoint(x0,y0);if(el){el.focus?.();el.click?.()}return}
+    delete c._r;PINK.strokes.push(c);PINK.undo=[];pinkSave();pinkRedraw()};
+  let lx=0,ly=0;
+  v.addEventListener('touchstart',e=>{const t=[...e.changedTouches].find(t=>t.touchType==='stylus');if(!t||skip(e.target))return;e.preventDefault();tid=t.identifier;lx=t.clientX;ly=t.clientY;begin(t.clientX,t.clientY,e.target)},{passive:false});
+  v.addEventListener('touchmove',e=>{if(tid==null)return;const t=[...e.changedTouches].find(t=>t.identifier===tid);if(!t)return;e.preventDefault();lx=t.clientX;ly=t.clientY;move(t.clientX,t.clientY)},{passive:false});
+  const tend=e=>{if(tid==null)return;if([...e.changedTouches].some(t=>t.identifier===tid)){tid=null;end(lx,ly)}};v.addEventListener('touchend',tend);v.addEventListener('touchcancel',tend);
+  v.addEventListener('pointerdown',e=>{if(tid!=null||e.button>0||skip(e.target))return;const pen=e.pointerType==='pen'&&!('ontouchstart' in window),mouse=e.pointerType==='mouse'&&store.get('rlinkm',false)&&!e.target.closest('button,a,label,summary,[role=button],.rlsq');if(!pen&&!mouse)return;e.preventDefault();pid=e.pointerId;v.setPointerCapture?.(pid);begin(e.clientX,e.clientY,e.target)});
+  v.addEventListener('pointermove',e=>{if(e.pointerId!==pid){if(PINK.key&&store.get('rlinkt','k')==='e'&&(e.pointerType==='pen'||(e.pointerType==='mouse'&&store.get('rlinkm',false)))&&!skip(e.target)){PINK.er=vxy(e.clientX,e.clientY);pinkLive()}else if(PINK.er&&!PINK.erasing){PINK.er=null;pinkLive()}return}
+    e.preventDefault();(e.getCoalescedEvents?e.getCoalescedEvents():[e]).forEach(c=>move(c.clientX,c.clientY))});
+  const pend=e=>{if(e.pointerId!==pid)return;pid=null;end(e.clientX,e.clientY)};v.addEventListener('pointerup',pend);v.addEventListener('pointercancel',pend);
+  const sched=()=>{if(!PINK.key||PINK.mute)return;cancelAnimationFrame(PINK.raf);PINK.raf=requestAnimationFrame(pinkRedraw)};
+  if(window.ResizeObserver)new ResizeObserver(sched).observe(v);
+  new MutationObserver(ms=>{if(ms.every(m=>m.target.id==='pinkcv'||m.target.id==='pinklv'))return;sched()}).observe(v,{subtree:true,childList:true,attributes:true,attributeFilter:['open','hidden','class']});
+  addEventListener('resize',sched);document.addEventListener('toggle',sched,true)}
 function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
   const qhtml=q=>`<div class="rlq" data-n="${q.n}"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<span class="muted small">음성을 듣고 가장 알맞은 응답을 고르세요.</span>'}</div></div>
     <div class="rlopts" role="radiogroup">${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div>
@@ -5068,7 +5139,7 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
   const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary>${rlInkBar()}<div class="rlsctx">${rlScript(b)}</div></details>`:''}</div>`
     :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar()+rlInkBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
   const allBtn=prac&&b.qs.length>1?`<div class="rlallchk"><button class="btn primary" data-all>✓ 이 지문 전체 채점 <span class="small">(${b.qs.length}문항)</span></button><div class="rlsum" hidden></div></div>`:'';
-  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(!isL&&prac)rlInk($('.rlinkbar',host),$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk($('.rlinkbar',sc),$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
+  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(prac)inkPage('pink:'+rlInkKey(sec,b).slice(4));if(!isL&&prac)rlInk($('.rlinkbar',host),$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk($('.rlinkbar',sc),$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
   if(isL){const once=mode==='exam',heard=st.done[b.audio];
     const qs=$('.rlqs',host);if(once&&!heard){qs.classList.add('wait');qs.insertAdjacentHTML('afterbegin','<p class="small muted rlwaitmsg">음성이 끝나면 문제가 열려요.</p>')}
     if(once&&heard){$('#rlpl',host).innerHTML='<p class="small muted">✓ 이미 들었어요 (실전 모드는 한 번만 재생)</p>'}
@@ -5344,6 +5415,19 @@ const rlAiOK=()=>!!(S.cfg&&S.cfg.geminiKey)&&Date.now()>=(window.RLAIOFF||0);
 
 /* iOS Safari mutes speechSynthesis started outside a tap until it has spoken once inside one */
 {const un=()=>{try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}removeEventListener('pointerdown',un,true);removeEventListener('keydown',un,true)};addEventListener('pointerdown',un,true);addEventListener('keydown',un,true)}
+
+/* 화면 필기를 켤 화면들: 연습 문제·해설·결과·템플릿 */
+addEventListener('hashchange',()=>{if(PINK.key&&location.hash!==PINK.hash)inkPage(null)});
+(function(){const W=(name,keyf,async_)=>{const f=window[name]||(typeof globalThis[name]==='function'?globalThis[name]:null);if(typeof f!=='function')return null;return function(...a){const r=f.apply(this,a);const go=()=>{try{const k=keyf(...a);if(k)inkPage(k)}catch(e){}};if(r&&r.then)r.then(go);else go();return r}};
+  try{rlOpenSaved=W('rlOpenSaved',ts=>'pink:rlr:'+ts)||rlOpenSaved}catch(e){}
+  try{openSaved=W('openSaved',id=>'pink:sr:'+id)||openSaved}catch(e){}
+  try{renderResults=W('renderResults',()=>'pink:sr:'+((typeof RES!=='undefined'&&RES._rid)||(S.hist||[]).reduce((m,h)=>Math.max(m,h.ts||0),0)))||renderResults}catch(e){}
+  try{renderTplPractice=W('renderTplPractice',a=>'pink:stpl:'+a)||renderTplPractice}catch(e){}
+  try{renderWResults=W('renderWResults',r=>'pink:wr:'+(r&&(r.ts||r.id)))||renderWResults}catch(e){}
+  try{renderWTplQ=W('renderWTplQ',(t,k)=>'pink:wtq:'+t+':'+k)||renderWTplQ}catch(e){}
+  try{renderWTypeRun=W('renderWTypeRun',id=>'pink:wty:'+id)||renderWTypeRun}catch(e){}
+  try{renderWTypeExam=W('renderWTypeExam',id=>'pink:wtx:'+id)||renderWTypeExam}catch(e){}
+})();
 
 /* ================= Vocab · VocaDay (Hackers TOEFL Vocabulary, 30 Days) =================
    Word data is injected at build time as window.VOCA (never stored in this repo).
