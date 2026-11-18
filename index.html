@@ -1136,6 +1136,15 @@ body.navmin main{max-width:1500px}
   .psgbody{max-height:none;overflow:visible;padding:16px 16px 4px}
 }
 .vccard{max-width:900px!important}.vcbtns{max-width:900px;margin-inline:auto}
+/* 몰라요·애매해요·외웠어요는 해설이 열려도 늘 같은 자리(화면 아래)에 있어요 */
+.vcstage{display:flex;flex-direction:column;min-height:calc(100dvh - 210px)}
+.vcjudge{position:sticky;bottom:14px;z-index:20;margin-top:auto;display:grid;grid-template-columns:48px 1fr 1fr 1fr 48px;gap:8px;width:100%;max-width:900px;margin-inline:auto;padding:8px;border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
+.vcstage .vcbtns{margin-bottom:14px}
+.vcjudge .btn{min-height:50px;padding:8px 6px;font-size:15px;font-weight:700;justify-content:center;white-space:nowrap}
+.vcjudge .vcno{border-color:color-mix(in srgb,var(--bad) 50%,var(--line2));color:var(--bad)}
+@media (max-width:900px){.vcjudge{bottom:calc(72px + env(safe-area-inset-bottom,0px))}.vcstage{min-height:calc(100dvh - 280px)}}
+@media (max-width:420px){.vcjudge{grid-template-columns:40px 1fr 1fr 1fr 40px;gap:6px;padding:6px}.vcjudge .btn{font-size:14px;padding:8px 2px}}
 .wsplit{max-width:1440px}#test .rlexam.rd{max-width:1400px}#test .rlexam.lis{max-width:880px}
 .vcq,.vcspellbox{max-width:900px}
 .vcqart{width:150px;height:150px;margin:0 auto 12px;border-radius:24px;display:grid;place-items:center;overflow:hidden}.vcqart .vcemo{font-size:80px}
@@ -5849,9 +5858,9 @@ function vcCards(host,ws,{scope,pos}){let filt=store.get('vcfilt','all');const P
     host.innerHTML=`${scope==='day'?vcFiltHTML(filt):''}${resumed?vcResumeHTML(i,deck.length):''}<div class="vcprog"><div class="bar"><i style="width:${i/deck.length*100}%"></i></div><span class="small mono">${i+1} / ${deck.length}</span></div>
       <div class="vctools"><button type="button" class="vcchip" id="vcauto" aria-pressed="${auto}">${auto?'❚❚ 일시정지':'▶ 자동 재생'}</button><button type="button" class="vcchip vcstop" id="vcstopb" ${auto?'':'hidden'}>■ 정지</button><button type="button" class="vcchip" id="vcapb" aria-expanded="${apOpen}">⚙ 소리·보기 설정</button></div>
       <div class="panel vcap" id="vcap" ${apOpen?'':'hidden'}>${vcBasicHTML()}${vcApHTML()}</div>
-      ${vcCardHTML(w)}
-      <div class="vcbtns"><button class="btn" id="vcprev" ${i?'':'disabled'}>←</button><button class="btn" data-say="w">🔊 단어</button><button class="btn" data-say="k">🔊 뜻</button>${(w.senses||[]).filter(s=>s.ex).length>1?`<button class="btn" data-sayall>🔊 예문 전부</button>`:''}
-        <button class="btn vcno" id="vcno">✕ 몰라요</button><button class="btn vcmeh" id="vcmeh">△ 애매해요</button><button class="btn primary vcyes" id="vcyes">✓ 외웠어요</button><button class="btn" id="vcnext">→</button></div>
+      <div class="vcstage">${vcCardHTML(w)}
+      <div class="vcbtns"><button class="btn" data-say="w">🔊 단어</button><button class="btn" data-say="k">🔊 뜻</button>${(w.senses||[]).filter(s=>s.ex).length>1?`<button class="btn" data-sayall>🔊 예문 전부</button>`:''}</div>
+      <div class="vcjudge" role="group" aria-label="외웠는지 표시"><button class="btn" id="vcprev" ${i?'':'disabled'} aria-label="이전 단어">←</button><button class="btn vcno" id="vcno">✕ 몰라요</button><button class="btn vcmeh" id="vcmeh">△ 애매해요</button><button class="btn primary vcyes" id="vcyes">✓ 외웠어요</button><button class="btn" id="vcnext" aria-label="다음 단어">→</button></div></div>
       <p class="small muted center">키보드: Space 뒤집기 · ← 몰라요 · ↓ 애매해요 · → 외웠어요 · S 소리</p>`;
     wireFilt();$('#vcrestart',host)?.addEventListener('click',()=>{if(PK())localStorage.removeItem(PK());i=0;resumed=false;draw()});resumed=false;const card=$('.vccard',host),flip=()=>{const b=$('.vcb',card);if(b.hidden){b.hidden=false;card.classList.add('on');try{SFX.flip()}catch(e){}}};
     card.onclick=e=>{if(e.target.closest('[data-say]')||e.target.closest('details'))return;flip()};
