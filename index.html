@@ -397,6 +397,7 @@ mark{background:color-mix(in srgb,var(--warn) 28%,transparent);color:inherit;bor
 .li .tt{font-weight:600;font-size:16px}
 .li .tp{font-size:15px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .li .rt2{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:14px;color:var(--mute)}
+.catlist .li{grid-template-columns:minmax(0,1fr) auto}.catlist .li .tt{font-weight:700}.catlist .li .tp{color:var(--mute);font-size:14px;margin-top:2px}
 .detail{position:sticky;top:72px;overflow:hidden}
 .dimg{background:var(--paper);border-bottom:1px solid var(--line);display:grid;place-items:center;padding:14px;cursor:zoom-in;position:relative}
 .dimg img{max-width:100%;max-height:440px;object-fit:contain;box-shadow:0 2px 10px rgba(0,0,0,.12);border-radius:2px}
@@ -3817,7 +3818,7 @@ function renderWLnb(cur){
   $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
 }
 function wTabs(w){const t=$('.btabs');if(!t)return;
-  t.innerHTML=w?`<a href="#w" data-tab="w">${ICON('write')}메인</a><a href="#w-practice" data-tab="w-practice">${ICON('pencil')}연습</a><a href="#w-mock" data-tab="w-mock">${ICON('play')}모의고사</a><a href="#w-hist" data-tab="w-hist">${ICON('list')}기록</a>`
+  t.innerHTML=w?`<a href="#w" data-tab="w">${ICON('write')}메인</a><a href="#w-practice" data-tab="w-practice">${ICON('keyboard')}연습</a><a href="#w-mock" data-tab="w-mock">${ICON('play')}모의고사</a><a href="#w-hist" data-tab="w-hist">${ICON('list')}기록</a>`
    :`<a href="#home" data-tab="home">${ICON('speak')}메인</a><a href="#practice" data-tab="practice">${ICON('pencil')}연습</a><a href="#mock" data-tab="mock">${ICON('play')}모의고사</a><a href="#history" data-tab="history">${ICON('list')}기록</a>`}
 /* hook the speaking router: Writing routes start with "w" */
 const _route=route;
@@ -3949,7 +3950,8 @@ const WTASKDESC={1:'두 사람의 짧은 대화에서 두 번째 사람의 답�
 function renderWPractice(){
   setCrumb(['Writing','연습']);
   view.innerHTML=`<div class="cathead"><div><h1>Task별 연습</h1><p>챕터를 고르면 그 챕터의 Hackers Test를 실제 시험 화면으로 풀어요.</p></div></div>
-    ${[1,2,3].map(t=>`<section class="section"><h2>Task ${t} · ${WTASK[t]}</h2><div class="cards">${WCATS.filter(c=>c.task===t).map(c=>`<a class="panel ph catcard" href="#${c.id}"><b>${esc(c.label)}</b><span class="small">${esc(c.sub)}</span><span class="small mono muted">${wdone(c)} / ${c.sets.length}</span></a>`).join('')}</div></section>`).join('')}`;
+    ${[1,2,3].map(t=>`<section class="section" style="margin-top:${t===1?0:22}px"><h2>Task ${t} · ${WTASK[t]}</h2><div class="panel list catlist">
+      ${WCATS.filter(c=>c.task===t).map(c=>{const d=wdone(c),n=c.sets.length||1;return `<a class="li" href="#${c.id}" style="text-decoration:none;color:inherit"><span style="min-width:0"><span class="tt">${esc(c.label)}</span><span class="tp" style="display:block">${esc(c.sub)}</span></span><span class="rt2"><span class="mono">${d}/${c.sets.length}</span><span class="bar" style="width:60px"><i style="width:${(d/n*100).toFixed(0)}%"></i></span></span></a>`}).join('')}</div></section>`).join('')}`;
 }
 function renderWMocks(){
   setCrumb(['Writing','실전 모의고사']);
