@@ -210,6 +210,7 @@ table.hist{width:100%;border-collapse:collapse;font-size:16px}
 .progrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 42px;gap:12px;align-items:center;text-decoration:none;color:var(--ink);font-size:16px;padding:4px 0}
 .progrow:hover .pt{color:var(--accent)}
 .progrow .pt small{color:var(--mute);display:block;font-size:14px}
+.impbar{height:8px;border-radius:99px;background:var(--line,#ddd);overflow:hidden}.impbar i{display:block;height:100%;background:var(--accent,#2563eb);transition:width .3s}.impgh{padding:14px;border:1px solid var(--line,#ddd);border-radius:14px;background:var(--surface,#fff);display:grid;gap:6px}.impgh p{margin:0}.ghok{margin:4px 0 8px}.ghpw{margin-top:10px}.ghpw summary{cursor:pointer}.ghin{display:block;width:100%;margin:6px 0;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit}
 .importer{position:fixed;inset:0;z-index:90;background:var(--paper);overflow:auto;padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) 40px max(20px,env(safe-area-inset-left,0px))}
 .imp{max-width:440px;margin:0 auto;display:grid;gap:12px}.imp .mk{width:56px;height:56px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 20px var(--mono)}
 .imp h1{margin:0;font-size:24px}.imp p,.imp ol{margin:0;line-height:1.6}.imp ol{padding-left:20px}
@@ -1875,7 +1876,7 @@ function iconSVG(id, size){
   return `<svg viewBox="0 0 200 200" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 }
 
-;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="826d93e0fa69";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
+;window.vcArtSpec=artHTML;return iconSVG})();window.PACKSTAMP="beb523c83f5a";/* PWA boot: book data (sets, audio, images) is imported once from a private pack file and kept in IndexedDB on this device. */
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -1891,15 +1892,14 @@ function iconSVG(id, size){
     const h8=new DataView(await file.slice(0,8).arrayBuffer());
     if(String.fromCharCode(h8.getUint8(0),h8.getUint8(1),h8.getUint8(2),h8.getUint8(3))!=='TFPK')throw new Error('toefl-pack.bin 파일이 아니에요');
     const hl=h8.getUint32(4,true),head=JSON.parse(new TextDecoder().decode(await file.slice(8,8+hl).arrayBuffer())),base=8+hl;
-    const db=await open();
+    const db=await open();const vkeep=new Set(((await tx(db,'meta','readonly',st=>st.get('voices')))||{}).names||[]);
     /* keep recordings from the voices file (tts/...): importing only a new toefl-pack.bin later must not wipe them */
-    await new Promise((res,rej)=>{const t=db.transaction('files','readwrite'),c=t.objectStore('files').openCursor();c.onsuccess=()=>{const k=c.result;if(k){if(!String(k.key).startsWith('tts/'))k.delete();k.continue()}};t.oncomplete=()=>res();t.onerror=()=>rej(t.error)});
+    await new Promise((res,rej)=>{const t=db.transaction('files','readwrite'),c=t.objectStore('files').openCursor();c.onsuccess=()=>{const k=c.result;if(k){if(!String(k.key).startsWith('tts/')&&!vkeep.has(String(k.key)))k.delete();k.continue()}};t.oncomplete=()=>res();t.onerror=()=>rej(t.error)});
     const F=head.files;for(let i=0;i<F.length;i+=40){const part=F.slice(i,i+40);
       // copy each entry into memory as its own small Blob (some browsers can't keep a File slice after the picker closes)
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
-    await tx(db,'meta','readwrite',st=>st.delete('voices'));
-    await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,bg:head.bg||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
+        await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,bg:head.bg||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack'));
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     if(o.reload!==false){status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600)}
   }
@@ -1911,7 +1911,7 @@ function iconSVG(id, size){
     for(let i=0;i<F.length;i+=40){const part=F.slice(i,i+40);
       const bl=await Promise.all(part.map(async f=>new Blob([await file.slice(base+f.off,base+f.off+f.len).arrayBuffer()],{type:f.type})));
       await tx(db,'files','readwrite',st=>part.forEach((f,k)=>st.put(bl[k],f.name)));status(`불러오는 중… ${Math.min(F.length,i+40)} / ${F.length}`)}
-    await tx(db,'meta','readwrite',st=>st.put({n:F.length,stamp:head.stamp||null,at:Date.now()},'voices'));
+    await tx(db,'meta','readwrite',st=>st.put({n:F.length,stamp:head.stamp||null,names:F.map(f=>f.name),at:Date.now()},'voices'));
     if(o.reload!==false){status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600)}
   }
   /* 받은 파일을 한 번에 여러 개 골라도 돼요: 교재 데이터를 먼저 넣고, 목소리 파일을 그 위에 얹어요 */
@@ -1929,11 +1929,124 @@ function iconSVG(id, size){
     for(const f of adds){k++;await importVoices(f,tag(f.name),{reload:false})}
     status('완료! '+steps+'개 파일을 넣었어요. 앱을 다시 여는 중…');setTimeout(()=>location.reload(),700);
   }
+  /* ===== GitHub 비공개 저장소 연결: 교재 데이터 받기 + 학습 기록 동기화 =====
+     토큰은 이 기기의 localStorage(gh:tok)에만 있어요. 데이터 저장소는 비공개라 교재는 공개되지 않아요. */
+  const GHR='inkwangsong/toefl-data',GHTK='gh:tok',GHMETA='gh:meta',GHTS='gh:ts';
+  const _set=Storage.prototype.setItem,_rm=Storage.prototype.removeItem;
+  const ghTok=()=>{try{return localStorage.getItem(GHTK)||''}catch(e){return ''}};
+  const jget=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+  const jset=(k,v)=>{try{_set.call(localStorage,k,JSON.stringify(v))}catch(e){}};
+  const ghH=(acc)=>({Authorization:'Bearer '+ghTok(),Accept:acc||'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'});
+  async function ghFetch(path,o={}){const r=await fetch('https://api.github.com/repos/'+GHR+'/'+path,{cache:'no-store',...o,headers:{...ghH(o.accept),...(o.headers||{})}});
+    if(r.status===401)throw new Error('토큰이 맞지 않거나 만료됐어요');if(r.status===404&&!o.ok404)throw new Error('데이터 저장소를 찾지 못했어요 (토큰 권한 확인)');return r}
+  const ghRaw=(p,o={})=>ghFetch('contents/'+p+'?ref=main',{...o,accept:'application/vnd.github.raw'});
+  async function ghManifest(){const r=await ghRaw('manifest.json');if(!r.ok)throw new Error('manifest '+r.status);return r.json()}
+  /* 받은 조각은 따로 둔 DB에 쌓아요: 중간에 끊겨도 다음에 이어서 받아요 */
+  const DLDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('toefl-dl',1);r.onupgradeneeded=()=>r.result.createObjectStore('c');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+  async function ghFile(kind,man,status,base,total){const db=await DLDB(),parts=[];let done=base;
+    for(const [i,p] of man.parts.entries()){const key=p.path;
+      let b=await tx(db,'c','readonly',st=>st.get(key));
+      for(let tr=0;(!b||b.size!==p.size)&&tr<4;tr++){const ac=new AbortController();let wd=0;const kick=()=>{clearTimeout(wd);wd=setTimeout(()=>ac.abort(),45000)};kick();
+        try{const r=await ghRaw(p.path,{signal:ac.signal});if(!r.ok)throw new Error(p.path+' '+r.status);
+          const rd=r.body&&r.body.getReader?r.body.getReader():null;
+          if(rd){const ch=[];let n=0;for(;;){const {done:d,value}=await rd.read();if(d)break;kick();ch.push(value);n+=value.length;status(`${kind} 받는 중… ${Math.floor((done+n)/total*100)}%`)}b=new Blob(ch)}else b=await r.blob();
+        }catch(e){b=null;if(tr===3)throw new Error(e.name==='AbortError'?'인터넷이 너무 느리거나 끊겼어요':e.message);status(`${kind} 다시 받는 중…`);await new Promise(r=>setTimeout(r,2000))}finally{clearTimeout(wd)}
+        if(b&&b.size===p.size)await tx(db,'c','readwrite',st=>st.put(b,key))}
+      if(!b||b.size!==p.size)throw new Error('받은 크기가 달라요 ('+p.path+')');
+      done+=p.size;parts.push(b);status(`${kind} 받는 중… ${Math.floor(done/total*100)}%`)}
+    return {blob:new Blob(parts),done}}
+  async function ghClearDl(){try{const db=await DLDB();await tx(db,'c','readwrite',st=>st.clear())}catch(e){}}
+  /* need: 'pack' | 'voices' | 'both' — 필요한 것만 받아서 기존 불러오기 경로(importPack/importVoices)로 넣어요 */
+  async function ghDownload(status,o={}){const man=await ghManifest(),db=await open();
+    const pm=await tx(db,'meta','readonly',st=>st.get('pack')),vm=await tx(db,'meta','readonly',st=>st.get('voices'));
+    const needP=o.force||!pm||pm.stamp!==man.pack.stamp,needV=man.voices&&(o.force||!vm||vm.stamp!==man.voices.stamp);
+    if(!needP&&!needV){status('이미 최신 데이터예요');return false}
+    const total=(needP?man.pack.size:0)+(needV?man.voices.size:0);let base=0;
+    if(needP){const {blob,done}=await ghFile('교재 데이터',man.pack,status,base,total);base=done;await importPack(blob,t=>status('교재 데이터 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}
+    if(needV){const {blob}=await ghFile('목소리',man.voices,status,base,total);await importVoices(blob,t=>status('목소리 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}
+    await ghClearDl();jset(GHMETA,{...jget(GHMETA,{}),dataAt:Date.now(),stamp:man.pack.stamp});
+    try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
+    if(o.reload!==false){status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600)}return true}
+
+  /* ---- 학습 기록 동기화: localStorage 전체(토큰·동기화 정보 빼고)를 sync/state.json 하나로 주고받아요 ---- */
+  const skip=k=>!k||k.startsWith('gh:');
+  let ghPushT=0,ghBusy=false,ghDirty=false;
+  Storage.prototype.setItem=function(k,v){_set.call(this,k,v);if(this===localStorage&&!skip(k)){const t=jget(GHTS,{});t[k]=Date.now();jset(GHTS,t);ghSched()}};
+  Storage.prototype.removeItem=function(k){_rm.call(this,k);if(this===localStorage&&!skip(k)){const t=jget(GHTS,{});t[k]=-Date.now();jset(GHTS,t);ghSched()}};
+  function ghSched(){if(!ghTok())return;ghDirty=true;clearTimeout(ghPushT);ghPushT=setTimeout(()=>ghPush().catch(()=>{}),5000)}
+  const b64e=s=>{const u=new TextEncoder().encode(s);let b='';for(let i=0;i<u.length;i+=0x8000)b+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(b)};
+  const b64d=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g,'')),c=>c.charCodeAt(0)));
+  function localState(){const ts=jget(GHTS,{}),keys={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(skip(k))continue;keys[k]={v:localStorage.getItem(k),t:Math.abs(ts[k]||0)}}
+    for(const k in ts)if(ts[k]<0&&!(k in keys))keys[k]={v:null,t:-ts[k]};return keys}
+  async function ghGetState(){const r=await ghFetch('contents/sync/state.json?ref=main',{ok404:true});if(r.status===404)return {sha:null,keys:{}};if(!r.ok)throw new Error('sync '+r.status);
+    const j=await r.json();let txt=j.content?b64d(j.content):'';if(!txt&&j.sha){const b=await (await ghFetch('git/blobs/'+j.sha)).json();txt=b64d(b.content)}
+    let o={};try{o=JSON.parse(txt||'{}')}catch(e){}return {sha:j.sha,keys:o.keys||{}}}
+  /* 기록이 쌓이는 배열(ts·id가 있는 항목)은 양쪽을 합치고, 처음 연결할 때(t=0)는 객체도 합쳐요. 그 밖에는 더 최근에 바뀐 쪽이 이겨요. */
+  const recK=a=>Array.isArray(a)&&a.length&&a.every(x=>x&&typeof x==='object'&&('ts' in x||'id' in x||'at' in x));
+  const rid=x=>JSON.stringify(x.ts??x.id??x.at);
+  function mergeV(o,n,init){if(recK(o)&&recK(n)||(recK(o)&&Array.isArray(n)&&!n.length&&init)||(recK(n)&&Array.isArray(o)&&!o.length&&init)){const m=new Map();for(const x of o||[])m.set(rid(x),x);for(const x of n||[])m.set(rid(x),x);return [...m.values()].sort((a,b)=>(a.ts??a.at??0)-(b.ts??b.at??0))}
+    if(o&&n&&typeof o==='object'&&typeof n==='object'&&!Array.isArray(o)&&!Array.isArray(n)){const r=init?{...o}:{};for(const k in n)r[k]=(k in o)?mergeV(o[k],n[k],init):n[k];return r}return n}
+  function mergeEntry(a,b,first){/* b가 더 최근 */if(!a)return b;if(!b)return a;const [o,n]=(b.t>=a.t)?[a,b]:[b,a];if(n.v==null)return n;if(o.v==null)return n;
+    if(o.v===n.v)return n;let ov,nv;try{ov=JSON.parse(o.v);nv=JSON.parse(n.v)}catch(e){return n}
+    const init=first||!o.t||!n.t;return {v:JSON.stringify(mergeV(ov,nv,init)),t:Math.max(a.t,b.t)}}
+  function applyRemote(keys,first){const loc=localState(),ts=jget(GHTS,{});let changed=0;
+    for(const k in keys){const m=mergeEntry(loc[k],keys[k],first);const cur=loc[k];if(cur&&m.v===cur.v)continue;if(!cur&&m.v==null)continue;
+      if(m.v==null)_rm.call(localStorage,k);else _set.call(localStorage,k,m.v);ts[k]=m.v==null?-m.t:m.t;changed++}
+    jset(GHTS,ts);return changed}
+  async function ghPull(){if(!ghTok())return 0;const first=!jget(GHMETA,{}).pullAt;const {keys}=await ghGetState();const c=applyRemote(keys,first);jset(GHMETA,{...jget(GHMETA,{}),pullAt:Date.now()});return c}
+  async function ghPush(){if(!ghTok()||ghBusy)return;ghBusy=true;try{
+      for(let a=0;a<3;a++){const {sha,keys}=await ghGetState();applyRemote(keys);const loc=localState(),out={};
+        for(const k of new Set([...Object.keys(keys),...Object.keys(loc)])){const m=mergeEntry(keys[k],loc[k]);if(m)out[k]=m}
+        const body={message:'sync '+new Date().toISOString(),content:b64e(JSON.stringify({keys:out,at:Date.now(),dev:navigator.userAgent.slice(0,80)})),branch:'main'};if(sha)body.sha=sha;
+        const r=await ghFetch('contents/sync/state.json',{method:'PUT',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
+        if(r.ok){ghDirty=false;jset(GHMETA,{...jget(GHMETA,{}),pushAt:Date.now(),pullAt:Date.now()});return true}
+        if(r.status!==409&&r.status!==422)throw new Error('push '+r.status)}}finally{ghBusy=false}}
+  /* 다른 기기에서 공부하고 돌아오면 가져와서 새로 그려요 (시험 중에는 건드리지 않아요) */
+  document.addEventListener('visibilitychange',()=>{if(!ghTok())return;
+    if(document.visibilityState==='hidden'){if(ghDirty){clearTimeout(ghPushT);ghPush().catch(()=>{})}return}
+    if(document.body.classList.contains('testing'))return;
+    ghPull().then(c=>{if(c){try{sessionStorage.setItem('gh:pulled',String(c))}catch(e){}location.reload()}}).catch(()=>{})});
+  function ghLink(){return location.origin+location.pathname+'#gh='+encodeURIComponent(ghTok())}
+  async function ghConnect(tok,status){_set.call(localStorage,GHTK,tok.trim());try{status('연결 확인 중…');await ghManifest()}catch(e){_rm.call(localStorage,GHTK);throw e}
+    status('기록 맞추는 중…');await ghPull();await ghPush();return true}
+  /* ---- 비밀번호 로그인: 토큰을 비밀번호로 잠가 lock.json(공개)에 두고, 기기마다 비밀번호로 풀어요 ---- */
+  const b64u8=u=>{let b='';for(let i=0;i<u.length;i+=0x8000)b+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(b)},u8b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+  async function lockKey(pw,salt,it){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+    return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:it,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+  async function lockMake(pw){const tok=ghTok();if(!tok)throw new Error('먼저 연결해야 해요');if(String(pw).length<8)throw new Error('비밀번호는 8자 이상으로 해 주세요');
+    const it=600000,salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await lockKey(pw,salt,it);
+    const c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(tok)));
+    const lock={v:1,it,s:b64u8(salt),i:b64u8(iv),c:b64u8(c),repo:GHR,at:Date.now()};
+    const cur=await ghFetch('contents/lock.json?ref=main',{ok404:true}),sha=cur.ok?(await cur.json()).sha:null;
+    const body={message:'login lock',content:b64e(JSON.stringify(lock)),branch:'main'};if(sha)body.sha=sha;
+    const r=await ghFetch('contents/lock.json',{method:'PUT',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});if(!r.ok)throw new Error('저장 실패 '+r.status);return lock}
+  async function lockOpen(lock,pw){try{const k=await lockKey(pw,u8b64(lock.s),lock.it);return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u8b64(lock.i)},k,u8b64(lock.c)))}catch(e){throw new Error('비밀번호가 맞지 않아요')}}
+  async function siteLock(){try{const r=await fetch('lock.json',{cache:'no-store'});if(!r.ok)return null;const j=await r.json();return j&&j.c?j:null}catch(e){return null}}
+  function showLogin(lock,after){
+    const d=document.createElement('div');d.className='importer';
+    d.innerHTML=`<div class="imp"><img src="icon-192.png" alt="" width="72" height="72" style="border-radius:18px;margin:0 auto 8px;display:block"><h1>TOEFL Practice</h1>
+      <p>비밀번호를 넣으면 교재·목소리를 받고, 다른 기기에서 공부한 기록도 이어서 볼 수 있어요. 이 기기에서는 한 번만 넣으면 돼요.</p>
+      <form id="lgf" class="impgh"><input type="password" id="lgpw" placeholder="비밀번호" autocomplete="current-password" style="width:100%;padding:12px;border:1px solid var(--line2,#ccc);border-radius:10px;font:inherit;background:var(--surface,#fff);color:inherit"><button class="btn primary lg" style="width:100%;margin-top:8px">로그인</button></form>
+      <p class="small muted" id="packst"></p><button class="btn quiet" id="lgfile" style="width:100%">비밀번호 없이 파일로 불러오기</button></div>`;
+    document.body.appendChild(d);const st=t=>{document.getElementById('packst').textContent=t};
+    document.getElementById('lgfile').onclick=()=>{d.remove();showImport(after)};
+    document.getElementById('lgf').onsubmit=async e=>{e.preventDefault();const pw=document.getElementById('lgpw').value;if(!pw)return;st('확인하는 중…');
+      try{const tok=await lockOpen(lock,pw);_set.call(localStorage,GHTK,tok);st('로그인했어요! 기록을 맞추는 중…');try{await ghPull();await ghPush()}catch(_){}
+        const db=await open(),meta=await tx(db,'meta','readonly',s=>s.get('pack'));
+        if(meta&&meta.stamp===window.PACKSTAMP&&meta.gkey){location.reload();return}d.remove();showRemote(meta?after:undefined)}catch(err){st(err.message)}};
+    setTimeout(()=>document.getElementById('lgpw')?.focus(),100)}
+  window.GHSYNC={lockMake,tok:ghTok,meta:()=>jget(GHMETA,{}),link:ghLink,connect:ghConnect,download:ghDownload,pull:ghPull,push:ghPush,manifest:ghManifest,
+    off(){_rm.call(localStorage,GHTK);_rm.call(localStorage,GHMETA)}};
+  /* #gh=토큰 링크로 열면 이 기기를 바로 연결해요. 주소창에서는 곧바로 지워요. */
+  (function(){const m=/#gh=([^&]+)/.exec(location.hash);if(!m)return;try{_set.call(localStorage,GHTK,decodeURIComponent(m[1]))}catch(e){}history.replaceState(null,'',location.pathname+location.search)})();
   window.PACKIO={importPack,importVoices,importMany,async clear(){const db=await open();await tx(db,'files','readwrite',st=>st.clear());await tx(db,'meta','readwrite',st=>st.clear());location.reload()}};
   function showImport(old){
     const d=document.createElement('div');d.className='importer';
     d.innerHTML=`<div class="imp"><img src="icon-192.png" alt="" width="72" height="72" style="border-radius:18px;margin:0 auto 8px;display:block"><h1>TOEFL Practice</h1>
       ${old?'<p><b>새 교재 데이터가 나왔어요.</b> 이 기기에는 예전 데이터가 들어 있어서 일부 문제(예: 리스닝 Task 3·4, Actual Test)가 안 보일 수 있어요. 최신 <b>toefl-pack.bin</b>을 다시 불러와 주세요.</p>':'<p>처음 한 번, 교재 데이터 파일 <b>toefl-pack.bin</b>을 불러와야 해요.'} ${old?'':'이 파일은 이 기기에만 저장되고 인터넷에 올라가지 않아요.</p>'}
+      <div class="impgh"><b>GitHub 비공개 저장소에서 받기 (추천)</b><p class="small">다른 기기에서 <b>설정 › 기기 연결</b>의 연결 링크를 열면 자동으로 받아져요. 토큰이 있으면 여기에 붙여 넣어도 돼요.</p>
+        <input type="password" id="ghtok" placeholder="github_pat_…" autocomplete="off" style="width:100%;padding:10px 12px;border:1px solid var(--line2,#ccc);border-radius:10px;font:inherit;background:var(--surface,#fff);color:inherit"><button class="btn primary lg" id="ghgo" style="width:100%;margin-top:8px">연결하고 받기</button></div>
+      <p class="small muted" style="text-align:center;margin:4px 0">또는 파일로 불러오기</p>
       <ol><li>Claude 채팅에서 받은 <b>toefl-pack.bin</b>과 <b>toefl-voices.bin</b>을 iPhone의 <b>파일</b> 앱에 저장하세요.</li><li>아래 버튼을 누르고 <b>두 파일을 한 번에 같이</b> 고르세요. (오른쪽 위 '선택'을 누르면 여러 개를 고를 수 있어요.) 목소리 파일은 없어도 돼요.</li></ol>
       <label class="btn primary lg" style="width:100%">데이터 파일 불러오기<input type="file" id="packin" accept=".bin,application/octet-stream" multiple hidden></label>
       <p class="small muted" id="packst"></p>${old?'<button class="btn" id="packlater" style="width:100%">나중에 · 지금 데이터로 계속</button>':''}
@@ -1941,14 +2054,38 @@ function iconSVG(id, size){
     document.body.appendChild(d);
     const st=t=>{document.getElementById('packst').textContent=t};
     const lt=document.getElementById('packlater');if(lt)lt.onclick=()=>{d.remove();old()};
+    document.getElementById('ghgo').onclick=async()=>{const t=document.getElementById('ghtok').value.trim();if(!t){st('토큰을 붙여 넣어 주세요');return}
+      try{await ghConnect(t,st);await ghDownload(st,{force:false})}catch(err){st('받지 못했어요: '+err.message)}};
     document.getElementById('packin').onchange=async e=>{const fl=e.target.files;if(!fl||!fl.length)return;st('불러오는 중… 파일이 커서 1~3분 걸려요');try{await importMany(fl,st,{needPack:true})}catch(err){st('불러오지 못했어요: '+err.message)}};
   }
+  function showRemote(old){
+    const d=document.createElement('div');d.className='importer';
+    d.innerHTML=`<div class="imp"><img src="icon-192.png" alt="" width="72" height="72" style="border-radius:18px;margin:0 auto 8px;display:block"><h1>TOEFL Practice</h1>
+      <p>${old?'<b>새 교재 데이터가 나왔어요.</b> GitHub 비공개 저장소에서 받고 있어요.':'GitHub 비공개 저장소에서 교재 데이터를 받고 있어요.'} 처음에는 600MB 정도라 와이파이에서 몇 분 걸려요. 중간에 끊겨도 다시 열면 이어서 받아요.</p>
+      <div class="impbar"><i id="ghpg" style="width:0"></i></div><p class="small muted" id="packst">연결하는 중…</p>
+      <button class="btn" id="ghretry" hidden style="width:100%">다시 시도</button>${old?'<button class="btn" id="packlater" style="width:100%">나중에 · 지금 데이터로 계속</button>':''}
+      <button class="btn quiet" id="ghfile" style="width:100%">파일로 불러오기</button></div>`;
+    document.body.appendChild(d);
+    const st=t=>{document.getElementById('packst').textContent=t;const m=/(\d+)%/.exec(t);if(m)document.getElementById('ghpg').style.width=m[1]+'%'};
+    const lt=document.getElementById('packlater');if(lt)lt.onclick=()=>{d.remove();old()};
+    document.getElementById('ghfile').onclick=()=>{d.remove();showImport(old)};
+    const go=async()=>{document.getElementById('ghretry').hidden=true;try{await ghDownload(st)}catch(err){st('받지 못했어요: '+err.message);document.getElementById('ghretry').hidden=false}};
+    document.getElementById('ghretry').onclick=go;go();
+  }
   document.addEventListener('DOMContentLoaded',async()=>{
+    if(ghTok())try{await Promise.race([ghPull(),new Promise(r=>setTimeout(r,5000))])}catch(e){}
     try{const db=await open();const meta=await tx(db,'meta','readonly',st=>st.get('pack'));
-      if(!meta){showImport();return}
+      const lock=!ghTok()?await siteLock():null;
+      if(!meta){ghTok()?showRemote():lock?showLogin(lock):showImport();return}
       const files=await getAll(db);
-      if(window.PACKSTAMP&&(meta.stamp!==window.PACKSTAMP||!meta.gkey)){showImport(()=>boot(meta,files));return}
+      if(window.PACKSTAMP&&(meta.stamp!==window.PACKSTAMP||!meta.gkey)){const go=()=>boot(meta,files);ghTok()?showRemote(go):lock?showLogin(lock,go):showImport(go);return}
       boot(meta,files);
+      const pulled=(()=>{try{const v=sessionStorage.getItem('gh:pulled');sessionStorage.removeItem('gh:pulled');return v}catch(e){return null}})();
+      if(pulled)setTimeout(()=>{try{toast('다른 기기에서 공부한 기록을 가져왔어요')}catch(e){}},800);
+      /* 목소리 파일만 새로 나왔으면 뒤에서 조용히 받아 두고, 다음에 열 때 써요 */
+      if(ghTok())setTimeout(async()=>{try{const man=await ghManifest(),vm=await tx(db,'meta','readonly',st=>st.get('voices'));
+        if(man.voices&&(!vm||vm.stamp!==man.voices.stamp)){try{toast('목소리 녹음을 뒤에서 받고 있어요',4000)}catch(e){}
+          await ghDownload(()=>{},{reload:false});try{toast('목소리 녹음을 다 받았어요. 앱을 다시 열면 들려요',5000)}catch(e){}}}catch(e){}},4000);
     }catch(e){showImport()}
   });
 })();
@@ -3121,6 +3258,12 @@ function renderSettings(){
   const e=envState();
   view.innerHTML=`<div class="cathead"><div><h1>설정</h1></div></div>
   <div class="panel form">
+    ${window.GHSYNC?`<div class="field ghf"><label>기기 연결 · 교재 데이터와 학습 기록</label>${GHSYNC.tok()?(()=>{const m=GHSYNC.meta(),t=x=>x?new Date(x).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'아직';return `<p class="ghok">✅ GitHub 비공개 저장소에 연결됐어요 · 마지막 동기화 ${t(m.pushAt||m.pullAt)}</p>
+        <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn primary" id="ghlink">다른 기기 연결 링크 복사</button><button class="btn" id="ghsync">지금 동기화</button><button class="btn" id="ghdl">새 데이터 확인</button><button class="btn quiet" id="ghoff">연결 해제</button></div>
+        <details class="ghpw" ${m.lockAt?'':'open'}><summary><b>${m.lockAt?'로그인 비밀번호 바꾸기':'다른 기기용 로그인 비밀번호 만들기'}</b></summary><div class="hint">다른 기기에서는 사이트를 열고 이 비밀번호만 넣으면 돼요. 다른 곳에서 안 쓰는 8자 이상으로 정해 주세요.</div>
+          <input type="password" id="ghpw1" placeholder="새 비밀번호 (8자 이상)" autocomplete="new-password" class="ghin"><input type="password" id="ghpw2" placeholder="한 번 더" autocomplete="new-password" class="ghin"><button class="btn primary" id="ghpwgo">비밀번호 저장</button></details>
+        <div class="hint">링크를 다른 기기(폰·태블릿)에서 열면 교재·목소리를 자동으로 받고, 공부 기록도 이어져요. 링크에 열쇠(토큰)가 들어 있으니 <b>본인 기기에만</b> 보내세요. 녹음이 든 스피킹 상세 결과는 그 기기에만 남아요.</div>`})()
+      :`<input type="password" id="ghtok2" placeholder="github_pat_… (토큰)" autocomplete="off" style="width:100%;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit"><button class="btn primary" id="ghcon" style="margin-top:8px">연결하기</button><div class="hint">연결하면 교재 데이터를 GitHub 비공개 저장소에서 받고, 공부 기록이 기기끼리 이어져요.</div>`}<div class="hint" id="ghst"></div></div>`:''}
     ${window.PACKIO?`<div class="field"><label>데이터 파일 ${window.HASVOICES?'· 영국 목소리·기본 교재 녹음 있음':'· 영국 목소리·기본 교재 녹음 아직 없음 (toefl-voices.bin)'}</label><label class="btn">받은 파일 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" multiple hidden></label>
       <div class="hint">Claude 채팅에서 받은 파일을 <b>한 번에 여러 개 같이</b> 골라도 돼요. <b>toefl-pack.bin</b>(교재 데이터)이 있으면 먼저 넣고, <b>toefl-voices.bin</b>(목소리·한국어 녹음)을 그 위에 얹어요. 목소리 파일만 골라도 돼요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>`:''}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
@@ -3154,6 +3297,14 @@ function renderSettings(){
   $('#aip').value=S.cfg.aiProvider||AI.provider();$('#model').value=/opus/.test(S.cfg.model)?'claude-opus-5-5':'claude-sonnet-5-5';
   $('#lang').value=S.cfg.fbLang;$('#eng').value=S.cfg.engine==='browser'?'browser':'whisper';
   $$('#gap button').forEach(b=>b.onclick=()=>{$$('#gap button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+  {const gst=t=>{const e=$('#ghst');if(e)e.textContent=t};
+   $('#ghlink')?.addEventListener('click',async()=>{const l=GHSYNC.link();try{if(navigator.share&&/Mobi|iPhone|iPad|Android/.test(navigator.userAgent)){await navigator.share({title:'TOEFL Practice 기기 연결',url:l});return}await navigator.clipboard.writeText(l);toast('링크를 복사했어요. 다른 기기에서 열어 주세요')}catch(e){gst(l)}});
+   $('#ghsync')?.addEventListener('click',async()=>{gst('동기화 중…');try{const c=await GHSYNC.pull();await GHSYNC.push();gst('동기화했어요');if(c)setTimeout(()=>location.reload(),600)}catch(e){gst('실패: '+e.message)}});
+   $('#ghdl')?.addEventListener('click',async()=>{gst('확인 중…');try{await GHSYNC.download(gst)}catch(e){gst('실패: '+e.message)}});
+   $('#ghoff')?.addEventListener('click',()=>{if(!confirm('이 기기의 GitHub 연결을 끊을까요? 이 기기 기록과 데이터는 그대로 남아요.'))return;GHSYNC.off();renderSettings()});
+   $('#ghpwgo')?.addEventListener('click',async()=>{const a=$('#ghpw1').value,c=$('#ghpw2').value;if(a!==c){gst('두 비밀번호가 달라요');return}gst('저장하는 중… (몇 초 걸려요)');
+     try{await GHSYNC.lockMake(a);const m=JSON.parse(localStorage.getItem('gh:meta')||'{}');m.lockAt=Date.now();localStorage.setItem('gh:meta',JSON.stringify(m));gst('저장했어요! 몇 분 뒤부터 다른 기기에서 이 비밀번호로 로그인할 수 있어요.');$('#ghpw1').value=$('#ghpw2').value=''}catch(e){gst('실패: '+e.message)}});
+   $('#ghcon')?.addEventListener('click',async()=>{const t=$('#ghtok2').value.trim();if(!t){gst('토큰을 붙여 넣어 주세요');return}try{await GHSYNC.connect(t,gst);gst('연결됐어요! 데이터를 확인하는 중…');await GHSYNC.download(gst)}catch(e){gst('실패: '+e.message)}});}
   $('#repack')?.addEventListener('change',async e=>{const fl=e.target.files;if(!fl||!fl.length)return;const st=t=>{$('#repackst').textContent=t};st('불러오는 중…');try{await PACKIO.importMany(fl,st)}catch(err){st('실패: '+err.message)}});
   const pwc=()=>{$('#pwc').textContent=norm($('#pers').value).length};pwc();$('#pers').oninput=pwc;
   $$('#theme button').forEach(b=>b.onclick=()=>{$$('#theme button').forEach(x=>x.setAttribute('aria-pressed',x===b));S.cfg.theme=b.dataset.v;saveCfg();applyTheme()});
