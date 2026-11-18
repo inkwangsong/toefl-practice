@@ -782,12 +782,17 @@ main{margin-inline:auto}
 .rlinkbar [data-inkundo]{min-width:92px}
 .inkbox.inkfinger{touch-action:none}
 #view{position:relative}.pinkcv{position:absolute;left:0;top:0;pointer-events:none;z-index:6}
-.pinkfab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:8px}
-@media(min-width:721px){.pinkfab{bottom:24px}}
-.pinkt{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);box-shadow:0 6px 18px rgba(0,0,0,.14);font-size:22px;cursor:pointer}
-.pinkt[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
-.pinkp .rlinkbar{margin:0;max-width:min(560px,calc(100vw - 32px));box-shadow:0 10px 30px rgba(0,0,0,.16);background:var(--surface)}
-body.testing .pinkfab{display:none}.inkbox.inkmouse.inkerase{cursor:none}
+.inkdock{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:8px}
+@media(min-width:721px){.inkdock{bottom:24px}}
+body.testing .inkdock{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.inkdk-t{min-width:56px;height:48px;padding:0 12px;border-radius:24px;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.14);font-size:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.inkdk-t i{width:14px;height:14px;border-radius:50%;display:inline-block}.inkdk-t i.hl{width:18px;height:9px;border-radius:3px}
+.inkdk-t[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.inkdk-p .rlinkbar{margin:0;max-width:min(600px,calc(100vw - 32px));box-shadow:0 10px 30px rgba(0,0,0,.16);background:var(--surface);color:var(--ink)}
+.rlinkbar .inkopt{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.rlinkbar .inkopt .inkh{flex:1 1 200px;text-align:left}
+/* 도구를 열면 쓸 수 있는 곳을 점선으로 보여 줘요 */
+body.inkshow .inkbox{outline:2px dashed color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:4px;border-radius:6px}
+body.inkshow.pinkon #view{outline:2px dashed color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:-6px;border-radius:14px}.inkbox.inkmouse.inkerase{cursor:none}
 .lnote{margin-top:14px;display:grid;gap:8px}.lnoteh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.lnote .rlinkbar{margin:0}
 .lnotepad{min-height:320px;border:1px solid var(--line);border-radius:12px;background-color:#fffef8;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#dbe4f0 31px 32px);background-position:0 16px;overflow:hidden}
 :root[data-theme="dark"] .lnotepad{background-color:#1b1f2a;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#2c3446 31px 32px)}
@@ -4945,7 +4950,7 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
       <div class="volwrap"><button class="tbtn" id="rlvol" aria-label="볼륨">🔊<span class="tvl"> Volume</span></button><div class="volpop" id="rlvolpop" hidden><span>🔈</span><input type="range" id="rlvolr" min="0" max="100" value="${Math.round(Math.min(1,S.vol??1)*100)}" aria-label="볼륨"><span>🔊</span></div></div>
       <button class="tbtn" id="rlx">Exit</button>${isL?'':'<button class="tbtn" id="rlb">Back</button>'}<button class="tbtn primary" id="rln">Next</button></div></div>
     <div class="tprog"><i id="rlpg" style="width:0"></i></div><div class="tmain"><div class="tinner rlexam ${isL?'lis':'rd'}" id="rlbody"></div></div>`;
-  const leave=()=>{clearInterval(st.tm);rlStopAudio();tst.hidden=true;tst.innerHTML='';document.body.classList.remove('testing')};
+  const leave=()=>{clearInterval(st.tm);rlStopAudio();tst.hidden=true;tst.innerHTML='';document.body.classList.remove('testing');inkDockSync()};
   $('#rlvol').onclick=()=>{const p=$('#rlvolpop');p.hidden=!p.hidden};
   $('#rlvolr').oninput=e=>{const v=e.target.value/100;setVol(v);if(rlAud)rlAud.volume=Math.min(1,v)};
   $('#rlx').onclick=async()=>{const v=await rlExitAsk(set,st,'시험을');if(v==='save')finish(true);else if(v==='drop'){leave();location.hash='#'+S_.pre+'-s-'+set.id;route()}};
@@ -5001,23 +5006,47 @@ const RLINKC={k:'#1f2937',r:'#e11d48',b:'#2563eb',h:'#facc15',hg:'#4ade80',hp:'#
 const RLINKHL=new Set(['h','hg','hp','hs']);
 function rlInkKey(sec,b){const s=sec+'|'+(b.head||'')+'|'+String(b.text||'').slice(0,200);let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return 'ink:'+sec+':'+(h>>>0).toString(36)}
 const rlCoarse=()=>matchMedia('(pointer:coarse)').matches;
-function rlInkBar(o={}){const t=store.get('rlinkt','k'),touch=rlCoarse();
+/* 필기 도구는 화면에 하나(오른쪽 아래 도크)만 있어요. 지문·스크립트·노트·문제 어디에 쓰든 같은 도구와 같은 되돌리기를 써요. */
+const INK={undo:[],areas:new Set(),lastTap:null};
+function inkPush(f){INK.undo.push(f);if(INK.undo.length>300)INK.undo.shift()}
+function inkTool(t){if(t!=='e')store.set('rlinkprev',t);store.set('rlinkt',t);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===t)));$$('.inkbox').forEach(x=>x.classList.toggle('inkerase',t==='e'));inkFace()}
+/* 펜슬로 빈 곳을 톡톡 두 번 치면 지우개 ↔ 직전 펜 (Apple Pencil 몸통 두 번 탭은 웹에서 받을 수 없어서 화면 두 번 탭으로 해요) */
+function inkTap(x,y){const el=document.elementFromPoint(x,y),inter=el&&el.closest&&el.closest('button,a,label,input,select,textarea,summary,.rlopt,.rlsq,[role=button]');
+  if(inter){INK.lastTap=null;return false}const now=Date.now(),L=INK.lastTap;
+  if(L&&now-L.t<420&&Math.hypot(L.x-x,L.y-y)<36){INK.lastTap=null;const cur=store.get('rlinkt','k');inkTool(cur==='e'?store.get('rlinkprev','k'):'e');toast(cur==='e'?'✏️ 펜으로 돌아왔어요':'🧽 지우개로 바꿨어요',1300);return true}
+  INK.lastTap={t:now,x,y};return false}
+function inkPress(x,y){if(inkTap(x,y))return;const el=document.elementFromPoint(x,y);if(el&&!el.classList.contains('inkcv')&&!el.classList.contains('pinkcv')){el.focus?.();el.click?.()}}
+function rlInkBar(){const t=store.get('rlinkt','k'),touch=rlCoarse();
   const pen=[['k','검정 펜'],['r','빨강 펜'],['b','파랑 펜']],hl=[['h','노랑 형광펜'],['hg','초록 형광펜'],['hp','분홍 형광펜'],['hs','하늘 형광펜']];
   const btn=([k,l])=>`<button type="button" class="inkc ${RLINKHL.has(k)?'hl':''}" data-ink="${k}" aria-pressed="${t===k}" aria-label="${l}" title="${l}"><i style="background:${RLINKC[k]}"></i></button>`;
   return `<div class="rlinkbar" role="toolbar" aria-label="필기 도구"><span class="inkg">${pen.map(btn).join('')}</span><span class="inkg">${hl.map(btn).join('')}</span>
-    <span class="inkg"><button type="button" class="inkt" data-ink="e" aria-pressed="${t==='e'}">지우개</button><button type="button" class="inkt" data-inkundo>↶ 되돌리기</button><button type="button" class="inkt" data-inkclr>모두 지우기</button></span>
-    ${o.pad?(touch?`<label class="small inkm"><input type="checkbox" data-inkfinger ${store.get('rlinkf',false)?'checked':''}> 손가락으로 쓰기</label>`:''):(touch?'':`<label class="small inkm"><input type="checkbox" data-inkmouse ${store.get('rlinkm',false)?'checked':''}> 마우스로 쓰기</label>`)}
-    ${o.pad?'':`<span class="small muted inkh">${touch?'✏️ 펜슬로 바로 쓰세요 · 손가락은 스크롤':'✏️ 펜(태블릿)이나 마우스로 쓸 수 있어요'}</span>`}</div>`}
+    <span class="inkg"><button type="button" class="inkt" data-ink="e" aria-pressed="${t==='e'}">🧽 지우개</button><button type="button" class="inkt" data-inkundo>↶ 되돌리기</button><button type="button" class="inkt" data-inkclr>이 화면 모두 지우기</button></span>
+    <div class="inkopt">${touch?`<label class="small inkm"><input type="checkbox" data-inkfinger ${store.get('rlinkf',false)?'checked':''}> 노트에 손가락으로 쓰기</label>`:`<label class="small inkm"><input type="checkbox" data-inkmouse ${store.get('rlinkm',false)?'checked':''}> 마우스로 쓰기</label>`}
+    <span class="small muted inkh">${touch?'점선 안 어디든 펜슬로 쓰세요 · 펜슬로 빈 곳 톡톡 두 번 = 지우개 ↔ 펜 · 손가락은 스크롤':'점선 안에 펜(태블릿)이나 마우스로 쓸 수 있어요'}</span></div></div>`}
+function inkFace(){const f=$('.inkdock .inkdk-t');if(!f)return;const t=store.get('rlinkt','k');f.innerHTML=t==='e'?'🧽':`<i style="background:${RLINKC[t]||RLINKC.k}" class="${RLINKHL.has(t)?'hl':''}"></i>✏️`}
+function inkDock(){if($('.inkdock'))return;document.body.insertAdjacentHTML('beforeend',`<div class="inkdock"><button type="button" class="inkdk-t" aria-expanded="false" aria-label="필기 도구 열기" title="필기 도구"></button><div class="inkdk-p" hidden>${rlInkBar()}</div></div>`);
+  const d=$('.inkdock'),bar=$('.rlinkbar',d),tg=$('.inkdk-t',d),pn=$('.inkdk-p',d);
+  const open=o=>{const fl=$('[data-inkfinger]',bar)?.closest('label');if(fl)fl.hidden=!document.querySelector('.lnotepad');pn.hidden=!o;tg.setAttribute('aria-expanded',String(o));document.body.classList.toggle('inkshow',o);store.set('rlinkopen',o)};
+  tg.onclick=()=>open(pn.hidden);open(store.get('rlinkopen',false));inkFace();
+  $$('[data-ink]',bar).forEach(b=>b.onclick=()=>inkTool(b.dataset.ink));
+  $('[data-inkundo]',bar).onclick=()=>{const f=INK.undo.pop();if(f)f();else toast('되돌릴 필기가 없어요',1200)};
+  $('[data-inkclr]',bar).onclick=()=>{const live=[...INK.areas].filter(a=>a.alive());const snaps=live.map(a=>[a,a.get()]);if(!snaps.some(([,s])=>s.length))return;
+    live.forEach(a=>a.set([]));inkPush(()=>snaps.forEach(([a,s])=>a.set(s)));toast('이 화면의 필기를 지웠어요 · ↶ 되돌리기로 살릴 수 있어요')};
+  $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);$$('.inkbox:not(.lnotepad)').forEach(x=>x.classList.toggle('inkmouse',e.target.checked))});
+  $('[data-inkfinger]',bar)?.addEventListener('change',e=>{store.set('rlinkf',e.target.checked);$$('.lnotepad').forEach(x=>x.classList.toggle('inkfinger',e.target.checked))})}
+function inkDockSync(){setTimeout(()=>{for(const a of [...INK.areas])if(!a.alive())INK.areas.delete(a);if(!document.querySelector('.inkbox')&&!PINK.key){$('.inkdock')?.remove();document.body.classList.remove('inkshow')}},250)}
+addEventListener('hashchange',()=>{INK.undo=[];inkDockSync()});
 /* 리스닝 노트: 시험지 옆 메모지처럼 줄 노트. 아래로 쓰면 저절로 길어져요. */
-function rlNoteHTML(){const touch=rlCoarse();return `<div class="lnote"><div class="lnoteh"><b>📝 노트</b><span class="small muted">${touch?'펜슬로 바로 쓰세요. 펜슬이 없으면 손가락으로 쓰기를 켜세요.':'마우스·펜으로 쓰거나 아래 칸에 타자로 적어도 돼요.'}</span></div>${rlInkBar({pad:1})}<div class="lnotepad"></div>${touch?'':'<textarea class="lnotetx" rows="3" placeholder="⌨️ 타자로 메모"></textarea>'}</div>`}
+function rlNoteHTML(){const touch=rlCoarse();return `<div class="lnote"><div class="lnoteh"><b>📝 노트</b><span class="small muted">${touch?'펜슬로 바로 쓰세요. 펜슬이 없으면 ✏️ 도구에서 손가락으로 쓰기를 켜세요.':'마우스·펜으로 쓰거나 아래 칸에 타자로 적어도 돼요.'}</span></div><div class="lnotepad"></div>${touch?'':'<textarea class="lnotetx" rows="3" placeholder="⌨️ 타자로 메모"></textarea>'}</div>`}
 function rlNoteAttach(host,key,fresh){host.insertAdjacentHTML('beforeend',rlNoteHTML());const n=host.lastElementChild;
   if(fresh){try{localStorage.removeItem(key);localStorage.removeItem(key+':t')}catch(e){}}
   const ta=$('.lnotetx',n);if(ta){ta.value=store.get(key+':t','');ta.oninput=()=>store.set(key+':t',ta.value)}
-  rlInk($('.rlinkbar',n),$('.lnotepad',n),key,{pad:true})}
+  rlInk(null,$('.lnotepad',n),key,{pad:true})}
 function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   /* 두 장: 아래(cv)는 저장된 획, 위(lv)는 지금 긋는 획과 지우개 동그라미 — 긋는 동안 전체를 다시 그리지 않아서 빨라요 */
   const cv=document.createElement('canvas'),lv=document.createElement('canvas');cv.className='inkcv';lv.className='inkcv';box.append(cv,lv);const ctx=cv.getContext('2d'),lx=lv.getContext('2d');
-  let strokes=store.get(key,[]),cur=null,erasing=false,eraser=null;const W=()=>box.clientWidth||1,ER=13;
+  let strokes=store.get(key,[]),cur=null,erasing=false,eraser=null,esnap=null;const W=()=>box.clientWidth||1,ER=13;
+  INK.areas.add({alive:()=>document.body.contains(box),get:()=>strokes.slice(),set:v=>{strokes=v;save();redraw()}});inkDock();
   const save=()=>{strokes.length?store.set(key,strokes):localStorage.removeItem(key)};
   const path=(c,s,w)=>{const p=s.p;c.beginPath();c.moveTo(p[0]*w,p[1]*w);if(p.length===2){c.lineTo(p[0]*w+.1,p[1]*w)}for(let i=2;i<p.length-2;i+=2){const mx=(p[i]+p[i+2])/2*w,my=(p[i+1]+p[i+3])/2*w;c.quadraticCurveTo(p[i]*w,p[i+1]*w,mx,my)}if(p.length>2)c.lineTo(p[p.length-2]*w,p[p.length-1]*w);c.stroke()};
   const dark=()=>{const t=document.documentElement.dataset.theme;return t==='dark'||((!t||t==='auto'||t==='system')&&matchMedia('(prefers-color-scheme: dark)').matches)};
@@ -5035,13 +5064,14 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   const hit=(s,px,py,R)=>{for(let i=0;i<s.p.length;i+=2)if(Math.hypot(s.p[i]-px,s.p[i+1]-py)<R+s.w/2)return true;
     for(let i=2;i<s.p.length;i+=2){const ax=s.p[i-2],ay=s.p[i-1],bx=s.p[i],by=s.p[i+1],dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1e-9,t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/l));if(Math.hypot(ax+t*dx-px,ay+t*dy-py)<R+s.w/2)return true}return false};
   const eraseAt=(x,y)=>{const w=W(),[px,py]=pt(x,y);eraser=[px,py];const n=strokes.length;strokes=strokes.filter(s=>!hit(s,px,py,ER/w));if(strokes.length!==n)redraw();else live()};
-  const begin=(x,y)=>{t0=Date.now();x0=x;y0=y;far=false;const t=tool();if(t==='e'){erasing=true;eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y),hl=RLINKHL.has(t);cur={t:hl?'h':'p',c:t,w:(hl?16:opt.pad?2.4:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};live()};
+  const begin=(x,y)=>{t0=Date.now();x0=x;y0=y;far=false;const t=tool();if(t==='e'){erasing=true;esnap=strokes.slice();eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y),hl=RLINKHL.has(t);cur={t:hl?'h':'p',c:t,w:(hl?16:opt.pad?2.4:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};live()};
   const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(erasing){eraseAt(x,y);return}if(!cur)return;const [px,py]=pt(x,y),p=cur.p,w=W();if(Math.hypot((px-p[p.length-2])*w,(py-p[p.length-1])*w)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));
     if(opt.pad&&py*w>box.clientHeight-120)redraw();else live()};
   let t0=0,x0=0,y0=0,far=false;
-  const end=(x,y)=>{if(erasing){erasing=false;eraser=null;live();save();if(!far&&Date.now()-t0<300&&x!=null){const el=document.elementFromPoint(x0,y0);if(el&&!el.classList.contains('inkcv')){el.focus?.();el.click?.()}}return}if(!cur)return;
-    if(!far&&Date.now()-t0<300&&x!=null){const c=cur;cur=null;live();const el=document.elementFromPoint(x0,y0);if(el&&!el.classList.contains('inkcv')){el.focus?.();el.click?.()}return}
-    strokes.push(cur);cur=null;save();redraw()};
+  const end=(x,y)=>{const tap=!far&&Date.now()-t0<300&&x!=null;
+    if(erasing){erasing=false;eraser=null;const snap=esnap;esnap=null;if(tap){strokes=snap;redraw();inkPress(x0,y0);return}live();if(snap.length!==strokes.length){save();inkPush(()=>{strokes=snap;save();redraw()})}return}
+    if(!cur)return;if(tap){cur=null;live();inkPress(x0,y0);return}
+    const before=strokes.slice();strokes.push(cur);cur=null;save();redraw();inkPush(()=>{strokes=before;save();redraw()})};
   /* 펜슬을 띄운 채로 대거나(호버) 마우스를 올리면 지우개 동그라미를 미리 보여 줘요 */
   const hover=e=>{if(erasing||cur)return;if(tool()!=='e'||!(e.pointerType==='pen'||(e.pointerType==='mouse'&&mouseOK()))){if(eraser){eraser=null;live()}return}eraser=pt(e.clientX,e.clientY);live()};
   box.addEventListener('pointerleave',()=>{if(!erasing&&eraser){eraser=null;live()}});
@@ -5056,12 +5086,6 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   box.addEventListener('pointermove',e=>{if(e.pointerId!==pid){hover(e);return}e.preventDefault();(e.getCoalescedEvents?e.getCoalescedEvents():[e]).forEach(c=>move(c.clientX,c.clientY))});
   const pend=e=>{if(e.pointerId!==pid)return;pid=null;end(e.pointerType==='pen'?e.clientX:null,e.clientY)};box.addEventListener('pointerup',pend);box.addEventListener('pointercancel',pend);
   box.classList.toggle('inkmouse',mouseOK());box.classList.toggle('inkfinger',finger());
-  if(bar){$$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===b.dataset.ink)));$$('.inkbox').forEach(x=>x.classList.toggle('inkerase',b.dataset.ink==='e'))});
-    let undoClear=null;
-    $('[data-inkundo]',bar).onclick=()=>{if(undoClear){strokes=undoClear;undoClear=null}else strokes.pop();save();redraw()};
-    $('[data-inkclr]',bar).onclick=()=>{if(!strokes.length)return;undoClear=strokes;strokes=[];save();redraw();toast('필기를 지웠어요 · ↶ 되돌리기로 살릴 수 있어요')};
-    $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);$$('.inkbox:not(.lnotepad)').forEach(x=>x.classList.toggle('inkmouse',e.target.checked))});
-    $('[data-inkfinger]',bar)?.addEventListener('change',e=>{store.set('rlinkf',e.target.checked);box.classList.toggle('inkfinger',e.target.checked)})}
   box.classList.toggle('inkerase',tool()==='e');
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(!document.body.contains(box)){ro.disconnect();return}redraw()});ro.observe(box)}redraw()}
 /* ---- 화면 필기 (문제·해설·결과 화면): 펜슬로 문제 어디에나 써요.
@@ -5075,17 +5099,12 @@ const pinkHash=el=>{const s=(el.textContent||'').replace(/\s+/g,' ').trim().slic
 function pinkAnchor(t){const v=pinkView();let a=t&&t.closest?t.closest(PINKA):null;if(!a||!v.contains(a))a=v;return a}
 function inkPage(key){const v=pinkView();if(!v)return;PINK.key=key||null;PINK.hash=location.hash;PINK.cur=null;PINK.er=null;PINK.undo=[];
   let cv=$('#pinkcv'),lv=$('#pinklv');
-  if(!key){cv?.remove();lv?.remove();$('.pinkfab')?.remove();return}
+  document.body.classList.toggle('pinkon',!!key);if(!key){cv?.remove();lv?.remove();inkDockSync();return}
   PINK.strokes=store.get(key,[]);
   if(!cv||!v.contains(cv)){cv?.remove();lv?.remove();cv=document.createElement('canvas');cv.id='pinkcv';lv=document.createElement('canvas');lv.id='pinklv';cv.className=lv.className='pinkcv';v.append(cv,lv)}
-  if(!$('.pinkfab')){document.body.insertAdjacentHTML('beforeend',`<div class="pinkfab"><button type="button" class="pinkt" aria-expanded="false" title="필기 도구">✏️</button><div class="pinkp" hidden>${rlInkBar()}</div></div>`);pinkBarWire()}
+  inkDock();if(!PINK.area){PINK.area={alive:()=>!!PINK.key,get:()=>PINK.strokes.slice(),set:v=>{PINK.strokes=v;pinkSave();pinkRedraw()}};INK.areas.add(PINK.area)}
   if(!PINK.wired){PINK.wired=true;pinkWire()}
   pinkRedraw()}
-function pinkBarWire(){const f=$('.pinkfab'),bar=$('.rlinkbar',f);$('.pinkt',f).onclick=()=>{const p=$('.pinkp',f);p.hidden=!p.hidden;$('.pinkt',f).setAttribute('aria-expanded',String(!p.hidden))};
-  $$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===b.dataset.ink)))});
-  $('[data-inkundo]',bar).onclick=()=>{const u=PINK.undo.pop();if(u)PINK.strokes=u;else PINK.strokes.pop();pinkSave();pinkRedraw()};
-  $('[data-inkclr]',bar).onclick=()=>{if(!PINK.strokes.length)return;PINK.undo.push(PINK.strokes);PINK.strokes=[];pinkSave();pinkRedraw();toast('이 화면의 필기를 지웠어요 · ↶ 되돌리기로 살릴 수 있어요')};
-  $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);$$('.inkbox:not(.lnotepad)').forEach(x=>x.classList.toggle('inkmouse',e.target.checked))})}
 const pinkSave=()=>{if(!PINK.key)return;PINK.strokes.length?store.set(PINK.key,PINK.strokes):localStorage.removeItem(PINK.key)};
 function pinkGeo(s){const el=pinkAt(s.a);if(!el||el.offsetParent===null&&el!==pinkView())return null;if(s.h&&pinkHash(el)!==s.h)return null;const r=el.getBoundingClientRect(),vr=pinkView().getBoundingClientRect();if(!r.width)return null;return {x:r.left-vr.left,y:r.top-vr.top,w:r.width}}
 function pinkPts(s,g){const o=[];for(let i=0;i<s.p.length;i+=2)o.push(g.x+s.p[i]*g.w,g.y+s.p[i+1]*g.w);return o}
@@ -5102,18 +5121,20 @@ function pinkLive(){const lv=$('#pinklv');if(!lv)return;const d=devicePixelRatio
   if(PINK.er){c.save();c.beginPath();c.arc(PINK.er[0],PINK.er[1],13,0,Math.PI*2);c.fillStyle=PINK.erasing?'rgba(225,29,72,.14)':'rgba(100,116,139,.10)';c.fill();c.lineWidth=1.5;c.setLineDash([4,3]);c.strokeStyle=PINK.erasing?'#e11d48':'#64748b';c.stroke();c.restore()}}
 function pinkWire(){const v=pinkView();let tid=null,pid=null,t0=0,x0=0,y0=0,far=false;
   const vxy=(x,y)=>{const r=v.getBoundingClientRect();return [x-r.left,y-r.top]};
-  const skip=t=>!PINK.key||!t||!t.closest||t.closest('.inkbox,input,textarea,select,[contenteditable="true"],.pinkfab,.rlinkbar,.rltts,button,a[href],summary');
+  const skip=t=>!PINK.key||!t||!t.closest||t.closest('.inkbox,input,textarea,select,[contenteditable="true"],.inkdock,.rltts,button,a[href],summary');
   const eraseAt=(x,y)=>{const [vx,vy]=vxy(x,y);PINK.er=[vx,vy];const n=PINK.strokes.length;PINK.strokes=PINK.strokes.filter(s=>{const g=pinkGeo(s);if(!g)return true;const p=pinkPts(s,g),R=13+s.w*g.w/2;for(let i=0;i<p.length;i+=2)if(Math.hypot(p[i]-vx,p[i+1]-vy)<R)return false;for(let i=2;i<p.length;i+=2){const ax=p[i-2],ay=p[i-1],dx=p[i]-ax,dy=p[i+1]-ay,l=dx*dx+dy*dy||1e-9,t=Math.max(0,Math.min(1,((vx-ax)*dx+(vy-ay)*dy)/l));if(Math.hypot(ax+t*dx-vx,ay+t*dy-vy)<R)return false}return true});if(PINK.strokes.length!==n)pinkRedraw();else pinkLive()};
-  const begin=(x,y,target)=>{t0=Date.now();x0=x;y0=y;far=false;const tool=store.get('rlinkt','k');if(tool==='e'){PINK.erasing=true;PINK.undo.push(PINK.strokes.slice());eraseAt(x,y);return}
+  let esnap=null;
+  const begin=(x,y,target)=>{t0=Date.now();x0=x;y0=y;far=false;const tool=store.get('rlinkt','k');if(tool==='e'){PINK.erasing=true;esnap=PINK.strokes.slice();eraseAt(x,y);return}
     const a=pinkAnchor(document.elementFromPoint(x,y)||target),r=a.getBoundingClientRect(),hl=RLINKHL.has(tool);
     PINK.cur={a:pinkPath(a)||'',h:a===v?'':pinkHash(a),t:hl?'h':'p',c:tool,w:(hl?16:2.2)/r.width,p:[+((x-r.left)/r.width).toFixed(4),+((y-r.top)/r.width).toFixed(4)],_r:r}};
   const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(PINK.erasing){eraseAt(x,y);return}const c=PINK.cur;if(!c)return;const a=pinkAt(c.a),r=a.getBoundingClientRect(),px=(x-r.left)/r.width,py=(y-r.top)/r.width,p=c.p;
     if(Math.hypot((px-p[p.length-2])*r.width,(py-p[p.length-1])*r.width)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));pinkLive()};
-  const tap=()=>!far&&Date.now()-t0<300,press=()=>{const el=document.elementFromPoint(x0,y0);if(el){el.focus?.();el.click?.()}};
-  const end=(x,y)=>{if(PINK.erasing){PINK.erasing=false;PINK.er=null;pinkLive();if(tap()){PINK.undo.pop();press()}else pinkSave();return}const c=PINK.cur;PINK.cur=null;if(!c)return;
+  const tap=()=>!far&&Date.now()-t0<300;
+  const end=(x,y)=>{if(PINK.erasing){PINK.erasing=false;PINK.er=null;const snap=esnap;esnap=null;if(tap()){PINK.strokes=snap;pinkRedraw();inkPress(x0,y0);return}pinkLive();if(snap.length!==PINK.strokes.length){pinkSave();inkPush(()=>{PINK.strokes=snap;pinkSave();pinkRedraw()})}return}
+    const c=PINK.cur;PINK.cur=null;if(!c)return;
     /* 펜슬로 톡 치기만 했으면 필기가 아니라 누르기예요: 선택지·버튼이 그대로 눌려요 */
-    if(!far&&Date.now()-t0<300){pinkLive();const el=document.elementFromPoint(x0,y0);if(el){el.focus?.();el.click?.()}return}
-    delete c._r;PINK.strokes.push(c);PINK.undo=[];pinkSave();pinkRedraw()};
+    if(tap()){pinkLive();inkPress(x0,y0);return}
+    delete c._r;const before=PINK.strokes.slice();PINK.strokes.push(c);pinkSave();pinkRedraw();inkPush(()=>{PINK.strokes=before;pinkSave();pinkRedraw()})};
   let lx=0,ly=0;
   v.addEventListener('touchstart',e=>{const t=[...e.changedTouches].find(t=>t.touchType==='stylus');if(!t||skip(e.target))return;e.preventDefault();tid=t.identifier;lx=t.clientX;ly=t.clientY;begin(t.clientX,t.clientY,e.target)},{passive:false});
   v.addEventListener('touchmove',e=>{if(tid==null)return;const t=[...e.changedTouches].find(t=>t.identifier===tid);if(!t)return;e.preventDefault();lx=t.clientX;ly=t.clientY;move(t.clientX,t.clientY)},{passive:false});
@@ -5137,10 +5158,10 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
     $('#cwchk',host)?.addEventListener('click',()=>{{const okn=b.qs.filter(q=>rlCorrect(q,st.ans[q.n])).length;if(okn===b.qs.length){SFX.combo();toast('🎯 전부 정답!')}else okn>=b.qs.length*.7?SFX.ok():SFX.bad()}$$('.rlcw input',host).forEach(i=>{const q=b.qs.find(x=>x.n==i.dataset.n);i.classList.toggle('ok',rlCorrect(q,st.ans[q.n]));i.classList.toggle('bad',!rlCorrect(q,st.ans[q.n]));if(!rlCorrect(q,st.ans[q.n]))i.title='정답: '+q.a});
       $('#cwfb',host).innerHTML=`<div class="rlexp"><p><b>정답</b> ${b.qs.map(q=>`<span class="mtag sm">${q.n} ${esc(q.a)}</span>`).join(' ')}</p><p>${esc(b.why||'')}</p><details open><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}</div>`;rlVocWire(host,sec)});
     return}
-  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary>${rlInkBar()}<div class="rlsctx">${rlScript(b)}</div></details>`:''}</div>`
-    :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar()+rlInkBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
+  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary><div class="rlsctx">${rlScript(b)}</div></details>`:''}</div>`
+    :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
   const allBtn=prac&&b.qs.length>1?`<div class="rlallchk"><button class="btn primary" data-all>✓ 이 지문 전체 채점 <span class="small">(${b.qs.length}문항)</span></button><div class="rlsum" hidden></div></div>`:'';
-  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(prac)inkPage('pink:'+rlInkKey(sec,b).slice(4));if(!isL&&prac)rlInk($('.rlinkbar',host),$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk($('.rlinkbar',sc),$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
+  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(prac)inkPage('pink:'+rlInkKey(sec,b).slice(4));if(!isL&&prac)rlInk(null,$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk(null,$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
   if(isL){const once=mode==='exam',heard=st.done[b.audio];
     const qs=$('.rlqs',host);if(once&&!heard){qs.classList.add('wait');qs.insertAdjacentHTML('afterbegin','<p class="small muted rlwaitmsg">음성이 끝나면 문제가 열려요.</p>')}
     if(once&&heard){$('#rlpl',host).innerHTML='<p class="small muted">✓ 이미 들었어요 (실전 모드는 한 번만 재생)</p>'}
