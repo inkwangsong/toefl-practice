@@ -4732,7 +4732,7 @@ function rlSpeakP(u){return new Promise(res=>{let done=false,started=false,poll=
       poll=setInterval(()=>{const sp=speechSynthesis.speaking||speechSynthesis.pending;if(sp)started=true;else if(started)fin()},300);
       setTimeout(()=>{if(done||started||speechSynthesis.speaking||speechSynthesis.pending)return;try{speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}setTimeout(()=>{if(!started&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin()},1600)},1100);to=setTimeout(fin,lim)},80)}catch(e){fin()}})}
 function rlSpeakU(t,rate){const p=RLPV[rlPV()],acc=p.acc,u=new SpeechSynthesisUtterance(t);u.lang=RLACC[acc].lang;const v=rlVoice(acc,p.g);if(v){u.voice=v;u.lang=v.lang}u.rate=rate;return u}
-function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
+function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="button" class="btn sm" data-t="pp">🔊 ${lbl}</button><button type="button" class="btn sm quiet" data-t="st" hidden aria-label="처음으로 정지">■ 정지</button><span class="rlrate" role="group" aria-label="읽기 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span>
   <label class="rlpvsel"><span class="small muted">목소리</span><select data-pvs aria-label="읽어 주는 목소리">${Object.entries(RLPV).map(([k,v])=>`<option value="${k}" ${k===rlPV()?'selected':''}>${v.f} ${v.k}</option>`).join('')}</select></label>
   <p class="rlvhint small muted" hidden></p></div>`}
 /* the hint only appears when something is missing, so the bar stays small */
@@ -4742,7 +4742,7 @@ function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar),sel=$('[data-pvs]',bar);
     h.innerHTML=m;h.hidden=!m;return}
   const dv=rlVoicesG(p.acc,p.g)[0];
   h.innerHTML=dv?'📱 호주는 녹음이 없어서 지문을 이 기기의 호주 영어 음성('+esc(dv.name)+')으로 읽어요. 단어는 녹음된 목소리 그대로예요.':'⚠️ 이 기기에 호주 영어 음성이 없어 기본 목소리로 읽어요. iPhone은 <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 호주 음성('+(p.g==='f'?'Karen · Matilda':'Lee · Gordon')+')을 내려받은 뒤 앱을 다시 여세요.'}
-function rlTtsStop(){try{RLTTS.on=false;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}$$('.rltts [data-t=pp]').forEach(b=>b.textContent=b.textContent.replace(/^■ 멈추기/,'🔊 '+(b.dataset.l||'지문 듣기')));$$('.speaking').forEach(p=>p.classList.remove('speaking'))}
+function rlTtsStop(){try{RLTTS.on=false;RLTTS.paused=false;speechSynthesis.cancel();if(RLAIA){RLAIA.pause();RLAIA=null}}catch(e){}$$('.rltts [data-t=pp]').forEach(b=>{if(b.dataset.l)b.textContent='🔊 '+b.dataset.l});$$('.rltts [data-t=st]').forEach(b=>b.hidden=true);$$('.speaking').forEach(p=>p.classList.remove('speaking'))}
 
 /* ---- AI voice (Gemini TTS, uses the user's own Gemini key) ---- */
 const RLAIV={F:[['Kore','여성 · 또렷함'],['Aoede','여성 · 부드러움'],['Leda','여성 · 밝음']],M:[['Puck','남성 · 경쾌함'],['Charon','남성 · 차분함'],['Orus','남성 · 단단함']]};
@@ -4807,15 +4807,21 @@ function rlClipUrl(t,v){if(!window.PACKBLOB||!window.TTSIX)return null;
   if(!b)return null;return (window.TTSURL=window.TTSURL||{})[key]||(TTSURL[key]=URL.createObjectURL(b))}
 function rlTtsWire(host,getParas){const bar=$('.rltts',host);if(!bar)return;
   const pb=$('[data-t=pp]',bar);pb.dataset.l=pb.textContent.replace(/^🔊 /,'');rlPvUI(bar);
-  const play=()=>{rlTtsStop();rlStopAudio();RLTTS.fbw=0;const ps=getParas();let i=0;RLTTS.on=true;pb.textContent='■ 멈추기';
-    const next=()=>{ps.forEach(p=>p.classList.remove('speaking'));if(!RLTTS.on||i>=ps.length){rlTtsStop();return}
-      const p=ps[i++],t=rlParaTx(p);if(!t){next();return}p.classList.add('speaking');
-      if(p.scrollIntoView&&p.getBoundingClientRect){const r=p.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight)p.scrollIntoView({block:'center',behavior:'smooth'})}
-      const dev=()=>{rlSpeakP(rlSpeakU(t,rlRate())).then(()=>{if(RLTTS.on)next()})};
-      const v=rlPV(),cu=RLPV[v].rec?rlClipUrl(t,v):null;if(!cu){dev();return}
-      if(window.RLFB&&!RLTTS.fbw){RLTTS.fbw=1;toast('이 지문은 아직 '+RLPV[v].k+' 녹음이 없어서 미국 여자 녹음으로 읽어요')}
-      const a=rlAiEl(cu);RLAIA=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())};next()};
-  pb.onclick=()=>RLTTS.on?rlTtsStop():play();
+  /* 듣기 · 일시정지 · 이어 듣기 · 정지. 녹음은 멈춘 자리에서, 기기 음성은 그 문단 처음부터 이어서 읽어요. */
+  const sb=$('[data-t=st]',bar),lbl=()=>{pb.textContent=!RLTTS.on?'🔊 '+pb.dataset.l:RLTTS.paused?'▶ 이어 듣기':'❚❚ 일시정지';if(sb)sb.hidden=!RLTTS.on};
+  let ps=[],i=0,cur=0,clip=null;
+  const next=()=>{ps.forEach(p=>p.classList.remove('speaking'));if(!RLTTS.on||RLTTS.paused)return;if(i>=ps.length){rlTtsStop();return}
+    cur=i;const p=ps[i++],t=rlParaTx(p);if(!t){next();return}p.classList.add('speaking');clip=null;
+    if(p.scrollIntoView&&p.getBoundingClientRect){const r=p.getBoundingClientRect();if(r.top<60||r.bottom>innerHeight)p.scrollIntoView({block:'center',behavior:'smooth'})}
+    const dev=()=>{rlSpeakP(rlSpeakU(t,rlRate())).then(()=>{if(RLTTS.on&&!RLTTS.paused)next()})};
+    const v=rlPV(),cu=RLPV[v].rec?rlClipUrl(t,v):null;if(!cu){dev();return}
+    if(window.RLFB&&!RLTTS.fbw){RLTTS.fbw=1;toast('이 지문은 아직 '+RLPV[v].k+' 녹음이 없어서 미국 여자 녹음으로 읽어요')}
+    const a=rlAiEl(cu);RLAIA=a;clip=a;a.playbackRate=rlRate();a.onended=next;a.onerror=()=>{if(RLTTS.on)next()};a.play().catch(()=>dev())};
+  const play=()=>{rlTtsStop();rlStopAudio();RLTTS.fbw=0;ps=[...getParas()];i=0;RLTTS.on=true;RLTTS.paused=false;lbl();next()};
+  const pause=()=>{RLTTS.paused=true;try{if(clip&&RLAIA===clip)clip.pause();else speechSynthesis.cancel()}catch(e){}lbl()};
+  const resume=()=>{RLTTS.paused=false;lbl();if(clip&&RLAIA===clip&&clip.currentTime>0&&!clip.ended){ps[cur]?.classList.add('speaking');clip.play().catch(()=>{i=cur;next()})}else{i=cur;next()}};
+  pb.onclick=()=>!RLTTS.on?play():RLTTS.paused?resume():pause();
+  if(sb)sb.onclick=()=>{rlTtsStop();lbl()};
   $$('[data-pvs]',bar).forEach(b=>b.onchange=()=>{const k=b.value;store.set('rlpv',k);store.set('rlacc',RLPV[k].acc);rlPvUI(bar);if(RLTTS.on)toast('다음 문단부터 '+RLPV[k].k+' 목소리로 읽어요')});
   $$('.rlrate:not(.rlpv) button',bar).forEach(b=>b.onclick=()=>{store.set('rlrate',+b.dataset.r);if(RLAIA)RLAIA.playbackRate=+b.dataset.r;$$('.rlrate:not(.rlpv) button',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(RLTTS.on)toast('다음 문단부터 '+b.dataset.r+'× 속도로 읽어요')})}
 
