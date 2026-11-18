@@ -4136,7 +4136,7 @@ function wT1(q,a,pos){
 function wEditor(a,ph){
   return `<div class="wedit"><div class="wtools"><button class="wtb" data-c="cut">Cut</button><button class="wtb" data-c="paste">Paste</button><button class="wtb" data-c="undo">Undo</button><button class="wtb" data-c="redo">Redo</button>
     <span class="wwc"><button class="wlink" id="whidewc">${WR.hideWc?'Show Word Count':'Hide Word Count'}</button> <b class="mono" id="wwc">${WR.hideWc?'':wwc(a.text)}</b></span></div>
-    <textarea id="wta" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" placeholder="${esc(ph)}" aria-label="답안"></textarea></div>`;
+    <textarea id="wta" spellcheck="false" autocorrect="off" autocapitalize="none" autocomplete="off" placeholder="${esc(ph)}" aria-label="답안"></textarea></div>`;
 }
 function wEditorWire(a){
   const ta=$('#wta');ta.value=a.text;a.undo=a.undo||[a.text];a.redo=a.redo||[];a.clip=a.clip||'';
@@ -4504,7 +4504,7 @@ function renderWTplQ(task,key){
         <details class="wmd"><summary><b>템플릿 뼈대 보기</b></summary>${task===2?`<ol class="tsteps wtsteps">${W2EXP.map(([k,v])=>`<li><span class="tsn">${esc(k)}</span><span class="tsv">${esc(v)}</span></li>`).join('')}</ol>`:`<ol class="tsteps wtsteps">${W3STEP.map(([k,v])=>`<li><span class="tsn">${esc(k)}</span><span class="tsv">${esc(v)}</span></li>`).join('')}</ol>${b?`<p class="small" style="margin:8px 0 0">이 문제에 잘 맞는 장점: <b>${esc(b.ko)}</b> (${esc(b.reason)}) — 아이디어: ${b.ideas.slice(0,4).map(esc).join(' / ')}</p>`:''}`}</details>
         <details class="wmd"><summary><b>템플릿 모범 답안 보기</b></summary>${wModelHtml(task,it)}</details></div>
       <div class="panel ph wtpe"><div class="row"><b>${task===2?'7분':'10분'} 작성</b><span class="mono wtimer" id="tqt">${wmmss(st.left).slice(3)}</span><button class="btn sm" id="tqgo">▶ 시작</button><button class="btn sm quiet" id="tqre">↺ 처음부터</button><span class="small muted" id="tqwc" style="margin-left:auto">0단어</span></div>
-        <textarea id="tqta" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="${task===2?'Dear …,':'In the ongoing debate surrounding …'}"></textarea>
+        <textarea id="tqta" spellcheck="false" autocorrect="off" autocapitalize="none" placeholder="${task===2?'Dear …,':'In the ongoing debate surrounding …'}"></textarea>
         <div class="row"><button class="btn primary" id="tqai">AI 채점·첨삭 받기</button><button class="btn sm quiet" id="tqcp">Claude 채팅용 복사</button></div>
         <div id="tqck"></div><div id="tqfb"></div></div></div>`;
   const ta=$('#tqta');ta.value=st.text;
@@ -4594,7 +4594,7 @@ function renderWTypeExam(id){
           <button type="button" class="btn sm quiet" id="tyxtp" aria-pressed="${st.tp}">템플릿 틀 표시</button><button type="button" class="btn sm quiet" id="tyxko" aria-pressed="${st.ko}">한글 뜻</button><button type="button" class="btn sm quiet" id="tyxhide" aria-pressed="${st.hide}">답안 가리기</button></div>
         <div class="tyxans" id="tyxans" aria-label="모범 답안"></div>
         <div class="wedit tyxed"><div class="wtools"><b class="small">Your Response</b><span class="wwc"><span class="small muted" id="tyxacc"></span> <b class="mono" id="tyxwc">0 words</b></span></div>
-          <textarea id="tyxin" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" aria-label="답안 따라 쓰기" placeholder="위 모범 답안을 보면서 여기에 그대로 쳐 보세요"></textarea></div>
+          <textarea id="tyxin" spellcheck="false" autocorrect="off" autocapitalize="none" autocomplete="off" aria-label="답안 따라 쓰기" placeholder="위 모범 답안을 보면서 여기에 그대로 쳐 보세요"></textarea></div>
         <div class="row tyxctl"><button type="button" class="btn sm quiet" id="tyxreset">처음부터</button><span style="flex:1"></span><button type="button" class="btn primary" id="tyxdone">다 썼어요 · 채점</button></div>
       </section>
     </div>`;
@@ -4666,7 +4666,7 @@ function renderWTypeRun(id,blind){
     ${d.q?`<details class="panel ph tyq" ${store.get('tyqopen',true)?'open':''}><summary><b>📝 문제</b> <span class="small muted">이 문제에 대한 답안이에요 · 눌러서 접기/펼치기</span></summary><p class="tyqt">${esc(tyName(d.q))}</p></details>`:''}
     <div class="panel ph tybox"><div class="tyhead"><span class="mtag book sm" id="tyk"></span><span class="small muted" id="typ"></span></div>
       <div class="tytgt" id="tyt" aria-live="polite"></div><div class="tyko" id="tyko"></div>
-      <div class="tywrap"><div class="tyghost" id="tygh" aria-hidden="true"></div><textarea id="tyin" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder=""></textarea></div>
+      <div class="tywrap"><div class="tyghost" id="tygh" aria-hidden="true"></div><textarea id="tyin" rows="3" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder=""></textarea></div>
       <div class="row tyctl"><button class="btn sm quiet" id="tyhint">${blind?'잠깐 보기 (힌트)':'첫 글자만 보기'}</button><button class="btn sm quiet" id="tyghbtn"></button><button class="btn sm quiet" id="tykobtn"></button><button class="btn sm quiet" id="tyskip">건너뛰기</button><span class="small muted" id="tylive"></span><span style="flex:1"></span><button class="btn sm primary" id="tynext">다음 문장 ⏎</button></div></div>
     <div class="panel ph tylist"><h4>전체 문장</h4><ol id="tyall">${L.map((l,i)=>`<li data-i="${i}"><span class="tsn">${esc(l.k)}</span> <span class="tyall-t">${blind?'<i class="muted">가리고 쓰기 중</i>':esc(l.t)}</span>${l.ko?`<div class="tyall-ko">${esc(l.ko)}</div>`:''}</li>`).join('')}</ol></div>`;
   const inp=$('#tyin'),tgt=$('#tyt');
@@ -5274,7 +5274,7 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
     <div class="rlopts" role="radiogroup">${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div>
     ${prac?`<button class="btn sm quiet rlchk" data-n="${q.n}">정답 확인</button><div class="rlfb" id="fb${q.n}"></div>`:''}</div>`;
   if(b.kind==='cw'){
-    let k=0;const t=rlTx(b.text).replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,a,rest)=>{const q=b.qs[k++];return `<span class="cw"><sup>${String(q.n).padStart(2,'0')}</sup>${a}<input data-n="${q.n}" data-pre="${a}" style="--n:${rest.length}" maxlength="${rest.length}" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc((st.ans[q.n]||'').slice(a.length))}" aria-label="${q.n}번 빈칸"></span>`});
+    let k=0;const t=rlTx(b.text).replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,a,rest)=>{const q=b.qs[k++];return `<span class="cw"><sup>${String(q.n).padStart(2,'0')}</sup>${a}<input data-n="${q.n}" data-pre="${a}" style="--n:${rest.length}" maxlength="${rest.length}" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc((st.ans[q.n]||'').slice(a.length))}" aria-label="${q.n}번 빈칸"></span>`});
     host.innerHTML=`<div class="panel ph rlcw">${prac?rlTtsBar('정답 문장 듣기'):''}<h3 class="rlhead">${esc(b.head)}</h3><p class="rlcwt">${t}</p>${prac?'<button class="btn sm" id="cwchk">정답 확인</button><div id="cwfb"></div>':''}</div>`;
     if(prac)rlTtsWire(host,()=>{const t=b.text.replace(/\[([^|\]]+)\|([^\]]+)\]/g,'$1$2').replace(/<[^>]+>/g,'');return t.split(/\n\n+/).map(x=>({innerText:x,classList:{add(){},remove(){}}}))});$$('.rlcw input',host).forEach(i=>i.oninput=()=>{st.ans[i.dataset.n]=i.value.trim()?i.dataset.pre+i.value.trim():''});
     $('#cwchk',host)?.addEventListener('click',()=>{{const okn=b.qs.filter(q=>rlCorrect(q,st.ans[q.n])).length;if(okn===b.qs.length){SFX.combo();toast('🎯 전부 정답!')}else okn>=b.qs.length*.7?SFX.ok():SFX.bad()}$$('.rlcw input',host).forEach(i=>{const q=b.qs.find(x=>x.n==i.dataset.n);i.classList.toggle('ok',rlCorrect(q,st.ans[q.n]));i.classList.toggle('bad',!rlCorrect(q,st.ans[q.n]));if(!rlCorrect(q,st.ans[q.n]))i.title='정답: '+q.a});
@@ -5533,7 +5533,7 @@ function rlQuiz(sec,host,deck,kind){const N=Math.min(10,deck.length),now=Date.no
       $('.vsay',host).onclick=()=>rlSay(v.w);rlSay(v.w);
       $$('.vqz .rlopt',host).forEach(b=>b.onclick=()=>{if(host.dataset.lock)return;host.dataset.lock=1;const good=b.dataset.k==='1';$$('.vqz .rlopt',host).forEach(x=>{if(x.dataset.k==='1')x.classList.add('ans')});if(!good)b.classList.add('wrong');answer(good)})}
     else{host.innerHTML=`<div class="vprog"><span>${i+1} / ${qs.length}</span><div class="rlbar"><i style="width:${i/qs.length*100}%"></i></div><span class="rlstk">${streak>=2?'🔥 '+streak+'연속':''}</span></div>
-        <div class="panel ph vqz"><p class="small muted">뜻을 보고 영어 단어를 쓰세요</p><div class="vk big">${esc(v.k)}</div><p class="vhint mono">${esc(v.w.replace(/[A-Za-z]/g,(c,j)=>j===0||v.w[j-1]===' '?c:'_'))}</p><input class="vin1" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="여기에 입력 후 Enter"><div class="row"><button class="btn primary" id="vgo">확인</button><button class="btn quiet" id="vskip">모르겠어요</button></div><div class="vfb"></div></div>`;
+        <div class="panel ph vqz"><p class="small muted">뜻을 보고 영어 단어를 쓰세요</p><div class="vk big">${esc(v.k)}</div><p class="vhint mono">${esc(v.w.replace(/[A-Za-z]/g,(c,j)=>j===0||v.w[j-1]===' '?c:'_'))}</p><input class="vin1" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="여기에 입력 후 Enter"><div class="row"><button class="btn primary" id="vgo">확인</button><button class="btn quiet" id="vskip">모르겠어요</button></div><div class="vfb"></div></div>`;
       const inp=$('.vin1',host);inp.focus();const go=skip=>{if(host.dataset.lock)return;host.dataset.lock=1;const good=!skip&&inp.value.trim().toLowerCase()===v.w.toLowerCase();inp.classList.add(good?'ok':'bad');answer(good)};
       inp.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing)go(false)};$('#vgo').onclick=()=>go(false);$('#vskip').onclick=()=>go(true)}
     function answer(good){if(good){ok++;streak++;rlGrade(v.key,2);[3,5,8].includes(streak)?SFX.combo():SFX.ok()}else{streak=0;wrong.push(v);rlGrade(v.key,0);SFX.bad()}
@@ -5890,13 +5890,13 @@ function vcSpell(host,ws){let order=ws.slice().sort(()=>Math.random()-.5),i=0,ok
       <div class="panel ph vcq ${store.get('vcspimg',false)?'withimg':''}">${store.get('vcspimg',false)?`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`:''}<p class="vcqw">${esc(vcKr(w))}</p><p class="small muted">${esc(vcPos(w))} · ${ans.length}글자 · 앞 ${K}글자 <b>${esc(ft.slice(0,K))}</b> <button class="btn sm quiet" data-say="w">🔊 발음 듣기</button></p>
       <div class="vcspell" id="vcsp">${(()=>{let h='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){h+=`<span class="vcsep">${/^ +$/.test(t)?'&nbsp;':esc(t)}</span>`;return}
           if(first){first=false;h+=`<b class="vcfirst">${esc(t.slice(0,K))}</b>`;t=t.slice(K);if(!t)return}
-          h+=`<input class="vcl" data-a="${esc(t)}" maxlength="${t.length}" style="--n:${t.length}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="${t.length}글자">`});return h})()}</div>
+          h+=`<input class="vcl" data-a="${esc(t)}" maxlength="${t.length}" style="--n:${t.length}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="text" aria-label="${t.length}글자">`});return h})()}</div>
       <div class="row" style="margin-top:12px"><button class="btn primary" id="vcchk">확인</button><button class="btn quiet" id="vchint">힌트 (한 글자)</button><span class="small muted">밑줄 한 칸 = 한 글자</span></div><div id="vcsf"></div></div>`;
     const ins=$$('.vcl',host),val=()=>{let k=0,out='',first=true;ans.split(/([ \-'’.]+)/).forEach(t=>{if(!t)return;if(/^[ \-'’.]+$/.test(t)){out+=t;return}if(first){first=false;out+=t.slice(0,K);if(t.length<=K)return}out+=(ins[k++]?.value||'')});return out};
     ins[0]?.focus();$('[data-say]',host).onclick=()=>vcPlay(w,'w');
     $('#vcspimg',host).onchange=e=>{store.set('vcspimg',e.target.checked);const q=$('.vcq',host),a=$('.vcqart',host);if(e.target.checked&&!a){q.insertAdjacentHTML('afterbegin',`<div class="vcart vcqart" aria-hidden="true">${vcArtOf(w,150)}</div>`);q.classList.add('withimg')}else if(!e.target.checked&&a){a.remove();q.classList.remove('withimg')}(ins.find(x=>!x.value)||ins[0])?.focus()};
     const miss=()=>{if(!wrong.includes(w))wrong.push(w);const p=VCSP[w.id]||{ok:0,misses:0};p.streak=0;VCSP[w.id]=p;if(vcSt(w)==='known')vcMark(w,'meh')};
-    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
+    ins.forEach((x,j)=>{x.oninput=()=>{x.value=x.value.replace(/\s/g,'');/* 아이폰·아이패드 키보드나 펜슬 손글씨가 첫 글자를 대문자로 바꿔도, 정답이 소문자면 소문자로 고쳐요 */if(x.dataset.a===x.dataset.a.toLowerCase()&&x.value!==x.value.toLowerCase())x.value=x.value.toLowerCase();const v=x.value.toLowerCase(),A=x.dataset.a.toLowerCase();x.classList.toggle('ok',v===A);x.classList.toggle('bad',!!v&&v!==A&&!A.startsWith(v));if(x.value.length>=+x.maxLength&&ins[j+1])ins[j+1].focus()};
       x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#vcsn',host)?$('#vcsn',host).click():check()}else if(e.key==='Backspace'&&!x.value&&ins[j-1]){e.preventDefault();ins[j-1].focus();ins[j-1].value=ins[j-1].value.slice(0,-1)}}});
     $('#vchint',host).onclick=()=>{tries.n++;miss();vcSave();for(const x of ins){const a=x.dataset.a,v=x.value;let p=0;while(p<v.length&&v[p].toLowerCase()===a[p].toLowerCase())p++;if(p<a.length){x.value=a.slice(0,p+1);x.focus();break}}};
     const check=()=>{const v=val().trim().toLowerCase(),good=v===ans.toLowerCase();
@@ -5917,7 +5917,7 @@ function vcList(host,ws,{showDay=false}={}){
 
 function vcFind(){setCrumb(['Vocab','단어 검색']);
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">⌕ 단어 검색</h1><p>영어 단어나 한국어 뜻으로 찾아요.</p></div></div>
-    <input id="vcq" class="vcin wide" placeholder="예: exploit, 이용하다" autocomplete="off"><div id="vcres" style="margin-top:14px"></div>`;
+    <input id="vcq" class="vcin wide" placeholder="예: exploit, 이용하다" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><div id="vcres" style="margin-top:14px"></div>`;
   const q=$('#vcq'),run=()=>{const v=q.value.trim().toLowerCase();if(!v){$('#vcres').innerHTML='';return}
     const r=VC.data.filter(w=>w.word.toLowerCase().includes(v)||vcKr(w).includes(v)||(w.senses||[]).some(s=>(s.en||'').toLowerCase().includes(v))).slice(0,80);
     if(!r.length){$('#vcres').innerHTML='<div class="empty">찾는 단어가 없어요.</div>';return}vcList($('#vcres'),r,{showDay:true})};
