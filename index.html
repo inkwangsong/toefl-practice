@@ -5039,7 +5039,7 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(erasing){eraseAt(x,y);return}if(!cur)return;const [px,py]=pt(x,y),p=cur.p,w=W();if(Math.hypot((px-p[p.length-2])*w,(py-p[p.length-1])*w)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));
     if(opt.pad&&py*w>box.clientHeight-120)redraw();else live()};
   let t0=0,x0=0,y0=0,far=false;
-  const end=(x,y)=>{if(erasing){erasing=false;eraser=null;live();save();return}if(!cur)return;
+  const end=(x,y)=>{if(erasing){erasing=false;eraser=null;live();save();if(!far&&Date.now()-t0<300&&x!=null){const el=document.elementFromPoint(x0,y0);if(el&&!el.classList.contains('inkcv')){el.focus?.();el.click?.()}}return}if(!cur)return;
     if(!far&&Date.now()-t0<300&&x!=null){const c=cur;cur=null;live();const el=document.elementFromPoint(x0,y0);if(el&&!el.classList.contains('inkcv')){el.focus?.();el.click?.()}return}
     strokes.push(cur);cur=null;save();redraw()};
   /* 펜슬을 띄운 채로 대거나(호버) 마우스를 올리면 지우개 동그라미를 미리 보여 줘요 */
@@ -5102,14 +5102,15 @@ function pinkLive(){const lv=$('#pinklv');if(!lv)return;const d=devicePixelRatio
   if(PINK.er){c.save();c.beginPath();c.arc(PINK.er[0],PINK.er[1],13,0,Math.PI*2);c.fillStyle=PINK.erasing?'rgba(225,29,72,.14)':'rgba(100,116,139,.10)';c.fill();c.lineWidth=1.5;c.setLineDash([4,3]);c.strokeStyle=PINK.erasing?'#e11d48':'#64748b';c.stroke();c.restore()}}
 function pinkWire(){const v=pinkView();let tid=null,pid=null,t0=0,x0=0,y0=0,far=false;
   const vxy=(x,y)=>{const r=v.getBoundingClientRect();return [x-r.left,y-r.top]};
-  const skip=t=>!PINK.key||!t||!t.closest||t.closest('.inkbox,input,textarea,select,[contenteditable="true"],.pinkfab');
+  const skip=t=>!PINK.key||!t||!t.closest||t.closest('.inkbox,input,textarea,select,[contenteditable="true"],.pinkfab,.rlinkbar,.rltts,button,a[href],summary');
   const eraseAt=(x,y)=>{const [vx,vy]=vxy(x,y);PINK.er=[vx,vy];const n=PINK.strokes.length;PINK.strokes=PINK.strokes.filter(s=>{const g=pinkGeo(s);if(!g)return true;const p=pinkPts(s,g),R=13+s.w*g.w/2;for(let i=0;i<p.length;i+=2)if(Math.hypot(p[i]-vx,p[i+1]-vy)<R)return false;for(let i=2;i<p.length;i+=2){const ax=p[i-2],ay=p[i-1],dx=p[i]-ax,dy=p[i+1]-ay,l=dx*dx+dy*dy||1e-9,t=Math.max(0,Math.min(1,((vx-ax)*dx+(vy-ay)*dy)/l));if(Math.hypot(ax+t*dx-vx,ay+t*dy-vy)<R)return false}return true});if(PINK.strokes.length!==n)pinkRedraw();else pinkLive()};
   const begin=(x,y,target)=>{t0=Date.now();x0=x;y0=y;far=false;const tool=store.get('rlinkt','k');if(tool==='e'){PINK.erasing=true;PINK.undo.push(PINK.strokes.slice());eraseAt(x,y);return}
     const a=pinkAnchor(document.elementFromPoint(x,y)||target),r=a.getBoundingClientRect(),hl=RLINKHL.has(tool);
     PINK.cur={a:pinkPath(a)||'',h:a===v?'':pinkHash(a),t:hl?'h':'p',c:tool,w:(hl?16:2.2)/r.width,p:[+((x-r.left)/r.width).toFixed(4),+((y-r.top)/r.width).toFixed(4)],_r:r}};
   const move=(x,y)=>{if(Math.hypot(x-x0,y-y0)>6)far=true;if(PINK.erasing){eraseAt(x,y);return}const c=PINK.cur;if(!c)return;const a=pinkAt(c.a),r=a.getBoundingClientRect(),px=(x-r.left)/r.width,py=(y-r.top)/r.width,p=c.p;
     if(Math.hypot((px-p[p.length-2])*r.width,(py-p[p.length-1])*r.width)<1.2)return;p.push(+px.toFixed(4),+py.toFixed(4));pinkLive()};
-  const end=(x,y)=>{if(PINK.erasing){PINK.erasing=false;PINK.er=null;pinkLive();pinkSave();return}const c=PINK.cur;PINK.cur=null;if(!c)return;
+  const tap=()=>!far&&Date.now()-t0<300,press=()=>{const el=document.elementFromPoint(x0,y0);if(el){el.focus?.();el.click?.()}};
+  const end=(x,y)=>{if(PINK.erasing){PINK.erasing=false;PINK.er=null;pinkLive();if(tap()){PINK.undo.pop();press()}else pinkSave();return}const c=PINK.cur;PINK.cur=null;if(!c)return;
     /* 펜슬로 톡 치기만 했으면 필기가 아니라 누르기예요: 선택지·버튼이 그대로 눌려요 */
     if(!far&&Date.now()-t0<300){pinkLive();const el=document.elementFromPoint(x0,y0);if(el){el.focus?.();el.click?.()}return}
     delete c._r;PINK.strokes.push(c);PINK.undo=[];pinkSave();pinkRedraw()};
