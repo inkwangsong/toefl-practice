@@ -2820,12 +2820,18 @@ const navSave=()=>{try{sessionStorage.setItem('navs',JSON.stringify(NAVS.slice(-
 if(NAVS[NAVS.length-1]!==location.hash){NAVS.push(location.hash);navSave()}
 addEventListener('hashchange',()=>{const h=location.hash;if(NAVS.length>1&&NAVS[NAVS.length-2]===h)NAVS.pop();else if(NAVS[NAVS.length-1]!==h)NAVS.push(h);navSave()});
 function navBack(){if(document.body.classList.contains('testing'))return;toggleLnb(false);
+  /* 문제를 푸는 중이면 '이전'은 그 풀이의 나가기(저장하고 나가기/그냥 나가기 묻기)와 같아요 */
+  const x=$('#view .rlrun #rlx');if(x){x.click();return}
   if(NAVS.length>1){history.back();return}
   const home=$('.btabs a[data-home]')?.getAttribute('href')||'#start';location.hash=location.hash===home?'#start':home}
 function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))return;const h=location.hash.slice(1);if(h===''||h==='start')return;
   const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
   t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back" role="button" aria-label="이전 화면">${ICON('back')}이전</a>`);
+  setTimeout(btBackFace,0);
   if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
+/* 풀이 화면에서는 하단 버튼 이름을 '나가기'로 바꿔 보여 줘요 */
+function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'나가기':ICON('back')+'이전';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
+(function(){const go=()=>{const v=$('#view');if(!v)return setTimeout(go,300);new MutationObserver(btBackFace).observe(v,{childList:true})};go()})();
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btabs .bt-back,.btabs .bt-list');if(!b)return;e.preventDefault();if(b.classList.contains('bt-back'))navBack();else toggleLnb(true)});
 (function(){const go=()=>{const t=$('.btabs');if(!t)return setTimeout(go,300);new MutationObserver(()=>btabsDecor()).observe(t,{childList:true});btabsDecor()};go()})();
 $('#menubtn').onclick=()=>toggleLnb(true);$('#lnbscrim').onclick=()=>toggleLnb(false);
