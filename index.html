@@ -777,7 +777,15 @@ main{margin-inline:auto}
 .rlinkbar .inkc[aria-pressed="true"]{border-color:var(--accent)}
 .rlinkbar .inkt{min-height:32px;padding:4px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .rlinkbar .inkt[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
-.rlinkbar .inkm{display:inline-flex;gap:5px;align-items:center;color:var(--mute)}.rlinkbar .inkh{flex:1 1 180px;text-align:right}
+.rlinkbar .inkm{display:inline-flex;gap:5px;align-items:center;color:var(--mute)}
+.rlinkbar .inkg{display:inline-flex;align-items:center;gap:4px;padding-right:6px;margin-right:2px;border-right:1px solid var(--line)}.rlinkbar .inkg:last-of-type{border-right:0}
+.rlinkbar [data-inkundo]{min-width:92px}
+.inkbox.inkfinger{touch-action:none}
+.lnote{margin-top:14px;display:grid;gap:8px}.lnoteh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.lnote .rlinkbar{margin:0}
+.lnotepad{min-height:320px;border:1px solid var(--line);border-radius:12px;background-color:#fffef8;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#dbe4f0 31px 32px);background-position:0 16px;overflow:hidden}
+:root[data-theme="dark"] .lnotepad{background-color:#1b1f2a;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#2c3446 31px 32px)}
+.lnotetx{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--surface);color:var(--ink);resize:vertical}
+.rlexam .lnote{max-width:860px;margin-left:auto;margin-right:auto}.rlinkbar .inkh{flex:1 1 180px;text-align:right}
 @media(max-width:560px){.rlinkbar .inkh{flex-basis:100%;text-align:left}}
 .rlpbody p.speaking,.rltext p.speaking{background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:6px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent);transition:background .2s}
 .nc{display:inline-block;font-size:13px;font-weight:700;padding:1px 7px;border-radius:99px;margin-right:4px;letter-spacing:.01em;white-space:nowrap}
@@ -4949,6 +4957,7 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
     rlStopAudio();rlStopSpeak();clearTimeout(st.ct);host.scrollTop=0;tst.querySelector('.tmain').scrollTop=0;
     if(s.audio){$('#rln').disabled=!st.done[s.b.audio];
       host.innerHTML=`<div class="rlaud"><p class="rlah">${esc(s.b.head)}</p><div class="rlpic big">${ICON(s.b.kind==='resp'?'resp':s.b.kind==='conv'?'conv':s.b.kind==='talk'?'talk':'announce')}<span>${s.b.kind==='resp'?'짧은 응답':s.b.kind==='conv'?'대화':s.b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div><p class="small muted">음성은 한 번만 재생돼요. 끝나면 문제가 나와요.</p></div>`;
+      rlNoteAttach(host,'lnote:x:'+s.b.audio,!st.done[s.b.audio]&&!(st.noted=st.noted||{})[s.b.audio]);st.noted[s.b.audio]=1;
       if(st.done[s.b.audio]){$('#rlpl').innerHTML='<p class="small muted">✓ 재생 완료</p>';return}
       const alive=()=>steps[st.i]===s&&document.body.contains(host),pl=$('#rlpl');st.dir=st.dir||{};
       const play=()=>{if(!alive())return;rlPlayer(pl,s.b.audio,{auto:true,once:true,onEnd:()=>{st.done[s.b.audio]=1;$('#rln').disabled=false;setTimeout(()=>{if(steps[st.i]===s){st.i++;show()}},900)}})};
@@ -4960,7 +4969,7 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
     if(isL){const q=s.qs[0],qa=s.b.audio+'_q'+q.n,hasQA=!!((window.AUD&&AUD[qa])||(window.PACKBLOB&&PACKBLOB['audio/'+qa+'.mp3'])),wait=hasQA&&!st.qheard?.[q.n];
       host.innerHTML=`<div class="rlq1"><div class="rlq" data-n="${q.n}"><div class="rlqh"><div>${q.q?rlTx(q.q):'<span class="muted">방금 들은 말에 가장 알맞은 응답을 고르세요.</span>'}</div></div>
         ${wait?`<p class="small muted rlqwait">🔊 Question ${q.n} …</p>`:''}<div class="rlopts" role="radiogroup" ${wait?'hidden':''}>${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div></div></div>`;
-      $$('.rlopt input',host).forEach(i=>i.onchange=()=>{st.ans[q.n]=+i.value});
+      $$('.rlopt input',host).forEach(i=>i.onchange=()=>{st.ans[q.n]=+i.value});rlNoteAttach(host,'lnote:x:'+s.b.audio,false);
       const readQ=!!q.q&&!st.qheard?.[q.n];
       if(wait||readQ){if(!wait){$('.rlopts',host).hidden=true;$('.rlq',host).insertAdjacentHTML('beforeend',`<p class="small muted rlqwait">🔊 문제를 읽어 드려요…</p>`)}
         $('#rln').disabled=true;let shown=false;const rev=()=>{if(shown||steps[st.i]!==s)return;shown=true;(st.qheard=st.qheard||{})[q.n]=1;$('.rlqwait',host)?.remove();const o=$('.rlopts',host);if(o)o.hidden=false;$('#rln').disabled=false};
@@ -4979,44 +4988,60 @@ function rlPassage(b,{reveal=false}={}){let t=b.text;
     :t.replace(/<mark data-q="\d+" class="hl">([\s\S]*?)<\/mark>/g,'<mark class="hl">$1</mark>').replace(/<mark data-q="\d+">([\s\S]*?)<\/mark>/g,'$1');
   t=t.replace(/\[\[([A-D])\]\]/g,(m,x)=>`<span class="rlsq" data-x="${x}">${x}</span>`);
   return t.split(/\n\n/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}
-/* ---- 지문 필기 (연습 모드): Apple Pencil은 지문 위에 바로 써지고, 손가락은 그대로 스크롤·터치예요.
-   획은 지문 폭 기준 비율로 저장해서 화면 크기가 달라도 같은 자리에 그려지고, 기기끼리 동기화돼요. ---- */
-const RLINKC={k:'#1f2937',r:'#e11d48',b:'#2563eb',h:'#facc15'};
+/* ---- 필기: Apple Pencil은 지문·스크립트·노트 위에 바로 써지고, 손가락은 그대로 스크롤·터치예요.
+   획은 상자 폭 기준 비율로 저장해서 화면 크기가 달라도 같은 자리에 그려지고, 기기끼리 동기화돼요. ---- */
+const RLINKC={k:'#1f2937',r:'#e11d48',b:'#2563eb',h:'#facc15',hg:'#4ade80',hp:'#f472b6',hs:'#38bdf8'};
+const RLINKHL=new Set(['h','hg','hp','hs']);
 function rlInkKey(sec,b){const s=sec+'|'+(b.head||'')+'|'+String(b.text||'').slice(0,200);let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return 'ink:'+sec+':'+(h>>>0).toString(36)}
-function rlInkBar(){const t=store.get('rlinkt','k'),touch=matchMedia('(pointer:coarse)').matches;
-  return `<div class="rlinkbar" role="toolbar" aria-label="필기 도구">${[['k','검정 펜'],['r','빨강 펜'],['b','파랑 펜'],['h','형광펜']].map(([k,l])=>`<button type="button" class="inkc ${k==='h'?'hl':''}" data-ink="${k}" aria-pressed="${t===k}" aria-label="${l}" title="${l}"><i style="background:${RLINKC[k]}"></i></button>`).join('')}
-    <button type="button" class="inkt" data-ink="e" aria-pressed="${t==='e'}" title="지우개">지우개</button><button type="button" class="inkt" data-inkundo title="되돌리기">↶</button><button type="button" class="inkt" data-inkclr title="필기 모두 지우기">모두 지우기</button>
-    ${touch?'':`<label class="small inkm"><input type="checkbox" data-inkmouse ${store.get('rlinkm',false)?'checked':''}> 마우스로 쓰기</label>`}<span class="small muted inkh">${touch?'✏️ 펜슬로 지문에 바로 쓰세요 · 손가락은 스크롤':'✏️ 펜(태블릿)이나 마우스로 지문에 쓸 수 있어요'}</span></div>`}
-function rlInk(host,box,key){if(!box)return;box.classList.add('inkbox');const cv=document.createElement('canvas');cv.className='inkcv';box.appendChild(cv);const ctx=cv.getContext('2d');
+const rlCoarse=()=>matchMedia('(pointer:coarse)').matches;
+function rlInkBar(o={}){const t=store.get('rlinkt','k'),touch=rlCoarse();
+  const pen=[['k','검정 펜'],['r','빨강 펜'],['b','파랑 펜']],hl=[['h','노랑 형광펜'],['hg','초록 형광펜'],['hp','분홍 형광펜'],['hs','하늘 형광펜']];
+  const btn=([k,l])=>`<button type="button" class="inkc ${RLINKHL.has(k)?'hl':''}" data-ink="${k}" aria-pressed="${t===k}" aria-label="${l}" title="${l}"><i style="background:${RLINKC[k]}"></i></button>`;
+  return `<div class="rlinkbar" role="toolbar" aria-label="필기 도구"><span class="inkg">${pen.map(btn).join('')}</span><span class="inkg">${hl.map(btn).join('')}</span>
+    <span class="inkg"><button type="button" class="inkt" data-ink="e" aria-pressed="${t==='e'}">지우개</button><button type="button" class="inkt" data-inkundo>↶ 되돌리기</button><button type="button" class="inkt" data-inkclr>모두 지우기</button></span>
+    ${o.pad?(touch?`<label class="small inkm"><input type="checkbox" data-inkfinger ${store.get('rlinkf',false)?'checked':''}> 손가락으로 쓰기</label>`:''):(touch?'':`<label class="small inkm"><input type="checkbox" data-inkmouse ${store.get('rlinkm',false)?'checked':''}> 마우스로 쓰기</label>`)}
+    ${o.pad?'':`<span class="small muted inkh">${touch?'✏️ 펜슬로 바로 쓰세요 · 손가락은 스크롤':'✏️ 펜(태블릿)이나 마우스로 쓸 수 있어요'}</span>`}</div>`}
+/* 리스닝 노트: 시험지 옆 메모지처럼 줄 노트. 아래로 쓰면 저절로 길어져요. */
+function rlNoteHTML(){const touch=rlCoarse();return `<div class="lnote"><div class="lnoteh"><b>📝 노트</b><span class="small muted">${touch?'펜슬로 바로 쓰세요. 펜슬이 없으면 손가락으로 쓰기를 켜세요.':'마우스·펜으로 쓰거나 아래 칸에 타자로 적어도 돼요.'}</span></div>${rlInkBar({pad:1})}<div class="lnotepad"></div>${touch?'':'<textarea class="lnotetx" rows="3" placeholder="⌨️ 타자로 메모"></textarea>'}</div>`}
+function rlNoteAttach(host,key,fresh){host.insertAdjacentHTML('beforeend',rlNoteHTML());const n=host.lastElementChild;
+  if(fresh){try{localStorage.removeItem(key);localStorage.removeItem(key+':t')}catch(e){}}
+  const ta=$('.lnotetx',n);if(ta){ta.value=store.get(key+':t','');ta.oninput=()=>store.set(key+':t',ta.value)}
+  rlInk($('.rlinkbar',n),$('.lnotepad',n),key,{pad:true})}
+function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');const cv=document.createElement('canvas');cv.className='inkcv';box.appendChild(cv);const ctx=cv.getContext('2d');
   let strokes=store.get(key,[]),cur=null,erasing=false;const W=()=>box.clientWidth||1;
   const save=()=>{strokes.length?store.set(key,strokes):localStorage.removeItem(key)};
   const path=(s,w)=>{const p=s.p;ctx.beginPath();ctx.moveTo(p[0]*w,p[1]*w);if(p.length===2){ctx.lineTo(p[0]*w+.1,p[1]*w)}for(let i=2;i<p.length-2;i+=2){const mx=(p[i]+p[i+2])/2*w,my=(p[i+1]+p[i+3])/2*w;ctx.quadraticCurveTo(p[i]*w,p[i+1]*w,mx,my)}if(p.length>2)ctx.lineTo(p[p.length-2]*w,p[p.length-1]*w);ctx.stroke()};
-  const dark=()=>document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme||document.documentElement.dataset.theme==='auto')&&matchMedia('(prefers-color-scheme: dark)').matches;
-  const drawS=(s,w)=>{ctx.save();ctx.lineCap=ctx.lineJoin='round';if(s.t==='h'){ctx.globalAlpha=dark()?.32:.42;ctx.globalCompositeOperation=dark()?'source-over':'multiply';ctx.strokeStyle=RLINKC.h;ctx.lineWidth=s.w*w;ctx.lineCap='butt'}else{ctx.strokeStyle=s.c==='k'&&dark()?'#e5e7eb':RLINKC[s.c]||RLINKC.k;ctx.lineWidth=s.w*w}path(s,w);ctx.restore()};
-  const redraw=()=>{const w=W(),h=box.scrollHeight,d=devicePixelRatio||1;if(cv.width!==Math.round(w*d)||cv.height!==Math.round(h*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d);cv.style.width=w+'px';cv.style.height=h+'px'}
+  const dark=()=>{const t=document.documentElement.dataset.theme;return t==='dark'||((!t||t==='auto'||t==='system')&&matchMedia('(prefers-color-scheme: dark)').matches)};
+  const drawS=(s,w)=>{ctx.save();ctx.lineCap=ctx.lineJoin='round';const pad=opt.pad&&!dark();
+    if(s.t==='h'){ctx.globalAlpha=dark()?.32:.42;ctx.globalCompositeOperation=dark()?'source-over':'multiply';ctx.strokeStyle=RLINKC[s.c]||RLINKC.h;ctx.lineWidth=s.w*w;ctx.lineCap='butt'}
+    else{ctx.strokeStyle=s.c==='k'&&dark()&&!pad?'#e5e7eb':RLINKC[s.c]||RLINKC.k;ctx.lineWidth=s.w*w}path(s,w);ctx.restore()};
+  const redraw=()=>{const w=W(),d=devicePixelRatio||1;
+    if(opt.pad){let my=0;strokes.forEach(s=>{for(let i=1;i<s.p.length;i+=2)if(s.p[i]>my)my=s.p[i]});if(cur)for(let i=1;i<cur.p.length;i+=2)if(cur.p[i]>my)my=cur.p[i];const want=Math.max(320,Math.ceil((my*w+160)/32)*32);if(Math.abs(box.clientHeight-want)>4)box.style.height=want+'px'}
+    const h=box.scrollHeight;if(cv.width!==Math.round(w*d)||cv.height!==Math.round(h*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d);cv.style.width=w+'px';cv.style.height=h+'px'}
     ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);strokes.filter(s=>s.t==='h').forEach(s=>drawS(s,w));strokes.filter(s=>s.t!=='h').forEach(s=>drawS(s,w));if(cur)drawS(cur,w)};
   const pt=(x,y)=>{const r=cv.getBoundingClientRect(),w=W();return [(x-r.left)/w,(y-r.top)/w]};
   const tool=()=>store.get('rlinkt','k');
-  const eraseAt=(x,y)=>{const w=W(),R=14/w,[px,py]=pt(x,y);const n=strokes.length;strokes=strokes.filter(s=>{for(let i=0;i<s.p.length;i+=2)if(Math.hypot(s.p[i]-px,s.p[i+1]-py)<R+s.w/2)return false;return true});if(strokes.length!==n){redraw()}};
-  const begin=(x,y)=>{const t=tool();if(t==='e'){erasing=true;eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y);cur={t:t==='h'?'h':'p',c:t,w:(t==='h'?16:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};redraw()};
+  const eraseAt=(x,y)=>{const w=W(),R=14/w,[px,py]=pt(x,y);const n=strokes.length;strokes=strokes.filter(s=>{for(let i=0;i<s.p.length;i+=2)if(Math.hypot(s.p[i]-px,s.p[i+1]-py)<R+s.w/2)return false;return true});if(strokes.length!==n)redraw()};
+  const begin=(x,y)=>{const t=tool();if(t==='e'){erasing=true;eraseAt(x,y);return}const w=W(),[px,py]=pt(x,y),hl=RLINKHL.has(t);cur={t:hl?'h':'p',c:t,w:(hl?16:opt.pad?2.4:2.2)/w,p:[+px.toFixed(4),+py.toFixed(4)]};redraw()};
   const move=(x,y)=>{if(erasing){eraseAt(x,y);return}if(!cur)return;const [px,py]=pt(x,y),p=cur.p,w=W();if(Math.hypot((px-p[p.length-2])*w,(py-p[p.length-1])*w)<1.5)return;p.push(+px.toFixed(4),+py.toFixed(4));redraw()};
   const end=()=>{if(erasing){erasing=false;save();return}if(!cur)return;strokes.push(cur);cur=null;save();redraw()};
-  /* iPad: Apple Pencil = touchType 'stylus' → 기본 동작(선택·스크롤)을 막고 그려요. 손가락 터치는 건드리지 않아요. */
-  let tid=null;
-  box.addEventListener('touchstart',e=>{const t=[...e.changedTouches].find(t=>t.touchType==='stylus');if(!t)return;e.preventDefault();tid=t.identifier;begin(t.clientX,t.clientY)},{passive:false});
+  /* iPad: Apple Pencil = touchType 'stylus' → 기본 동작(선택·스크롤)을 막고 그려요. 손가락은 노트에서 '손가락으로 쓰기'를 켰을 때만 그려요. */
+  let tid=null;const finger=()=>opt.pad&&store.get('rlinkf',false);
+  box.addEventListener('touchstart',e=>{const t=[...e.changedTouches].find(t=>t.touchType==='stylus')||(finger()&&e.touches.length===1?e.changedTouches[0]:null);if(!t)return;e.preventDefault();tid=t.identifier;begin(t.clientX,t.clientY)},{passive:false});
   box.addEventListener('touchmove',e=>{if(tid==null)return;const t=[...e.changedTouches].find(t=>t.identifier===tid);if(!t)return;e.preventDefault();move(t.clientX,t.clientY)},{passive:false});
   const tend=e=>{if(tid==null)return;if([...e.changedTouches].some(t=>t.identifier===tid)){tid=null;end()}};box.addEventListener('touchend',tend);box.addEventListener('touchcancel',tend);
-  /* 그 밖의 기기: 펜 입력(윈도우·안드로이드)은 늘, 마우스는 '마우스로 쓰기'를 켰을 때만 */
-  let pid=null;
-  box.addEventListener('pointerdown',e=>{if(tid!=null||e.button>0)return;const ok=(e.pointerType==='pen'&&!('ontouchstart' in window))||(e.pointerType==='mouse'&&store.get('rlinkm',false));if(!ok)return;e.preventDefault();pid=e.pointerId;box.setPointerCapture?.(pid);begin(e.clientX,e.clientY)});
+  /* 그 밖의 기기: 펜 입력(윈도우·안드로이드)은 늘, 마우스는 노트에서는 늘·지문에서는 '마우스로 쓰기'를 켰을 때만 */
+  let pid=null;const mouseOK=()=>opt.pad||store.get('rlinkm',false);
+  box.addEventListener('pointerdown',e=>{if(tid!=null||e.button>0)return;const ok=(e.pointerType==='pen'&&!('ontouchstart' in window))||(e.pointerType==='mouse'&&mouseOK());if(!ok)return;e.preventDefault();pid=e.pointerId;box.setPointerCapture?.(pid);begin(e.clientX,e.clientY)});
   box.addEventListener('pointermove',e=>{if(e.pointerId!==pid)return;e.preventDefault();(e.getCoalescedEvents?e.getCoalescedEvents():[e]).forEach(c=>move(c.clientX,c.clientY))});
   const pend=e=>{if(e.pointerId!==pid)return;pid=null;end()};box.addEventListener('pointerup',pend);box.addEventListener('pointercancel',pend);
-  box.classList.toggle('inkmouse',store.get('rlinkm',false));
-  const bar=$('.rlinkbar',host);
-  if(bar){$$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('[data-ink]',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-    $('[data-inkundo]',bar).onclick=()=>{strokes.pop();save();redraw()};
-    $('[data-inkclr]',bar).onclick=()=>{if(!strokes.length)return;const keep=strokes;strokes=[];save();redraw();toast('이 지문의 필기를 지웠어요');const u=$('[data-inkundo]',bar);const old=u.onclick;u.onclick=()=>{strokes=keep;save();redraw();u.onclick=old}};
-    $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);box.classList.toggle('inkmouse',e.target.checked)})}
+  box.classList.toggle('inkmouse',mouseOK());box.classList.toggle('inkfinger',finger());
+  if(bar){$$('[data-ink]',bar).forEach(b=>b.onclick=()=>{store.set('rlinkt',b.dataset.ink);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===b.dataset.ink)))});
+    let undoClear=null;
+    $('[data-inkundo]',bar).onclick=()=>{if(undoClear){strokes=undoClear;undoClear=null}else strokes.pop();save();redraw()};
+    $('[data-inkclr]',bar).onclick=()=>{if(!strokes.length)return;undoClear=strokes;strokes=[];save();redraw();toast('필기를 지웠어요 · ↶ 되돌리기로 살릴 수 있어요')};
+    $('[data-inkmouse]',bar)?.addEventListener('change',e=>{store.set('rlinkm',e.target.checked);$$('.inkbox:not(.lnotepad)').forEach(x=>x.classList.toggle('inkmouse',e.target.checked))});
+    $('[data-inkfinger]',bar)?.addEventListener('change',e=>{store.set('rlinkf',e.target.checked);box.classList.toggle('inkfinger',e.target.checked)})}
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(!document.body.contains(box)){ro.disconnect();return}redraw()});ro.observe(box)}redraw()}
 function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
   const qhtml=q=>`<div class="rlq" data-n="${q.n}"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<span class="muted small">음성을 듣고 가장 알맞은 응답을 고르세요.</span>'}</div></div>
@@ -5029,10 +5054,10 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
     $('#cwchk',host)?.addEventListener('click',()=>{{const okn=b.qs.filter(q=>rlCorrect(q,st.ans[q.n])).length;if(okn===b.qs.length){SFX.combo();toast('🎯 전부 정답!')}else okn>=b.qs.length*.7?SFX.ok():SFX.bad()}$$('.rlcw input',host).forEach(i=>{const q=b.qs.find(x=>x.n==i.dataset.n);i.classList.toggle('ok',rlCorrect(q,st.ans[q.n]));i.classList.toggle('bad',!rlCorrect(q,st.ans[q.n]));if(!rlCorrect(q,st.ans[q.n]))i.title='정답: '+q.a});
       $('#cwfb',host).innerHTML=`<div class="rlexp"><p><b>정답</b> ${b.qs.map(q=>`<span class="mtag sm">${q.n} ${esc(q.a)}</span>`).join(' ')}</p><p>${esc(b.why||'')}</p><details open><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}</div>`;rlVocWire(host,sec)});
     return}
-  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary><div>${rlScript(b)}</div></details>`:''}</div>`
+  const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary>${rlInkBar()}<div class="rlsctx">${rlScript(b)}</div></details>`:''}</div>`
     :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar()+rlInkBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
   const allBtn=prac&&b.qs.length>1?`<div class="rlallchk"><button class="btn primary" data-all>✓ 이 지문 전체 채점 <span class="small">(${b.qs.length}문항)</span></button><div class="rlsum" hidden></div></div>`:'';
-  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(!isL&&prac)rlInk(host,$('.rltext',host),rlInkKey(sec,b));
+  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(!isL&&prac)rlInk($('.rlinkbar',host),$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk($('.rlinkbar',sc),$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
   if(isL){const once=mode==='exam',heard=st.done[b.audio];
     const qs=$('.rlqs',host);if(once&&!heard){qs.classList.add('wait');qs.insertAdjacentHTML('afterbegin','<p class="small muted rlwaitmsg">음성이 끝나면 문제가 열려요.</p>')}
     if(once&&heard){$('#rlpl',host).innerHTML='<p class="small muted">✓ 이미 들었어요 (실전 모드는 한 번만 재생)</p>'}
