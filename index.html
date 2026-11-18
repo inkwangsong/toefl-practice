@@ -616,7 +616,12 @@ body.testing .shell{display:none}
 .rlrun .wbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-radius:10px;background:#1f2329;color:#fff;margin-bottom:10px}.rlrun .wbar .btn:not(.primary){color:#fff;background:transparent;border:1px solid #ffffff55}.rlplay select{width:auto}
 .rltime{font-variant-numeric:tabular-nums;font-weight:700}.rltime.warn{color:#ff8a8a}
 .rldots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.rldots button{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:4px 10px;font:600 15px/1.4 inherit;color:inherit;cursor:pointer}.rldots button.ok{border-color:var(--accent);color:var(--accent)}.rldots button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.rldots button:disabled{cursor:default}
-.rlhead{text-align:center;margin:0 0 14px;font-size:20px}.rlsplit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}@media (max-width:900px){.rlsplit{grid-template-columns:1fr}}
+.rlhead{text-align:center;margin:0 0 14px;font-size:20px}
+/* 넓은 화면(지문|문제 두 칸): 실제 시험처럼 지문과 문제가 따로 스크롤돼요 */
+@media (min-width:901px){
+ .rlrun .rlsplit>*{position:sticky;top:72px;max-height:calc(100dvh - 88px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+ #test .rlexam.rd .rlsplit>*{position:sticky;top:0;max-height:calc(100dvh - 150px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+}.rlsplit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}@media (max-width:900px){.rlsplit{grid-template-columns:1fr}}
 .rltext p{line-height:1.75;margin:0 0 12px}.rltitle{text-align:center;margin:0 0 12px;font-size:18px}.rltext table{border-collapse:collapse;width:100%;margin:6px 0 12px;font-size:16px}.rltext td,.rltext th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}.rltext th{background:var(--paper)}.rlpsg.chat .rltext p{background:var(--paper);border-radius:10px;padding:8px 12px;margin-bottom:8px}.rlpsg.article .rltext,.rlpsg.form .rltext,.rlpsg.post .rltext{border:1px solid var(--line);border-radius:8px;padding:14px}.rltext mark{background:transparent;color:inherit}.rltext mark.hl{background:#e3e6ea;color:inherit}.rltext mark.ev,.rlscript mark{background:#fff1a8;color:#111;border-radius:2px}
 .rlpsg.notice .rltext{border:2px solid var(--ink,#333);border-radius:8px;padding:16px}.rlmailh{padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:10px}.rlpsg.email .rltext{border:1px solid var(--line);border-radius:8px;padding:14px}
 .rlsq{display:inline-block;background:#222;color:#fff;font:700 14px/1 inherit;padding:3px 5px;border-radius:3px;cursor:pointer;margin:0 2px}.rlsq.on{background:var(--accent)}
@@ -5133,7 +5138,7 @@ function rlInk(bar,box,key,opt={}){if(!box)return;box.classList.add('inkbox');
   box.addEventListener('pointerdown',e=>{if(tid!=null||e.button>0)return;const ok=(e.pointerType==='pen'&&!('ontouchstart' in window))||(e.pointerType==='mouse'&&mouseOK());if(!ok)return;e.preventDefault();pid=e.pointerId;box.setPointerCapture?.(pid);begin(e.clientX,e.clientY)});
   box.addEventListener('pointermove',e=>{if(e.pointerId!==pid){hover(e);return}e.preventDefault();(e.getCoalescedEvents?e.getCoalescedEvents():[e]).forEach(c=>move(c.clientX,c.clientY))});
   const pend=e=>{if(e.pointerId!==pid)return;pid=null;end(e.pointerType==='pen'?e.clientX:null,e.clientY)};box.addEventListener('pointerup',pend);box.addEventListener('pointercancel',pend);
-  box.classList.toggle('inkmouse',mouseOK());box.classList.toggle('inkfinger',finger());
+  box.classList.toggle('inkmouse',!!mouseOK());box.classList.toggle('inkfinger',!!finger());
   box.classList.toggle('inkerase',tool()==='e');
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(!document.body.contains(box)){ro.disconnect();return}redraw()});ro.observe(box)}redraw()}
 /* ---- 화면 필기 (문제·해설·결과 화면): 펜슬로 문제 어디에나 써요.
@@ -5154,9 +5159,9 @@ function inkPage(key){const v=pinkView();if(!v)return;PINK.key=key||null;PINK.ha
   if(!PINK.wired){PINK.wired=true;pinkWire()}
   pinkRedraw()}
 const pinkSave=()=>{if(!PINK.key)return;PINK.strokes.length?store.set(PINK.key,PINK.strokes):localStorage.removeItem(PINK.key)};
-function pinkGeo(s){const el=pinkAt(s.a);if(!el||el.offsetParent===null&&el!==pinkView())return null;if(s.h&&pinkHash(el)!==s.h)return null;const r=el.getBoundingClientRect(),vr=pinkView().getBoundingClientRect();if(!r.width)return null;return {x:r.left-vr.left,y:r.top-vr.top,w:r.width}}
+function pinkGeo(s){const el=pinkAt(s.a);if(!el||el.offsetParent===null&&el!==pinkView())return null;if(s.h&&pinkHash(el)!==s.h)return null;const r=el.getBoundingClientRect(),vr=pinkView().getBoundingClientRect();if(!r.width)return null;let clip=null;for(let a=el.parentElement;a&&a!==pinkView();a=a.parentElement){if(/(auto|scroll)/.test(getComputedStyle(a).overflowY)&&a.scrollHeight>a.clientHeight){const q=a.getBoundingClientRect();clip=[q.left-vr.left,q.top-vr.top,q.width,q.height];break}}return {x:r.left-vr.left,y:r.top-vr.top,w:r.width,clip}}
 function pinkPts(s,g){const o=[];for(let i=0;i<s.p.length;i+=2)o.push(g.x+s.p[i]*g.w,g.y+s.p[i+1]*g.w);return o}
-function pinkStroke(c,s,g,dark){const p=pinkPts(s,g);c.save();c.lineCap=c.lineJoin='round';
+function pinkStroke(c,s,g,dark){const p=pinkPts(s,g);c.save();if(g.clip){c.beginPath();c.rect(g.clip[0],g.clip[1],g.clip[2],g.clip[3]);c.clip()}c.lineCap=c.lineJoin='round';
   if(s.t==='h'){c.globalAlpha=dark?.32:.42;c.globalCompositeOperation=dark?'source-over':'multiply';c.strokeStyle=RLINKC[s.c]||RLINKC.h;c.lineWidth=s.w*g.w;c.lineCap='butt'}else{c.strokeStyle=s.c==='k'&&dark?'#e5e7eb':RLINKC[s.c]||RLINKC.k;c.lineWidth=s.w*g.w}
   c.beginPath();c.moveTo(p[0],p[1]);if(p.length===2)c.lineTo(p[0]+.1,p[1]);for(let i=2;i<p.length-2;i+=2)c.quadraticCurveTo(p[i],p[i+1],(p[i]+p[i+2])/2,(p[i+1]+p[i+3])/2);if(p.length>2)c.lineTo(p[p.length-2],p[p.length-1]);c.stroke();c.restore()}
 const pinkDark=()=>{const t=document.documentElement.dataset.theme;return t==='dark'||((!t||t==='auto'||t==='system')&&matchMedia('(prefers-color-scheme: dark)').matches)};
@@ -5194,7 +5199,7 @@ function pinkWire(){const v=pinkView();let tid=null,pid=null,t0=0,x0=0,y0=0,far=
   const sched=()=>{if(!PINK.key||PINK.mute)return;cancelAnimationFrame(PINK.raf);PINK.raf=requestAnimationFrame(pinkRedraw)};
   if(window.ResizeObserver)new ResizeObserver(sched).observe(v);
   new MutationObserver(ms=>{if(ms.every(m=>m.target.id==='pinkcv'||m.target.id==='pinklv'))return;sched()}).observe(v,{subtree:true,childList:true,attributes:true,attributeFilter:['open','hidden','class']});
-  addEventListener('resize',sched);document.addEventListener('toggle',sched,true)}
+  addEventListener('resize',sched);document.addEventListener('toggle',sched,true);document.addEventListener('scroll',e=>{if(e.target!==document&&v.contains(e.target))sched()},true)}
 function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
   const qhtml=q=>`<div class="rlq" data-n="${q.n}"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<span class="muted small">음성을 듣고 가장 알맞은 응답을 고르세요.</span>'}</div></div>
     <div class="rlopts" role="radiogroup">${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div>
