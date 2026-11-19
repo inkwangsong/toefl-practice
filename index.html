@@ -5192,7 +5192,9 @@ const INK={undo:[],areas:new Set(),lastTap:null};
 function inkPush(f){INK.undo.push(f);if(INK.undo.length>300)INK.undo.shift()}
 function inkTool(t){if(t!=='e')store.set('rlinkprev',t);store.set('rlinkt',t);$$('.rlinkbar [data-ink]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ink===t)));$$('.inkbox').forEach(x=>x.classList.toggle('inkerase',t==='e'));inkFace()}
 /* 펜슬로 빈 곳을 톡톡 두 번 치면 지우개 ↔ 직전 펜 (Apple Pencil 몸통 두 번 탭은 웹에서 받을 수 없어서 화면 두 번 탭으로 해요) */
-function inkTap(x,y){const el=document.elementFromPoint(x,y),inter=el&&el.closest&&el.closest('button,a,label,input,select,textarea,summary,.rlopt,.rlsq,[role=button]');
+/* 보기(라벨·라디오)·문장 넣기 칸 위에서도 두 번 탭이 돼요: 첫 탭은 보기를 고르고, 곧바로 같은 자리를 한 번 더 치면 도구만 바뀌어요(보기는 그대로) */
+function inkTap(x,y){const el=document.elementFromPoint(x,y),soft=el&&el.closest&&el.closest('label,.rlopt,.rlsq,input[type=radio],input[type=checkbox]'),
+    inter=!soft&&el&&el.closest&&el.closest('button,a,input,select,textarea,summary,[role=button]');
   if(inter){INK.lastTap=null;return false}const now=Date.now(),L=INK.lastTap;
   if(L&&now-L.t<420&&Math.hypot(L.x-x,L.y-y)<36){INK.lastTap=null;const cur=store.get('rlinkt','k');inkTool(cur==='e'?store.get('rlinkprev','k'):'e');toast(cur==='e'?'✏️ 펜으로 돌아왔어요':'🧽 지우개로 바꿨어요',1300);return true}
   INK.lastTap={t:now,x,y};return false}
