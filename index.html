@@ -1989,7 +1989,7 @@ function iconSVG(id, size){
 (function(){
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
   const DB='toefl-pack',open=()=>new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{r.result.createObjectStore('meta');r.result.createObjectStore('files')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-  const tx=(db,st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out instanceof IDBRequest?out.result:out);t.onerror=()=>rej(t.error)});
+  const tx=(db,st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out instanceof IDBRequest?out.result:out);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('저장이 취소됐어요'))});
   const getAll=db=>new Promise((res,rej)=>{const t=db.transaction('files');const st=t.objectStore('files'),out={};const c=st.openCursor();c.onsuccess=()=>{const k=c.result;if(k){out[k.key]=k.value;k.continue()}else res(out)};c.onerror=()=>rej(c.error)});
   function boot(meta,files){
     window.SETS=meta.sets;window.MOCKS=meta.mocks;window.WDATA=meta.wdata||{sets:[],ben:{}};window.RLDATA=meta.rldata||{r:[],l:[]};window.VOCA=meta.voca||null;window.RLVX=meta.rlvx||{};window.RLART=meta.rlart||{};if(meta.gkey)window.DEFAULT_GKEY=meta.gkey;window.PLAN=meta.plan||null;window.TTSIX=meta.ttsix||null;window.BG=meta.bg||null;window.PACKURL={};window.PACKBLOB={};
@@ -2058,21 +2058,27 @@ function iconSVG(id, size){
       for(let tr=0;(!b||b.size!==p.size)&&tr<4;tr++){const ac=new AbortController();let wd=0;const kick=()=>{clearTimeout(wd);wd=setTimeout(()=>ac.abort(),45000)};kick();
         try{const r=await ghRaw(p.path,{signal:ac.signal});if(!r.ok)throw new Error(p.path+' '+r.status);
           const rd=r.body&&r.body.getReader?r.body.getReader():null;
-          if(rd){const ch=[];let n=0;for(;;){const {done:d,value}=await rd.read();if(d)break;kick();ch.push(value);n+=value.length;status(`${kind} 받는 중… ${Math.floor((done+n)/total*100)}%`)}b=new Blob(ch)}else b=await r.blob();
-        }catch(e){b=null;if(tr===3)throw new Error(e.name==='AbortError'?'인터넷이 너무 느리거나 끊겼어요':e.message);status(`${kind} 다시 받는 중…`);await new Promise(r=>setTimeout(r,2000))}finally{clearTimeout(wd)}
-        if(b&&b.size===p.size)await tx(db,'c','readwrite',st=>st.put(b,key))}
+          if(rd){const ch=[];let n=0;for(;;){let to;const {done:d,value}=await Promise.race([rd.read(),new Promise((_,rj)=>{to=setTimeout(()=>{try{ac.abort();rd.cancel().catch(()=>{})}catch(_){}rj(new DOMException('stall','AbortError'))},45000)})]).finally(()=>clearTimeout(to));if(d)break;kick();ch.push(value);n+=value.length;status(`${kind} 받는 중… ${Math.floor((done+n)/total*100)}% · ${MB(done+n)} / ${MB(total)}`)}b=new Blob(ch)}else b=await r.blob();
+        }catch(e){b=null;if(e&&e.full)throw e;if(tr===3)throw new Error(e.name==='AbortError'?'인터넷이 너무 느리거나 끊겼어요':e.message);status(`${kind} 다시 받는 중…`);await new Promise(r=>setTimeout(r,2000))}finally{clearTimeout(wd)}
+        if(b&&b.size===p.size)await tx(db,'c','readwrite',st=>st.put(b,key)).catch(e=>{throw full(e)})}
       if(!b||b.size!==p.size)throw new Error('받은 크기가 달라요 ('+p.path+')');
-      done+=p.size;parts.push(b);status(`${kind} 받는 중… ${Math.floor(done/total*100)}%`)}
+      done+=p.size;parts.push(b);status(`${kind} 받는 중… ${Math.floor(done/total*100)}% · ${MB(done)} / ${MB(total)}`)}
     return {blob:new Blob(parts),done}}
+  const MB=n=>Math.round(n/1048576)+'MB';
+  /* 저장 공간이 모자라면 IndexedDB가 조용히 멈추거나 QuotaExceededError를 내요: 알아듣기 쉬운 말로 바꿔요 */
+  const full=e=>{const q=e&&(e.name==='QuotaExceededError'||/quota|space|disk/i.test(String(e&&e.message)));const x=new Error(q?'폰 저장 공간이 부족해요. 사진·동영상이나 안 쓰는 앱을 지워서 1.5GB 정도 비운 다음 다시 시도해 주세요.':(e&&e.message)||'저장하지 못했어요');x.full=q;return x};
+  async function ghDropDl(keys){try{const db=await DLDB();await tx(db,'c','readwrite',st=>keys.forEach(k=>st.delete(k)))}catch(e){}}
   async function ghClearDl(){try{const db=await DLDB();await tx(db,'c','readwrite',st=>st.clear())}catch(e){}}
   /* need: 'pack' | 'voices' | 'both' — 필요한 것만 받아서 기존 불러오기 경로(importPack/importVoices)로 넣어요 */
   async function ghDownload(status,o={}){const man=await ghManifest(),db=await open();
     const pm=await tx(db,'meta','readonly',st=>st.get('pack')),vm=await tx(db,'meta','readonly',st=>st.get('voices'));
     const needP=o.force||!pm||pm.stamp!==man.pack.stamp,needV=man.voices&&(o.force||!vm||vm.stamp!==man.voices.stamp);
     if(!needP&&!needV){status('이미 최신 데이터예요');return false}
-    const total=(needP?man.pack.size:0)+(needV?man.voices.size:0);let base=0;
-    if(needP){const {blob,done}=await ghFile('교재 데이터',man.pack,status,base,total);base=done;await importPack(blob,t=>status('교재 데이터 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}
-    if(needV){const {blob}=await ghFile('목소리',man.voices,status,base,total);await importVoices(blob,t=>status('목소리 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}
+    const total=(needP?man.pack.size:0)+(needV&&!(o.packOnly&&needP)?man.voices.size:0);let base=0;
+    if(needP){const {blob,done}=await ghFile('교재 데이터',man.pack,status,base,total);base=done;
+      try{await importPack(blob,t=>status('교재 데이터 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}catch(e){throw full(e)}
+      await ghDropDl(man.pack.parts.map(p=>p.path))}
+    if(needV&&!(o.packOnly&&needP)){const {blob}=await ghFile('목소리',man.voices,status,base,total);try{await importVoices(blob,t=>status('목소리 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}catch(e){throw full(e)}}
     await ghClearDl();jset(GHMETA,{...jget(GHMETA,{}),dataAt:Date.now(),stamp:man.pack.stamp});
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     if(o.reload!==false){status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600)}return true}
@@ -2173,15 +2179,20 @@ function iconSVG(id, size){
   function showRemote(old){try{splashOff()}catch(e){}
     const d=document.createElement('div');d.className='importer';
     d.innerHTML=`<div class="imp"><img src="icon-192.png" alt="" width="72" height="72" style="border-radius:18px;margin:0 auto 8px;display:block"><h1>TOEFL Practice</h1>
-      <p>${old?'<b>새 교재 데이터가 나왔어요.</b> GitHub 비공개 저장소에서 받고 있어요.':'GitHub 비공개 저장소에서 교재 데이터를 받고 있어요.'} 처음에는 600MB 정도라 와이파이에서 몇 분 걸려요. 중간에 끊겨도 다시 열면 이어서 받아요.</p>
-      <div class="impbar"><i id="ghpg" style="width:0"></i></div><p class="small muted" id="packst">연결하는 중…</p>
+      <p>${old?'<b>새 교재 데이터가 나왔어요.</b> GitHub 비공개 저장소에서 받고 있어요.':'GitHub 비공개 저장소에서 교재 데이터를 받고 있어요.'} 교재 데이터(약 370MB)를 먼저 받고 바로 시작해요. 목소리 녹음(약 250MB)은 앱을 쓰는 동안 뒤에서 받아요. 중간에 끊겨도 다시 열면 받은 데까지 이어서 받아요. 받는 동안 화면을 켜 두세요.</p>
+      <div class="impbar"><i id="ghpg" style="width:0"></i></div><p class="small muted" id="packst">연결하는 중…</p><p class="small" id="ghwarn" hidden style="color:#c2410c"></p>
       <button class="btn" id="ghretry" hidden style="width:100%">다시 시도</button>${old?'<button class="btn" id="packlater" style="width:100%">나중에 · 지금 데이터로 계속</button>':''}
       <button class="btn quiet" id="ghfile" style="width:100%">파일로 불러오기</button></div>`;
     document.body.appendChild(d);
-    const st=t=>{document.getElementById('packst').textContent=t;const m=/(\d+)%/.exec(t);if(m)document.getElementById('ghpg').style.width=m[1]+'%'};
+    let lastAt=Date.now(),busy=false;
+    const st=t=>{lastAt=Date.now();document.getElementById('packst').textContent=t;const m=/(\d+)%/.exec(t);if(m)document.getElementById('ghpg').style.width=m[1]+'%'};
+    /* 60초 넘게 아무 변화가 없으면 멈춘 걸로 보고 '다시 시도'를 보여 줘요 (받은 조각은 남아 있어서 이어서 받아요) */
+    const wd=setInterval(()=>{if(!document.body.contains(d)){clearInterval(wd);return}if(busy&&Date.now()-lastAt>60000){const r=document.getElementById('ghretry');if(r.hidden){r.hidden=false;r.textContent='멈춘 것 같아요 · 이어서 다시 받기';r.dataset.reload='1'}}},5000);
     const lt=document.getElementById('packlater');if(lt)lt.onclick=()=>{d.remove();old()};
     document.getElementById('ghfile').onclick=()=>{d.remove();showImport(old)};
-    const go=async()=>{document.getElementById('ghretry').hidden=true;try{await ghDownload(st)}catch(err){st('받지 못했어요: '+err.message);document.getElementById('ghretry').hidden=false}};
+    const go=async()=>{const r=document.getElementById('ghretry');if(r.dataset.reload){location.reload();return}r.hidden=true;busy=true;
+      try{if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();if(e&&e.quota&&e.quota-e.usage<900*1048576){const w=document.getElementById('ghwarn');w.hidden=false;w.textContent='이 기기에 남은 저장 공간이 적어요 ('+MB(e.quota-e.usage)+'). 받다가 멈추면 공간을 비워 주세요.'}}}catch(_){}
+      try{await ghDownload(st,{packOnly:true})}catch(err){st('받지 못했어요: '+err.message);r.textContent='다시 시도';r.hidden=false}busy=false};
     document.getElementById('ghretry').onclick=go;go();
   }
   document.addEventListener('DOMContentLoaded',async()=>{
