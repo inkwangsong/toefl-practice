@@ -1805,6 +1805,46 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .panel:hover{box-shadow:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 /* @@V4END@@ */
+
+/* ===== 해설 (간결형) ===== */
+.rlexp.xv2{display:block;gap:0;padding:0;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.xv2 .xh{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.xv2 .xs{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--mute) 14%,transparent);color:var(--mute)}
+.xv2.is-ok .xs{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.xv2.is-bad .xs{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.xv2 .xa{font-size:14px;color:var(--ink2,var(--ink))}.xv2 .xa b{font-weight:800;color:var(--ink)}.xv2 .xa i{font-style:normal;color:var(--mute);margin:0 6px}
+.xv2 .xt{margin-left:auto;font-size:12px;color:var(--mute)}
+.xv2 .xk{margin:0;padding:12px 14px 2px;font-size:15px;line-height:1.65;color:var(--ink)}
+.xv2 .xev{margin:10px 14px 2px;padding:9px 12px;border-left:3px solid color-mix(in srgb,var(--accent) 60%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 10px 10px 0}
+.xv2 .xev p{margin:0}.xv2 .xev .en{font-size:14.5px;line-height:1.6;color:var(--ink)}.xv2 .xev .ko{font-size:13px;line-height:1.55;color:var(--mute);margin-top:3px}
+.xv2 .xo{list-style:none;margin:10px 0 0;padding:0 14px 6px}
+.xv2 .xo li{border-top:1px solid var(--line)}
+.xv2 .xrow,.xv2 .xo summary{display:grid;grid-template-columns:26px 1fr;column-gap:8px;row-gap:3px;padding:9px 0;align-items:start}
+.xv2 .xo summary{list-style:none;cursor:pointer;position:relative;padding-right:18px}.xv2 .xo summary::-webkit-details-marker{display:none}
+.xv2 .xo summary::after{content:"";position:absolute;right:4px;top:15px;width:6px;height:6px;border-right:1.6px solid var(--mute);border-bottom:1.6px solid var(--mute);transform:rotate(45deg);transition:transform .15s}
+.xv2 .xo details[open] summary::after{transform:rotate(-135deg);top:18px}
+.xv2 .xl{grid-row:1/3;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:1px solid var(--line2,var(--line));color:var(--mute)}
+.xv2 li.mine .xl{border-color:var(--bad);color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.xv2 .xtg{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-height:24px}
+.xv2 .xtg:empty{display:none}
+.xv2 .xr{font-size:14px;line-height:1.6;color:var(--ink2,var(--ink))}
+.xv2 .xtg:empty+.xr{grid-row:1/3;align-self:center}
+.xv2 .xmore{margin:0 0 10px 34px;font-size:13.5px;line-height:1.6;color:var(--mute)}
+.xv2 .nc{font-size:11.5px;padding:2px 8px;margin:0;letter-spacing:0}
+.xv2 .xtr{font-size:11.5px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 8px;white-space:nowrap}
+.nc-NR{background:#e8f5ef;color:#0f766e}
+:root[data-theme="dark"] .nc-NR{background:#123a33;color:#8fe3cf}
+.xv2 .xd{border-top:1px solid var(--line)}
+.xv2 .xd>summary{cursor:pointer;padding:10px 14px;font-size:13.5px;font-weight:600;color:var(--accent);list-style:none}.xv2 .xd>summary::-webkit-details-marker{display:none}
+.xv2 .xd>summary::before{content:"+";display:inline-block;width:14px;font-weight:700}.xv2 .xd[open]>summary::before{content:"−"}
+.xv2 .xd>*:not(summary){margin-left:14px;margin-right:14px}
+.xv2 .xq{font-size:13.5px;line-height:1.6;margin:0 0 8px;color:var(--ink2,var(--ink))}.xv2 .xq span{display:block;font-size:12px;color:var(--mute);margin-bottom:2px}
+.xv2 .xwl{margin:0 0 12px;padding-left:18px;display:grid;gap:5px}.xv2 .xwl li{font-size:14px;line-height:1.65;color:var(--ink2,var(--ink))}.xv2 .xwl li::marker{color:var(--mute)}
+.xv2 .rlpara{margin:4px 14px 14px;padding:12px 14px}
+.xv2 .rlpara .rlparah{font-size:13px}
+.xv2 q.wen{background:none;border:0;padding:0;font-weight:600}.xv2 q.wen::before{content:"‘"}.xv2 q.wen::after{content:"’"}
+.xv2 .wsx,.xv2 .wsy{padding:0 3px}
+@media (max-width:600px){.rlfb,.rlq.rev .rlexp.xv2{margin-left:0}.xv2 .xk{font-size:14.5px}}
 </style>
 </head>
 <body>
@@ -4870,12 +4910,14 @@ async function rlAudioURL(id){const pb=window.PACKBLOB&&PACKBLOB['audio/'+id+'.m
   if(pb)return URL.createObjectURL(pb);return 'audio/'+id+'.mp3'}
 function rlStopAudio(){if(rlAud){rlAud.pause();rlAud=null}try{if(typeof RLTTS!=='undefined'&&RLTTS.on)rlTtsStop()}catch(e){}}
 async function rlPlayer(host,id,{auto=false,once=false,onEnd}={}){
-  const a=new Audio(await rlAudioURL(id));a.volume=Math.min(1,S.vol??1);rlAud=a;
+  /* 자동 재생은 미리 '열어 둔' 하나의 오디오로 해요: iPhone·iPad Safari는 탭 없이 새 오디오를 틀지 못해서, 실전에서 3초 뒤 자동 시작이 막혔어요 */
+  const url=await rlAudioURL(id);let a;if(auto){a=RLPA||(RLPA=rlUnlockEl(new Audio()));try{a.pause()}catch(e){}a.onplay=a.onpause=a.onended=a.ontimeupdate=a.onerror=null;a.src=url;try{a.currentTime=0}catch(e){}}else a=new Audio(url);
+  a.volume=Math.min(1,S.vol??1);rlAud=a;
   host.innerHTML=`<div class="rlplay"><button class="btn sm" data-a="pp">▶ 재생</button>${once?'':'<button class="btn sm quiet" data-a="stop" aria-label="정지" title="정지 (처음으로)">■ 정지</button>'}<div class="rlbar"><i></i></div><span class="small muted" data-a="tm">0:00</span>${once?'':'<button class="btn sm quiet" data-a="back">↺ 5초</button>'}<span class="rlrate" role="group" aria-label="재생 속도">${RLRATES.map(r=>`<button type="button" data-r="${r}" aria-pressed="${r===rlRate()}">${r.toFixed(1)}×</button>`).join('')}</span></div>`;
   const pp=$('[data-a=pp]',host),bar=$('.rlbar i',host),tm=$('[data-a=tm]',host),f=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
   a.ontimeupdate=()=>{if(a.duration){bar.style.width=(a.currentTime/a.duration*100)+'%';tm.textContent=f(a.currentTime)+' / '+f(a.duration)}};
-  a.onplay=()=>pp.textContent=once?'🔊 재생 중…':'❚❚ 일시정지';a.onpause=()=>pp.textContent='▶ 재생';
-  a.onended=()=>{pp.textContent=once?'✓ 재생 끝':'▶ 다시 듣기';if(once)pp.disabled=true;onEnd&&onEnd()};
+  a.onplay=()=>pp.textContent=once?'재생 중…':'❚❚ 일시정지';a.onpause=()=>pp.textContent='▶ 재생';
+  a.onended=()=>{pp.textContent=once?'재생 끝':'▶ 다시 듣기';if(once)pp.disabled=true;onEnd&&onEnd()};
   pp.onclick=()=>{if(once&&!a.paused)return;a.paused?a.play():a.pause()};
   $('[data-a=stop]',host)?.addEventListener('click',()=>{a.pause();a.currentTime=0;bar.style.width='0%';pp.textContent='▶ 재생';if(a.duration)tm.textContent='0:00 / '+f(a.duration)});
   $('[data-a=back]',host)?.addEventListener('click',()=>a.currentTime=Math.max(0,a.currentTime-5));
@@ -4959,6 +5001,7 @@ const RLAIC=new Map();let RLAIA=null,RLP=null;
 let RLSILU='';const RLSILF=()=>{if(!RLSILU)try{RLSILU=URL.createObjectURL(rlPcmWav(btoa('\0'.repeat(2400))))}catch(e){}return RLSILU};
 const RLUNL=new Set();
 function rlUnlockEl(a){RLUNL.add(a);return a}
+let RLPA=null;try{RLPA=rlUnlockEl(new Audio())}catch(e){}
 function rlAiEl(src){if(!RLP)RLP=rlUnlockEl(new Audio());RLP.onended=RLP.onerror=RLP.onpause=null;RLP.src=src;RLP.preservesPitch=true;return RLP}
 (function(){let spoke=false;const go=()=>{if(!RLP)RLP=rlUnlockEl(new Audio());
     RLUNL.forEach(a=>{if(a.dataset&&a.dataset.unl)return;if(!a.src){try{a.dataset.unl=1;const su=RLSILF();a.src=su;a.play().then(()=>{if(a.src===su)a.pause()}).catch(()=>{if(a.src===su){delete a.dataset.unl;a.removeAttribute('src')}})}catch(e){}}});
@@ -5183,21 +5226,21 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
     rlStopAudio();rlStopSpeak();clearTimeout(st.ct);host.scrollTop=0;tst.querySelector('.tmain').scrollTop=0;
     if(s.audio){$('#rln').disabled=!st.done[s.b.audio];
       host.innerHTML=`<div class="rlaud"><p class="rlah">${esc(s.b.head)}</p><div class="rlpic big">${ICON(s.b.kind==='resp'?'resp':s.b.kind==='conv'?'conv':s.b.kind==='talk'?'talk':'announce')}<span>${s.b.kind==='resp'?'짧은 응답':s.b.kind==='conv'?'대화':s.b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div><p class="small muted">음성은 한 번만 재생돼요. 끝나면 문제가 나와요.</p></div>`;
-      rlNoteAttach(host,'lnote:x:'+s.b.audio,!st.done[s.b.audio]&&!(st.noted=st.noted||{})[s.b.audio]);st.noted[s.b.audio]=1;
-      if(st.done[s.b.audio]){$('#rlpl').innerHTML='<p class="small muted">✓ 재생 완료</p>';return}
+      if(s.b.kind==='talk'){rlNoteAttach(host,'lnote:x:'+s.b.audio,!st.done[s.b.audio]&&!(st.noted=st.noted||{})[s.b.audio]);st.noted[s.b.audio]=1}
+      if(st.done[s.b.audio]){$('#rlpl').innerHTML='<p class="small muted">재생 완료</p>';return}
       const alive=()=>steps[st.i]===s&&document.body.contains(host),pl=$('#rlpl');st.dir=st.dir||{};
       const play=()=>{if(!alive())return;rlPlayer(pl,s.b.audio,{auto:true,once:true,onEnd:()=>{st.done[s.b.audio]=1;$('#rln').disabled=false;setTimeout(()=>{if(steps[st.i]===s){st.i++;show()}},900)}})};
-      const count=n=>{if(!alive())return;if(n<=0)return play();pl.innerHTML=`<div class="rlcount"><b>${n}</b><span>초 뒤 음성이 시작돼요</span><button class="btn sm" data-go>바로 시작 ▶</button></div>`;$('[data-go]',pl).onclick=()=>{clearTimeout(st.ct);play()};st.ct=setTimeout(()=>count(n-1),1000)};
-      if(!st.dir[s.b.kind]&&s.b.head){st.dir[s.b.kind]=1;pl.innerHTML=`<div class="rlcount"><span>🔊 안내를 읽어 드려요…</span><button class="btn sm" data-skip>건너뛰기</button></div>`;let go=false;const next=()=>{if(go)return;go=true;try{rlStopSpeak()}catch(_){}count(3)};$('[data-skip]',pl).onclick=next;
+      const count=n=>{if(!alive())return;if(n<=0)return play();pl.innerHTML=`<div class="rlcount"><b>${n}</b><span>초 뒤 음성이 시작돼요</span><button class="btn sm" data-go>바로 시작</button></div>`;$('[data-go]',pl).onclick=()=>{clearTimeout(st.ct);play()};st.ct=setTimeout(()=>count(n-1),1000)};
+      if(!st.dir[s.b.kind]&&s.b.head){st.dir[s.b.kind]=1;pl.innerHTML=`<div class="rlcount"><span>안내를 읽어 드려요…</span><button class="btn sm" data-skip>건너뛰기</button></div>`;let go=false;const next=()=>{if(go)return;go=true;try{rlStopSpeak()}catch(_){}count(3)};$('[data-skip]',pl).onclick=next;
         rlSayE(s.b.head,rlQVoice(),1).then(next);setTimeout(next,4000+s.b.head.length*120)}
       else count(3);return}
     $('#rln').disabled=false;
     if(isL){const q=s.qs[0],qa=s.b.audio+'_q'+q.n,hasQA=!!((window.AUD&&AUD[qa])||(window.PACKBLOB&&PACKBLOB['audio/'+qa+'.mp3'])),wait=hasQA&&!st.qheard?.[q.n];
       host.innerHTML=`<div class="rlq1"><div class="rlq" data-n="${q.n}"><div class="rlqh"><div>${q.q?rlTx(q.q):'<span class="muted">방금 들은 말에 가장 알맞은 응답을 고르세요.</span>'}</div></div>
-        ${wait?`<p class="small muted rlqwait">🔊 Question ${q.n} …</p>`:''}<div class="rlopts" role="radiogroup" ${wait?'hidden':''}>${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div></div></div>`;
-      $$('.rlopt input',host).forEach(i=>i.onchange=()=>{st.ans[q.n]=+i.value});rlNoteAttach(host,'lnote:x:'+s.b.audio,false);
+        ${wait?`<p class="small muted rlqwait">Question ${q.n} …</p>`:''}<div class="rlopts" role="radiogroup" ${wait?'hidden':''}>${q.o.map((o,k)=>`<label class="rlopt"><input type="radio" name="q${q.n}" value="${k}" ${st.ans[q.n]==k?'checked':''}><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></label>`).join('')}</div></div></div>`;
+      $$('.rlopt input',host).forEach(i=>i.onchange=()=>{st.ans[q.n]=+i.value});if(s.b.kind==='talk')rlNoteAttach(host,'lnote:x:'+s.b.audio,false);
       const readQ=!!q.q&&!st.qheard?.[q.n];
-      if(wait||readQ){if(!wait){$('.rlopts',host).hidden=true;$('.rlq',host).insertAdjacentHTML('beforeend',`<p class="small muted rlqwait">🔊 문제를 읽어 드려요…</p>`)}
+      if(wait||readQ){if(!wait){$('.rlopts',host).hidden=true;$('.rlq',host).insertAdjacentHTML('beforeend',`<p class="small muted rlqwait">문제를 읽어 드려요…</p>`)}
         $('#rln').disabled=true;let shown=false;const rev=()=>{if(shown||steps[st.i]!==s)return;shown=true;(st.qheard=st.qheard||{})[q.n]=1;$('.rlqwait',host)?.remove();const o=$('.rlopts',host);if(o)o.hidden=false;$('#rln').disabled=false};
         const say=()=>{if(shown||steps[st.i]!==s)return;if(!q.q)return rev();rlSayE(String(q.q).replace(/<[^>]+>/g,''),rlQVoice(),1).then(()=>setTimeout(rev,250));setTimeout(rev,5000+String(q.q).length*110)};
         if(wait){const box=document.createElement('div');let said=false;const after=()=>{if(said)return;said=true;setTimeout(say,250)};rlPlayer(box,qa,{auto:true,once:true,onEnd:after}).then(a=>{a.addEventListener('error',after);a.play().catch(()=>setTimeout(after,800))});setTimeout(after,5000)}
@@ -5271,7 +5314,7 @@ function inkDock(){if($('.inkdock'))return;document.body.insertAdjacentHTML('bef
 function inkDockSync(){setTimeout(()=>{for(const a of [...INK.areas])if(!a.alive())INK.areas.delete(a);if(!document.querySelector('.inkbox')&&!PINK.key){$('.inkdock')?.remove();document.body.classList.remove('inkshow')}},250)}
 addEventListener('hashchange',()=>{INK.undo=[];inkDockSync()});
 /* 리스닝 노트: 시험지 옆 메모지처럼 줄 노트. 아래로 쓰면 저절로 길어져요. */
-function rlNoteHTML(){const touch=rlCoarse();return `<div class="lnote"><div class="lnoteh"><b>📝 노트</b><span class="small muted">${touch?'펜슬로 바로 쓰세요. 펜슬이 없으면 ✏️ 도구에서 손가락으로 쓰기를 켜세요.':'마우스·펜으로 쓰거나 아래 칸에 타자로 적어도 돼요.'}</span></div><div class="lnotepad"></div>${touch?'':'<textarea class="lnotetx" rows="3" placeholder="⌨️ 타자로 메모"></textarea>'}</div>`}
+function rlNoteHTML(){const touch=rlCoarse();return `<div class="lnote"><div class="lnoteh"><b>노트</b><span class="small muted">${touch?'펜슬로 바로 쓰세요. 펜슬이 없으면 ✏️ 도구에서 손가락으로 쓰기를 켜세요.':'마우스·펜으로 쓰거나 아래 칸에 타자로 적어도 돼요.'}</span></div><div class="lnotepad"></div>${touch?'':'<textarea class="lnotetx" rows="3" placeholder="⌨️ 타자로 메모"></textarea>'}</div>`}
 function rlNoteAttach(host,key,fresh){host.insertAdjacentHTML('beforeend',rlNoteHTML());const n=host.lastElementChild;
   if(fresh){try{localStorage.removeItem(key);localStorage.removeItem(key+':t')}catch(e){}}
   const ta=$('.lnotetx',n);if(ta){ta.value=store.get(key+':t','');ta.oninput=()=>store.set(key+':t',ta.value)}
@@ -5395,14 +5438,14 @@ function rlBlock(host,sec,b,st,mode){const prac=mode==='prac';
   const isL=sec==='l',side=isL?`<div class="panel ph rllisten"><h3 class="rlhead">${esc(b.head)}</h3><div class="rlpic">${ICON(b.kind==='resp'?'resp':b.kind==='conv'?'conv':b.kind==='talk'?'talk':'announce')}<span>${b.kind==='resp'?'짧은 응답':b.kind==='conv'?'대화':b.kind==='talk'?'강의':'안내 방송'}</span></div><div id="rlpl"></div>${prac?`<details class="rlscript"><summary><b>스크립트 보기</b></summary><div class="rlsctx">${rlScript(b)}</div></details>`:''}</div>`
     :`<div class="panel ph rlpsg ${b.kind}">${prac?rlTtsBar():''}<h3 class="rlhead">${b.kind==='passage'&&!/^\d\d ·/.test(b.head)?'':esc(b.head.replace(/^\d\d · /,''))}</h3>${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext">${b.title||(b.kind==='passage'&&!/^\d\d ·/.test(b.head))?`<h4 class="rltitle">${b.title||esc(b.head)}</h4>`:''}<div class="rlpbody">${rlPassage(b)}</div></div>${prac?`<details class="rlkod"><summary><b>지문 해석 · 어휘 보기</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>`:''}</div>`;
   const allBtn=prac&&b.qs.length>1?`<div class="rlallchk"><button class="btn primary" data-all>✓ 이 지문 전체 채점 <span class="small">(${b.qs.length}문항)</span></button><div class="rlsum" hidden></div></div>`:'';
-  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(prac)inkPage('pink:'+rlInkKey(sec,b).slice(4));if(!isL&&prac)rlInk(null,$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk(null,$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
+  host.innerHTML=`<div class="wsplit rlsplit">${side}<div class="rlqs">${b.qs.map(qhtml).join('')}${allBtn}</div></div>`;rlVocWire(host,sec);if(!isL&&prac)rlTtsWire(host,()=>$$('.rlpbody p',host));if(prac)inkPage('pink:'+rlInkKey(sec,b).slice(4));if(!isL&&prac)rlInk(null,$('.rltext',host),rlInkKey(sec,b));if(isL&&prac){const sc=$('.rlscript',host);if(sc)rlInk(null,$('.rlscript > div.rlsctx',host),'ink:ls:'+b.audio);if(b.kind==='talk')rlNoteAttach($('.rllisten',host),'lnote:p:'+b.audio,false)}
   if(isL){const once=mode==='exam',heard=st.done[b.audio];
     const qs=$('.rlqs',host);if(once&&!heard){qs.classList.add('wait');qs.insertAdjacentHTML('afterbegin','<p class="small muted rlwaitmsg">음성이 끝나면 문제가 열려요.</p>')}
-    if(once&&heard){$('#rlpl',host).innerHTML='<p class="small muted">✓ 이미 들었어요 (실전 모드는 한 번만 재생)</p>'}
+    if(once&&heard){$('#rlpl',host).innerHTML='<p class="small muted">이미 들었어요 (실전 모드는 한 번만 재생)</p>'}
     else rlPlayer($('#rlpl',host),b.audio,{auto:true,once,onEnd:()=>{st.done[b.audio]=1;qs.classList.remove('wait');$('.rlwaitmsg',qs)?.remove()}})}
   $$('.rlopt input',host).forEach(i=>i.onchange=()=>{st.ans[i.name.slice(1)]=+i.value;$$('.rldots button')[set_i(st)]?.classList.toggle('ok',b.qs.every(q=>st.ans[q.n]!=null))});
   if(b.qs.some(q=>q.ins))$$('.rlsq',host).forEach(s=>s.onclick=()=>{const q=b.qs.find(q=>q.ins);st.ans[q.n]=LET.indexOf(s.dataset.x);$$(`input[name=q${q.n}]`,host).forEach(r=>r.checked=+r.value===st.ans[q.n]);$$('.rlsq',host).forEach(x=>x.classList.toggle('on',x===s))});
-  $$('.rlchk',host).forEach(btn=>btn.onclick=()=>{const q=b.qs.find(x=>x.n==btn.dataset.n);if(!btn.dataset.done){btn.dataset.done=1;rlStreak(st,rlCorrect(q,st.ans[q.n]))}$('#fb'+q.n,host).innerHTML=rlQExp(q,st.ans[q.n]);$$(`.rlq[data-n="${q.n}"] .rlopt`,host).forEach((l,k)=>{l.classList.toggle('ans',k===q.a);l.classList.toggle('wrong',k===st.ans[q.n]&&k!==q.a)});
+  $$('.rlchk',host).forEach(btn=>btn.onclick=()=>{const q=b.qs.find(x=>x.n==btn.dataset.n);if(!btn.dataset.done){btn.dataset.done=1;rlStreak(st,rlCorrect(q,st.ans[q.n]))}$('#fb'+q.n,host).innerHTML=rlQExp(q,st.ans[q.n],{l:sec==='l',kind:b.kind});$$(`.rlq[data-n="${q.n}"] .rlopt`,host).forEach((l,k)=>{l.classList.toggle('ans',k===q.a);l.classList.toggle('wrong',k===st.ans[q.n]&&k!==q.a)});
     if(b.qs.every(x=>$('#fb'+x.n,host).innerHTML)&&!$('.rlafter',host)){if(!isL){const d=$('.rlkod',host);if(d)d.open=true;$('.rlpbody',host).innerHTML=rlPassage(b,{reveal:true});$('.rlqs',host).insertAdjacentHTML('beforeend','<div class="rlafter"></div>');rlVocWire(host,sec);return}(isL?$('.rllisten',host):$('.rlqs',host)).insertAdjacentHTML('beforeend',`<div class="rlafter rlexp"><details open><summary><b>${isL?'스크립트 해석':'지문 해석'}</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}</div>`);if(isL){const d=$('.rlscript',host);if(d)d.open=true}rlVocWire(host,sec);if(!isL)$('.rlpbody',host).innerHTML=rlPassage(b,{reveal:true})}})
   rlAllWire(host,b,st)}
 function set_i(st){return st.i}
@@ -5428,7 +5471,7 @@ function rlAllWire(host,b,st){const btn=$('[data-all]',host);if(!btn)return;
     btn.textContent='✓ 채점 완료';btn.disabled=true;sum.scrollIntoView({behavior:'smooth',block:'nearest'})}}
 function rlKo(b){return b.ko?`<div class="rlko">${b.ko.split(/\n+/).map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:'<p class="small muted">해석 준비 중이에요.</p>'}
 function rlScript(b){return esc(b.script).replace(/&lt;(\/?)mark&gt;/g,'<$1mark>').split('\n').map(l=>`<p>${l.replace(/^([MW]):/,'<b>$1</b>')}</p>`).join('')}
-const RLNC={NM:['Not Mentioned','지문에 없는 내용'],NT:['Not True','지문과 다른 내용'],NS:['Not Sufficient','일부만 맞거나 범위가 어긋남']};
+const RLNC={NM:['Not Mentioned','지문·음성에 없는 내용'],NT:['Not True','들은(읽은) 내용과 다름'],NR:['Not Relevant','나오긴 했지만 질문과 상관없음'],NS:['Not Sufficient','일부만 맞거나 범위가 어긋남']};
 function rlNC(c){const v=RLNC[c];return v?`<b class="nc nc-${c}" title="${v[1]}">${v[0]}</b>`:''}
 /* ---- 말 바꾸기(패러프레이즈) 보기 ----------------------------------------
    정답은 거의 언제나 지문 문장을 '다른 말로 바꾼 것'이에요. 어느 자리가 바뀌었는지
@@ -5468,10 +5511,9 @@ function rlParaBox(q){
   const word=kept>0;
   const note=!word?`정답이 지문 단어를 거의 그대로 쓰지 않았어요. 단어가 아니라 <b>뜻</b>으로만 이어지니, 근거 문장을 한국어로 정리한 뒤 선택지를 보세요.`
     :`<ul class="rlparal2"><li><em class="was">노란 말</em> 정답에 없는 지문 말 ${gone}개${gone>changed?` → 다른 말로 바뀐 건 많아야 <em class="now">${changed}개</em>, 나머지 ${gone-changed}개는 <b>빠졌어요</b>`:''}</li>
-      <li>✔ 핵심 단어 ${kept}개는 그대로 남았어요 — 겹치는 단어 수로는 정답·함정을 못 가려요</li>
-      <li>📌 ${gone>changed?'빠진 말이 배경·부연이라 빼도 되는지 확인':'바꾼 말이 지문과 같은 뜻인지 확인'}</li></ul>`;
+      <li>그대로 남은 핵심 단어 ${kept}개</li></ul>`;
   return `<div class="rlpara">
-    <b class="rlparah">🔁 지문과 정답 비교</b>
+    <b class="rlparah">지문 표현과 정답 표현</b>
     <div class="rlparar"><span class="rlparal">지문</span><p>${word?rlPMark(src,aS,'was'):esc(src)}</p></div>
     <div class="rlparar"><span class="rlparal ans">정답</span><p>${word?rlPMark(ans,sS,'now'):esc(ans)}</p></div>
     <div class="rlparan">${note}</div>
@@ -5511,8 +5553,35 @@ function rlWhyHTML(why,ev){const raw=String(why||'').trim();if(!raw)return '';
   const ic=x=>/뼈대|핵심|요지|주제|중심/.test(x)?'🎯':/바꾸|바꿔|바꿨|바뀌|옮기|옮겼|표현했|묶어|풀어 썼/.test(x)?'🔁':/함정|틀린|오답|없어요|아니에요|빠졌/.test(x)?'⚠️':'✔';
   let used=false;
   return `<div class="rlwhy"><b class="rlwhyh">💡 정답 해설</b>${rows.length?`<ul class="rlwl">${rows.map(x=>{const h=rlFmtIn(x,{ev:ev&&!used});if(/class="wev"/.test(h))used=true;return `<li><span class="rli" aria-hidden="true">${ic(x)}</span><div>${h}</div></li>`}).join('')}</ul>`:''}${tip?`<p class="rltip"><b>📌 풀이 요령</b>${rlFmtIn(tip)}</p>`:''}</div>`}
-function rlQExp(q,my){const ok=rlCorrect(q,my);return `<div class="rlexp"><p class="${ok?'okc':'badc'}"><b>${ok?'정답이에요 ✓':my==null?'답하지 않았어요':'오답이에요 ✗'}</b> · 정답 <b>${LET[q.a]}</b>${!ok&&my!=null?` · 내 답 ${LET[my]}`:''} <span class="mtag sm">${esc(q.t)} Question</span></p>
-  ${q.qko?`<p class="small"><b>해석</b> ${esc(q.qko)}</p>`:''}${/Negative/.test(q.t||'')?'':rlEvBox(q.why)+rlParaBox(q)}${q.why?rlWhyHTML(q.why,!/Negative/.test(q.t||'')&&!!rlEvBox(q.why)):''}${q.oko?'<p class="rloxh"><b>선택지별 해설</b></p>':''}${q.oko?`<ul class="rloko">${q.oko.map((o,k)=>`<li class="${k===q.a?'ans':''} ${k===my&&k!==q.a?'mine':''}"><span class="rlL">${LET[k]}</span><div><span>${esc(o)}</span>${q.ox&&q.ox[k]?`<small>${q.oc&&q.oc[k]?rlNC(q.oc[k]):k===q.a?'<b>정답 근거</b>':/Negative/.test(q.t||'')?'<b>지문에 있는 내용</b>':(rlTrap(q.ox[k])||'<b>오답 이유</b>')} ${rlFmtIn(q.ox[k])}</small>`:''}</div></li>`).join('')}</ul>${q.oc?'<p class="nclg small muted">'+Object.entries(RLNC).map(([k,v])=>rlNC(k)+' '+v[1]).join(' · ')+'</p>':''}`:''}</div>`}
+/* ---- 해설 (간결형) ----------------------------------------------------
+   한눈에: 결과 한 줄 → 정답 이유 한두 문장 → 근거 문장 → 오답마다 유형 + 한 줄.
+   긴 해설·말 바꾸기 비교·문제 해석은 '해설 전체'에 접어 둬요.                         */
+const rlSents=t=>String(t||'').trim().split(/(?<=[.!?])\s+(?=[^\s])/).reduce((a,x)=>{const l=a.length-1;if(l>=0&&(a[l].match(/(^|[\s(])'/g)||[]).length>(a[l].match(/'(?=[(\s,.!?·~)가-힣]|$)/g)||[]).length)a[l]+=' '+x;else a.push(x);return a},[]).map(x=>x.trim()).filter(Boolean);
+/* 해설 앞머리에 선택지 영어 문장을 다시 옮겨 적은 부분은 빼요 (위에 이미 보이니까요) */
+const rlStripOpt=t=>{t=String(t||'');const m=/^'([^\n]{4,}?)'\s?(\([^)]{0,90}\))?\s?(은|는|이|가|의|도)\s+/.exec(t);if(m&&/[A-Za-z]/.test(m[1])&&!/[가-힣]/.test(m[1]))t=t.slice(m[0].length);return t.replace(/^[A-D](는|가|도|의)\s+/,'')};
+/* 리스닝 오답 유형: Not Mentioned · Not True · Not Relevant */
+function rlLCat(q,k,kind){const c=q.oc&&q.oc[k],x=String((q.ox||[])[k]||'');
+  if(c==='NM'||c==='NT')return c;if(c==='NS'||kind==='resp')return 'NR';
+  if(/말은 없|언급.{0,6}않|나오지 ?않|한 적(이)? 없|하지 않았|없어요/.test(x))return 'NM';
+  if(/반대|아니라|아니에요|달라요|다르|틀렸/.test(x))return 'NT';return 'NR'}
+/* 짧은 응답(Choose a Response) 함정 이름 */
+function rlRespTrap(x){x=String(x||'');return /발음|소리가 비슷|소리를 이용|소리만/.test(x)?'발음 함정':/시제|시점|과거형|미래/.test(x)?'시점 어긋남':/(Where|When|Who|Why|How|What)[^가-힣]{0,12}(질문|로 물|을 물)/.test(x)?'다른 질문의 답':/연상|떠올리/.test(x)?'연상 함정':/반복|그대로/.test(x)?'같은 단어 반복':/누구인지|주어|he\)|she\)|you\)/.test(x)?'대상 어긋남':''}
+function rlQExp(q,my,ctx={}){const ok=rlCorrect(q,my),L=!!ctx.l,neg=/Negative/.test(q.t||''),ox=q.ox||[];
+  const keyS=rlSents(rlStripOpt(ox[q.a]||'')),key=(keyS.length?keyS:rlSents(q.why)).slice(0,2).join(' ');
+  const ev=neg?'':(()=>{const m=/'([^\n]{20,}?)'\s?\(([^)]{4,})\)/.exec(String(q.why||''));return m&&/[A-Za-z]{3}/.test(m[1])&&!/[가-힣]/.test(m[1])?`<figure class="xev"><p class="en">${esc(m[1])}</p><p class="ko">${esc(m[2])}</p></figure>`:''})();
+  const tag=k=>{if(L){const c=rlLCat(q,k,ctx.kind),t=ctx.kind==='resp'?rlRespTrap(ox[k]):'';return rlNC(c)+(t?`<span class="xtr">${t}</span>`:'')}
+    if(q.oc&&q.oc[k])return rlNC(q.oc[k]);if(neg)return '<span class="xtr">본문에 있음</span>';const t=rlTrap(ox[k]).replace(/<[^>]+>/g,'');return t?`<span class="xtr">${t}</span>`:''};
+  const rows=q.o.map((o,k)=>{if(k===q.a)return '';const ss=rlSents(rlStripOpt(ox[k])),first=ss[0]||'',rest=ss.slice(1).join(' ');
+    const head=`<b class="xl">${LET[k]}</b><span class="xtg">${tag(k)}</span>`;
+    return rest?`<li class="${k===my?'mine':''}"><details><summary>${head}<span class="xr">${rlFmtIn(first)}</span></summary><p class="xmore">${rlFmtIn(rest)}</p></details></li>`
+      :`<li class="${k===my?'mine':''}"><div class="xrow">${head}<span class="xr">${rlFmtIn(first)}</span></div></li>`}).join('');
+  const para=neg||ctx.kind==='resp'?'':(L?rlParaBox(q).replace('class="rlparal">지문<','class="rlparal">스크립트<').replace('지문 표현과 정답 표현','들은 표현과 정답 표현'):rlParaBox(q)),whyS=rlSents(q.why);
+  const full=(q.qko?`<p class="xq"><span>문제 해석</span>${esc(q.qko)}</p>`:'')+(whyS.length?`<ul class="xwl">${whyS.map(x=>`<li>${rlFmtIn(x)}</li>`).join('')}</ul>`:'')+para;
+  return `<div class="rlexp xv2 ${ok?'is-ok':my==null?'is-none':'is-bad'}">
+    <div class="xh"><span class="xs">${ok?'정답':my==null?'미응답':'오답'}</span><span class="xa">정답 <b>${LET[q.a]}</b>${!ok&&my!=null?`<i>·</i>내 답 <b>${LET[my]}</b>`:''}</span><span class="xt">${esc(q.t||'')}</span></div>
+    ${key?`<p class="xk">${rlFmtIn(key)}</p>`:''}${ev}
+    ${ox.length?`<ul class="xo">${rows}</ul>`:''}
+    ${full?`<details class="xd"><summary>해설 전체</summary>${full}</details>`:''}</div>`}
 function rlVocHtml(b,sec){if(!b.vocab?.length)return '';return `<details class="rlvoc"><summary><b>어휘 ${b.vocab.length}개</b> <span class="small muted">☆를 누르면 단어장에 저장</span></summary><ul>${b.vocab.map(([w,k])=>{const on=!!RLH.voc[sec+':'+w];return `<li><button class="star ${on?'on':''}" data-w="${esc(w)}" data-k="${esc(k)}" aria-label="단어장 저장">${on?'★':'☆'}</button><b>${esc(w)}</b><span>${esc(k)}</span>${(()=>{try{const x=(window.RLVX||{})[sec+':'+w.trim()]||{},vm=x.v?vcById(x.v):null,y=vm?vcSynAll(vm):(x.y||[]);return y.length?`<span class="small rlvsyn">≈ ${esc(y.slice(0,4).join(', '))}</span>`:''}catch(e){return ''}})()}</li>`}).join('')}</ul></details>`}
 function rlVocWire(host,sec){$$('.rlvoc .star',host).forEach(s=>s.onclick=()=>{const key=sec+':'+s.dataset.w;if(RLH.voc[key])delete RLH.voc[key];else RLH.voc[key]={sec,w:s.dataset.w,k:s.dataset.k,ts:Date.now()};rlSave();const on=!!RLH.voc[key];s.classList.toggle('on',on);s.textContent=on?'★':'☆'})}
 /* ---- results ---- */
@@ -5524,17 +5593,17 @@ function rlOpenSaved(ts){const r=RLH.hist.find(x=>x.ts===ts);if(!r){view.innerHT
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#${S_.pre}-s-${set.id}">← ${esc(set.title)}</a><h1 style="margin-top:6px">${S_.name} 결과</h1><p>${new Date(r.ts).toLocaleString('ko-KR')} · ${r.mode==='exam'?'실전':'연습'} 모드${r.sec_used!=null?` · ${Math.floor(r.sec_used/60)}분 ${r.sec_used%60}초 사용`:''}</p></div></div>
    <div class="wkstats big"><div class="kpi"><b>${r.ok}/${r.n}</b><span>맞은 문항</span></div><div class="kpi"><b>${Math.round(p*100)}%</b><span>정답률</span></div><div class="kpi"><b>${rlBand(p).toFixed(1)}</b><span>추정 밴드 (1~6, 비공식)</span></div></div>
    <section class="section"><h2>유형별 정답률</h2><div class="panel ph">${Object.entries(byT).map(([t,v])=>`<div class="rltb"><span>${esc(t)}</span><div class="rlbar"><i style="width:${v.ok/v.n*100}%"></i></div><b>${v.ok}/${v.n}</b></div>`).join('')}
-    ${weak.length?`<p class="small" style="margin-top:10px">👉 <b>${weak.slice(0,2).map(w=>esc(w[0])).join(', ')}</b> 유형을 더 연습해 보세요.</p>`:'<p class="small" style="margin-top:10px">👏 모든 유형을 다 맞혔어요.</p>'}</div></section>
+    ${weak.length?`<p class="small" style="margin-top:10px"><b>${weak.slice(0,2).map(w=>esc(w[0])).join(', ')}</b> 유형을 더 연습해 보세요.</p>`:'<p class="small" style="margin-top:10px">모든 유형을 다 맞혔어요.</p>'}</div></section>
    <section class="section"><h2>문항별 리뷰 <span class="small muted">틀린 문항은 펼쳐져 있어요</span></h2><div id="rlrev"></div></section>`;
   const host=$('#rlrev');
   set.blocks.forEach(b=>{const bad=b.qs.some(q=>!rlCorrect(q,my[q.n])),isL=sec==='l';
     const d=el(`<details class="panel ph rlrb" ${bad?'open':''}><summary><b>${b.qs[0].n}${b.qs.length>1?'–'+b.qs[b.qs.length-1].n:''}</b> ${esc(b.head)} <span class="small">${b.qs.map(q=>rlCorrect(q,my[q.n])?'<span class="okc">●</span>':'<span class="badc">●</span>').join('')}</span></summary><div class="rlrbody"></div></details>`);host.appendChild(d);
     const body=$('.rlrbody',d);
     if(b.kind==='cw'){body.innerHTML=`<p class="rlcwt">${rlTx(b.text).replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,a,rest)=>`<b class="cwans">${a}<u>${rest}</u></b>`)}</p>
-      <table class="rlcwtab"><tr><th>#</th><th>정답</th><th>내 답</th></tr>${b.qs.map(q=>`<tr class="${rlCorrect(q,my[q.n])?'':'bad'}"><td>${q.n}</td><td>${esc(q.a)}</td><td>${esc(my[q.n]||'—')}</td></tr>`).join('')}</table><p class="rlwhy">💡 ${esc(b.why||'')}</p><details><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}`}
+      <table class="rlcwtab"><tr><th>#</th><th>정답</th><th>내 답</th></tr>${b.qs.map(q=>`<tr class="${rlCorrect(q,my[q.n])?'':'bad'}"><td>${q.n}</td><td>${esc(q.a)}</td><td>${esc(my[q.n]||'—')}</td></tr>`).join('')}</table><p class="rlwhy">${esc(b.why||'')}</p><details><summary><b>해석</b></summary>${rlKo(b)}</details>${rlVocHtml(b,sec)}`}
     else body.innerHTML=`${isL?`<div id="pl-${b.audio}"></div><details class="rlscript" ${bad?'open':''}><summary><b>스크립트</b> <span class="small muted">형광 표시 = 정답 근거</span></summary><div>${rlScript(b)}</div></details>`:`${rlTtsBar()}${b.subject?`<div class="rlmailh"><b>Subject:</b> ${esc(b.subject)}</div>`:''}<div class="rltext rlpsg ${b.kind}">${b.title?`<h4 class="rltitle">${b.title}</h4>`:''}${rlPassage(b,{reveal:true})}</div>${/<mark/.test(b.text)?'<p class="small muted">형광 표시 = 정답 근거 문장</p>':''}`}
       <details ${bad?'open':''}><summary><b>${isL?'스크립트 해석':'지문 해석'} · 어휘</b></summary>${rlKo(b)}${rlVocHtml(b,sec)}</details>
-      ${b.qs.map(q=>`<div class="rlq rev"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<i class="muted">(음성 질문) '+esc(b.script)+'</i>'}</div></div><div class="rlopts">${q.o.map((o,k)=>`<div class="rlopt ${k===q.a?'ans':''} ${k===my[q.n]&&k!==q.a?'wrong':''}"><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></div>`).join('')}</div>${rlQExp(q,my[q.n])}</div>`).join('')}`;
+      ${b.qs.map(q=>`<div class="rlq rev"><div class="rlqh"><span class="rlqn">${q.n}</span><div>${q.q?rlTx(q.q).replace(/\n/g,'<br>'):'<i class="muted">(음성 질문) '+esc(b.script)+'</i>'}</div></div><div class="rlopts">${q.o.map((o,k)=>`<div class="rlopt ${k===q.a?'ans':''} ${k===my[q.n]&&k!==q.a?'wrong':''}"><span class="rlL">${LET[k]}</span><span>${esc(o)}</span></div>`).join('')}</div>${rlQExp(q,my[q.n],{l:isL,kind:b.kind})}</div>`).join('')}`;
     if(!isL&&b.kind!=='cw')rlTtsWire(body,()=>$$('.rlpsg p',body));
     if(isL)d.addEventListener('toggle',()=>{const h=$('#pl-'+b.audio,d);if(d.open&&h&&!h.innerHTML)rlPlayer(h,b.audio)});
     if(isL&&bad)rlPlayer($('#pl-'+b.audio,d),b.audio);
