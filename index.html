@@ -2052,18 +2052,47 @@ function iconSVG(id, size){
   async function ghManifest(){const r=await ghRaw('manifest.json');if(!r.ok)throw new Error('manifest '+r.status);return r.json()}
   /* 받은 조각은 따로 둔 DB에 쌓아요: 중간에 끊겨도 다음에 이어서 받아요 */
   const DLDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('toefl-dl',1);r.onupgradeneeded=()=>r.result.createObjectStore('c');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-  async function ghFile(kind,man,status,base,total){const db=await DLDB(),parts=[];let done=base;
-    for(const [i,p] of man.parts.entries()){const key=p.path;
-      let b=await tx(db,'c','readonly',st=>st.get(key));
-      for(let tr=0;(!b||b.size!==p.size)&&tr<4;tr++){const ac=new AbortController();let wd=0;const kick=()=>{clearTimeout(wd);wd=setTimeout(()=>ac.abort(),45000)};kick();
-        try{const r=await ghRaw(p.path,{signal:ac.signal});if(!r.ok)throw new Error(p.path+' '+r.status);
-          const rd=r.body&&r.body.getReader?r.body.getReader():null;
-          if(rd){const ch=[];let n=0;for(;;){let to;const {done:d,value}=await Promise.race([rd.read(),new Promise((_,rj)=>{to=setTimeout(()=>{try{ac.abort();rd.cancel().catch(()=>{})}catch(_){}rj(new DOMException('stall','AbortError'))},45000)})]).finally(()=>clearTimeout(to));if(d)break;kick();ch.push(value);n+=value.length;status(`${kind} 받는 중… ${Math.floor((done+n)/total*100)}% · ${MB(done+n)} / ${MB(total)}`)}b=new Blob(ch)}else b=await r.blob();
-        }catch(e){b=null;if(e&&e.full)throw e;if(tr===3)throw new Error(e.name==='AbortError'?'인터넷이 너무 느리거나 끊겼어요':e.message);status(`${kind} 다시 받는 중…`);await new Promise(r=>setTimeout(r,2000))}finally{clearTimeout(wd)}
-        if(b&&b.size===p.size)await tx(db,'c','readwrite',st=>st.put(b,key)).catch(e=>{throw full(e)})}
-      if(!b||b.size!==p.size)throw new Error('받은 크기가 달라요 ('+p.path+')');
-      done+=p.size;parts.push(b);status(`${kind} 받는 중… ${Math.floor(done/total*100)}% · ${MB(done)} / ${MB(total)}`)}
-    return {blob:new Blob(parts),done}}
+  /* 조각 하나(40MB)를 메모리로 받아요. 45초 넘게 아무것도 안 오면 끊고 다시 받아요(최대 4번). */
+  async function ghPart(p,prog){
+    for(let tr=0;;tr++){const ac=new AbortController();let wd=0;const kick=()=>{clearTimeout(wd);wd=setTimeout(()=>ac.abort(),45000)};kick();
+      try{const r=await ghRaw(p.path,{signal:ac.signal});if(!r.ok)throw new Error(p.path+' '+r.status);
+        const rd=r.body&&r.body.getReader?r.body.getReader():null;
+        if(!rd){const u=new Uint8Array(await r.arrayBuffer());if(u.length!==p.size)throw new Error('size');return u}
+        const u=new Uint8Array(p.size);let n=0;
+        for(;;){let to;const {done:d,value}=await Promise.race([rd.read(),new Promise((_,rj)=>{to=setTimeout(()=>{try{ac.abort();rd.cancel().catch(()=>{})}catch(_){}rj(new DOMException('stall','AbortError'))},45000)})]).finally(()=>clearTimeout(to));
+          if(d)break;kick();if(n+value.length>p.size)throw new Error('size');u.set(value,n);n+=value.length;prog(n)}
+        if(n!==p.size)throw new Error('size');return u
+      }catch(e){if(tr>=3)throw new Error(e.name==='AbortError'?'인터넷이 너무 느리거나 끊겼어요':e.message==='size'?'받은 크기가 달라요 ('+p.path+')':e.message);prog(-1);await new Promise(r=>setTimeout(r,2000))}finally{clearTimeout(wd)}}}
+  /* 받으면서 바로 넣어요: 조각마다 그 안에 다 들어온 파일을 꺼내 저장하고, 다음 조각으로 넘어갈 꼬리만 남겨요.
+     큰 묶음 Blob을 다시 자르지 않아서(일부 iPhone Safari에서 여기서 멈췄어요) 빠르고, 저장 공간도 받은 만큼만 써요.
+     어디까지 넣었는지 적어 두니까, 끊겨도 다시 열면 그 조각부터 이어서 받아요. */
+  async function ghStream(kind,label,man,status,base,total){const dl=await DLDB(),db=await open(),K=k=>k+':'+kind;
+    let S=await tx(dl,'c','readonly',s=>s.get(K('st'))),head=null,buf=new Uint8Array(0);
+    if(S&&S.stamp===man.stamp&&S.p>0){head=await tx(dl,'c','readonly',s=>s.get(K('head')));const c=await tx(dl,'c','readonly',s=>s.get(K('carry')));
+      if(head&&c)buf=new Uint8Array(await c.arrayBuffer());else S=null}else S=null;
+    if(!S)S={stamp:man.stamp,p:0,j:0,cs:0};let bs=S.cs;
+    const starts=[];{let o=0;for(const q of man.parts){starts.push(o);o+=q.size}}
+    const say=n=>status(`${label} 받는 중… ${Math.min(99,Math.floor(n/total*100))}% · ${MB(n)} / ${MB(total)}`);
+    for(let i=S.p;i<man.parts.length;i++){
+      const bytes=await ghPart(man.parts[i],n=>n<0?status(`${label} 다시 받는 중…`):say(base+starts[i]+n));
+      if(buf.length){const nb=new Uint8Array(buf.length+bytes.length);nb.set(buf);nb.set(bytes,buf.length);buf=nb}else buf=bytes;
+      let fresh=false;
+      if(!head){if(buf.length<8)continue;const dv=new DataView(buf.buffer,buf.byteOffset,8),mg=String.fromCharCode(buf[0],buf[1],buf[2],buf[3]),hl=dv.getUint32(4,true);
+        if(mg!==(kind==='pack'?'TFPK':'TFVP'))throw new Error('데이터 파일이 아니에요 ('+kind+')');if(buf.length<8+hl)continue;
+        head=JSON.parse(new TextDecoder().decode(buf.subarray(8,8+hl)));head._b=8+hl;fresh=true;
+        if(kind==='pack'){/* 새 교재를 넣기 전에 예전 교재 파일과 정보를 치워요 (목소리 파일은 남겨요) */
+          const vkeep=new Set(((await tx(db,'meta','readonly',st=>st.get('voices')))||{}).names||[]);
+          await tx(db,'meta','readwrite',st=>st.delete('pack'));
+          await new Promise((res,rej)=>{const t=db.transaction('files','readwrite'),c=t.objectStore('files').openCursor();c.onsuccess=()=>{const k=c.result;if(k){if(!String(k.key).startsWith('tts/')&&!vkeep.has(String(k.key)))k.delete();k.continue()}};t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}}
+      const F=head.files,B=head._b;let out=[];
+      const flush=async()=>{if(!out.length)return;const o=out;out=[];await tx(db,'files','readwrite',st=>o.forEach(([n,b])=>st.put(b,n))).catch(e=>{throw full(e)})};
+      while(S.j<F.length){const f=F[S.j],a=B+f.off-bs,e=a+f.len;if(e>buf.length)break;out.push([f.name,new Blob([buf.subarray(a,e)],{type:f.type})]);S.j++;if(out.length>=60)await flush()}
+      await flush();
+      const cut=S.j<F.length?B+F[S.j].off-bs:buf.length;buf=buf.slice(cut);bs+=cut;S.p=i+1;S.cs=bs;
+      await tx(dl,'c','readwrite',s=>{s.put(S,K('st'));s.put(new Blob([buf]),K('carry'));if(fresh)s.put(head,K('head'))}).catch(e=>{throw full(e)});
+      say(base+starts[i]+man.parts[i].size)}
+    if(!head||S.j<head.files.length)throw new Error('데이터를 끝까지 받지 못했어요');
+    return {head,done:async()=>{await tx(dl,'c','readwrite',s=>['st','carry','head'].forEach(k=>s.delete(K(k))))}}}
   const MB=n=>Math.round(n/1048576)+'MB';
   /* 저장 공간이 모자라면 IndexedDB가 조용히 멈추거나 QuotaExceededError를 내요: 알아듣기 쉬운 말로 바꿔요 */
   const full=e=>{const q=e&&(e.name==='QuotaExceededError'||/quota|space|disk/i.test(String(e&&e.message)));const x=new Error(q?'폰 저장 공간이 부족해요. 사진·동영상이나 안 쓰는 앱을 지워서 1.5GB 정도 비운 다음 다시 시도해 주세요.':(e&&e.message)||'저장하지 못했어요');x.full=q;return x};
@@ -2072,14 +2101,17 @@ function iconSVG(id, size){
   /* need: 'pack' | 'voices' | 'both' — 필요한 것만 받아서 기존 불러오기 경로(importPack/importVoices)로 넣어요 */
   async function ghDownload(status,o={}){const man=await ghManifest(),db=await open();
     const pm=await tx(db,'meta','readonly',st=>st.get('pack')),vm=await tx(db,'meta','readonly',st=>st.get('voices'));
-    const needP=o.force||!pm||pm.stamp!==man.pack.stamp,needV=man.voices&&(o.force||!vm||vm.stamp!==man.voices.stamp);
+    const needP=o.force||!pm||pm.stamp!==man.pack.stamp,needV=man.voices&&(o.force||!vm||vm.stamp!==man.voices.stamp),doV=needV&&!(o.packOnly&&needP);
     if(!needP&&!needV){status('이미 최신 데이터예요');return false}
-    const total=(needP?man.pack.size:0)+(needV&&!(o.packOnly&&needP)?man.voices.size:0);let base=0;
-    if(needP){const {blob,done}=await ghFile('교재 데이터',man.pack,status,base,total);base=done;
-      try{await importPack(blob,t=>status('교재 데이터 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}catch(e){throw full(e)}
-      await ghDropDl(man.pack.parts.map(p=>p.path))}
-    if(needV&&!(o.packOnly&&needP)){const {blob}=await ghFile('목소리',man.voices,status,base,total);try{await importVoices(blob,t=>status('목소리 넣는 중… '+t.replace(/^불러오는 중… /,'')),{reload:false})}catch(e){throw full(e)}}
-    await ghClearDl();jset(GHMETA,{...jget(GHMETA,{}),dataAt:Date.now(),stamp:man.pack.stamp});
+    /* 예전 방식으로 받아 둔 40MB 조각들이 남아 있으면 공간만 차지해요: 먼저 치워요 */
+    try{const dl=await DLDB();await new Promise((res,rej)=>{const t=dl.transaction('c','readwrite'),c=t.objectStore('c').openCursor();c.onsuccess=()=>{const k=c.result;if(k){if(String(k.key).startsWith('d/'))k.delete();k.continue()}};t.oncomplete=res;t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}catch(_){}
+    const total=(needP?man.pack.size:0)+(doV?man.voices.size:0);let base=0;
+    if(needP){const r=await ghStream('pack','교재 데이터',man.pack,status,base,total),head=r.head;base+=man.pack.size;status('교재 데이터 정리하는 중…');
+      await tx(db,'meta','readwrite',st=>st.put({sets:head.sets,mocks:head.mocks,wdata:head.wdata||null,rldata:head.rldata||null,voca:head.voca||null,rlvx:head.rlvx||null,rlart:head.rlart||null,gkey:head.gkey||'',plan:head.plan||null,ttsix:head.ttsix||null,bg:head.bg||null,v:head.v,stamp:head.stamp||null,at:Date.now()},'pack')).catch(e=>{throw full(e)});
+      await r.done()}
+    if(doV){const r=await ghStream('voices','목소리',man.voices,status,base,total),F=r.head.files;
+      await tx(db,'meta','readwrite',st=>st.put({n:F.length,stamp:r.head.stamp||null,names:F.map(f=>f.name),at:Date.now()},'voices')).catch(e=>{throw full(e)});await r.done()}
+    jset(GHMETA,{...jget(GHMETA,{}),dataAt:Date.now(),stamp:man.pack.stamp});
     try{navigator.storage&&navigator.storage.persist&&await navigator.storage.persist()}catch(_){}
     if(o.reload!==false){status('완료! 앱을 다시 여는 중…');setTimeout(()=>location.reload(),600)}return true}
 
@@ -2182,8 +2214,9 @@ function iconSVG(id, size){
       <p>${old?'<b>새 교재 데이터가 나왔어요.</b> GitHub 비공개 저장소에서 받고 있어요.':'GitHub 비공개 저장소에서 교재 데이터를 받고 있어요.'} 교재 데이터(약 370MB)를 먼저 받고 바로 시작해요. 목소리 녹음(약 250MB)은 앱을 쓰는 동안 뒤에서 받아요. 중간에 끊겨도 다시 열면 받은 데까지 이어서 받아요. 받는 동안 화면을 켜 두세요.</p>
       <div class="impbar"><i id="ghpg" style="width:0"></i></div><p class="small muted" id="packst">연결하는 중…</p><p class="small" id="ghwarn" hidden style="color:#c2410c"></p>
       <button class="btn" id="ghretry" hidden style="width:100%">다시 시도</button>${old?'<button class="btn" id="packlater" style="width:100%">나중에 · 지금 데이터로 계속</button>':''}
-      <button class="btn quiet" id="ghfile" style="width:100%">파일로 불러오기</button></div>`;
+      <button class="btn quiet" id="ghfile" style="width:100%">파일로 불러오기</button><button class="btn quiet" id="ghreset" style="width:100%">처음부터 다시 받기</button></div>`;
     document.body.appendChild(d);
+    document.getElementById('ghreset').onclick=async()=>{await ghClearDl();location.reload()};
     let lastAt=Date.now(),busy=false;
     const st=t=>{lastAt=Date.now();document.getElementById('packst').textContent=t;const m=/(\d+)%/.exec(t);if(m)document.getElementById('ghpg').style.width=m[1]+'%'};
     /* 60초 넘게 아무 변화가 없으면 멈춘 걸로 보고 '다시 시도'를 보여 줘요 (받은 조각은 남아 있어서 이어서 받아요) */
