@@ -1879,6 +1879,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .xv2 .wsx,.xv2 .wsy{padding:0 3px}
 @media (max-width:600px){.rlfb,.rlq.rev .rlexp.xv2{margin-left:0}.xv2 .xk{font-size:14.5px}}
 
+/* 아이패드·데스크톱: 알약 묶음은 상자 없이 그냥 통과(탭이 원래 자리에 그대로 놓여요) */
+@media (min-width:701px){.btpill{display:contents}}
 /* 폰: 하단 메뉴 = 둥근 ← 버튼 + 알약 탭 묶음. 풀이 중엔 ✕ · ‹ · 다음 */
 @media (max-width:700px){
 .btabs{display:flex;align-items:center;gap:12px;padding:6px 20px 24px;background:transparent;border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
