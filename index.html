@@ -1482,7 +1482,7 @@ html,body{overflow-x:clip;overscroll-behavior-x:none}   /* clip(hidden 아님): 
   .btabs .emj{font-size:20px;line-height:24px;height:24px;display:block;filter:grayscale(1);opacity:.75}.btabs a[aria-current="page"] .emj{filter:none;opacity:1}
   @media (max-width:420px){.btabs a{font-size:11px;letter-spacing:-.02em;white-space:nowrap}}
   .gear{display:inline-grid}
-  main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+  main{padding-bottom:88px}
 }
 @media (max-width:720px){
   .btabs a{font-size:12px}
@@ -1881,36 +1881,41 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 
 /* 폰: 하단 메뉴 = 둥근 ← 버튼 + 알약 탭 묶음. 풀이 중엔 ✕ · ‹ · 다음 */
 @media (max-width:700px){
-.btabs{display:flex;align-items:center;gap:10px;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));background:transparent;border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
+.btabs{display:flex;align-items:center;gap:10px;padding:6px 12px 10px;background:transparent;border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none;
+    --glass:rgba(255,255,255,.58);--glass-line:rgba(255,255,255,.75);--glass-hi:rgba(255,255,255,.9);--glass-sh:0 14px 36px -14px rgba(0,0,0,.4),0 2px 8px -4px rgba(0,0,0,.18)}
+  :root[data-theme="dark"] .btabs{--glass:rgba(28,31,40,.55);--glass-line:rgba(255,255,255,.14);--glass-hi:rgba(255,255,255,.22);--glass-sh:0 14px 36px -14px rgba(0,0,0,.8),0 2px 8px -4px rgba(0,0,0,.5)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="soft"]):not([data-theme="cute"]) .btabs{--glass:rgba(28,31,40,.55);--glass-line:rgba(255,255,255,.14);--glass-hi:rgba(255,255,255,.22);--glass-sh:0 14px 36px -14px rgba(0,0,0,.8),0 2px 8px -4px rgba(0,0,0,.5)}}
 .btabs>*{pointer-events:auto}
-.btabs .bt-back{flex:0 0 62px;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;padding:0;gap:0;color:var(--ink);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 10px 28px -14px rgba(0,0,0,.45)}
+.btabs .bt-back{flex:0 0 62px;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;padding:0;gap:0;color:var(--ink);background:var(--glass);backdrop-filter:blur(28px) saturate(1.7);-webkit-backdrop-filter:blur(28px) saturate(1.7);border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 rgba(0,0,0,.05),var(--glass-sh)}
 .btabs .bt-back .t{display:none}.btabs .bt-back .i{width:26px;height:26px}
-.btpill{flex:1;min-width:0;display:flex;align-items:stretch;height:62px;padding:0 10px;border-radius:31px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 10px 28px -14px rgba(0,0,0,.45);overflow:hidden}
+.btpill{flex:1;min-width:0;display:flex;align-items:center;height:62px;padding:0 6px;border-radius:31px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;background:var(--glass);backdrop-filter:blur(28px) saturate(1.7);-webkit-backdrop-filter:blur(28px) saturate(1.7);border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 rgba(0,0,0,.05),var(--glass-sh)}
 .btpill::-webkit-scrollbar{display:none}
 .btpill.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
-.btpill>a{flex:1 0 auto;min-width:68px;padding:0 6px;justify-content:center;gap:4px;font-size:13px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:center}
+.btpill>a{flex:1 0 auto;min-width:68px;height:52px;padding:0 6px;border-radius:26px;justify-content:center;gap:3px;font-size:12.5px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:center;color:var(--ink2,var(--mute))}
+.btpill>a[aria-current="page"]{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .btpill>a .i{width:26px;height:26px}
 .btpill>a[data-home]{display:none}   /* 폰에서는 '메인' 탭을 빼요: 둥근 ‹ 로 돌아가면 되니까요 */
 .btpill>a .emj{font-size:21px;line-height:26px;height:26px}
 /* 풀이 중 */
 .btabs.runctl .btpill>a:not(.bt-prev):not(.bt-next){display:none}
 .btabs.runctl .btpill{padding:4px;gap:6px}
-.btabs.runctl .bt-prev{flex:0 0 54px;min-width:0;border-radius:50%;background:var(--sunken,var(--paper));color:var(--ink)}
+.btabs.runctl .btpill>a{height:54px}
+.btabs.runctl .bt-prev{flex:0 0 54px;min-width:0;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
 .btabs.runctl .bt-prev .i{width:24px;height:24px}
-.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:27px;background:var(--accent);color:#fff;font-size:16px;font-weight:700}
+.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:27px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-2px}
 .btabs.runctl .bt-next.final{background:var(--ok)}
 .btabs.runctl .dis{opacity:.35;pointer-events:none}
 .btabs.runctl a:active{transform:scale(.97)}
 .rlrun .wbar #rln,.rlrun .wbar #rlb{display:none}
 /* 실전 시험 아래쪽 Back·Next: 같은 규칙 (← 둥근 버튼, Next 알약) */
-.tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;align-items:center;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));background:transparent;pointer-events:none}
+.tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;align-items:center;padding:6px 12px 10px;background:transparent;pointer-events:none}
 .tfoot>*{pointer-events:auto}
-.tfb{height:62px;border-radius:31px;font:700 15px var(--ui);letter-spacing:-.01em;border:1px solid #d5d9df;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#1f2430;box-shadow:0 10px 28px -14px rgba(0,0,0,.45)}
+.tfb{height:62px;border-radius:31px;font:700 15px var(--ui);letter-spacing:-.01em;border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.6);backdrop-filter:blur(28px) saturate(1.7);-webkit-backdrop-filter:blur(28px) saturate(1.7);color:#1f2430;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 14px 36px -14px rgba(0,0,0,.4)}
 .tfb:not(.primary){flex:0 0 62px;width:62px;font-size:0;display:grid;place-items:center;padding:0}
 .tfb:not(.primary)::before{content:"";width:11px;height:11px;border-left:2.2px solid currentColor;border-bottom:2.2px solid currentColor;transform:translateX(3px) rotate(45deg)}
 .tfb.primary{flex:1;background:#1d4ed8;color:#fff;border-color:#1d4ed8}.tfb:disabled{opacity:.55;color:#9aa1ab}
-#test.has-tfoot .tmain{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+#test.has-tfoot .tmain{padding-bottom:84px}
 }
 </style>
 </head>
@@ -3051,6 +3056,7 @@ function navBack(){if(document.body.classList.contains('testing'))return;toggleL
 /* 하단 메뉴를 두 덩어리로: 둥근 ← 버튼 + 알약 모양 탭 묶음 (폰에서만 그렇게 보여요) */
 function btPill(){const t=$('.btabs');if(!t)return;let p=$('.btpill',t);if(!p){p=document.createElement('div');p.className='btpill';t.appendChild(p)}
   [...t.children].forEach(c=>{if(c!==p&&!c.classList.contains('bt-back'))p.appendChild(c)});if(t.lastElementChild!==p)t.appendChild(p);
+  if(!p.querySelector('a[aria-current]')){const h=location.hash||'#start';p.querySelectorAll('a[href^="#"]').forEach(a=>{if(a.getAttribute('href')===h)a.setAttribute('aria-current','page')})}
   const more=()=>p.classList.toggle('more',p.scrollWidth-p.clientWidth-p.scrollLeft>4);if(!p.dataset.w){p.dataset.w=1;p.addEventListener('scroll',more,{passive:true});addEventListener('resize',more)}requestAnimationFrame(more)}
 function btabsDecor(){const t=$('.btabs');if(!t)return;if(t.querySelector('.bt-back')){btPill();return}const h=location.hash.slice(1);if(h===''||h==='start'){btPill();return}
   const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
