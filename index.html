@@ -827,6 +827,14 @@ main{margin-inline:auto}
 .rlrate button{border:0;background:transparent;padding:4px 8px;border-radius:7px;font:600 14px var(--mono);color:var(--mute)}
 .rlrate button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .rlplay{flex-wrap:wrap}
+/* 재생기: 시간 글자가 바뀌어도 자리가 흔들리지 않게 — 숫자 폭 고정, 좁은 화면에선 두 줄 고정 배치 */
+.rlplay [data-a=tm]{font-variant-numeric:tabular-nums;min-width:8.2ch;text-align:right;white-space:nowrap}
+@media (max-width:600px){
+  .rlplay{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"pp stop bar tm" "back fwd rate rate";column-gap:8px;row-gap:10px;align-items:center}
+  .rlplay [data-a=pp]{grid-area:pp}.rlplay [data-a=stop]{grid-area:stop}.rlplay .rlbar{grid-area:bar;min-width:0}.rlplay [data-a=tm]{grid-area:tm}
+  .rlplay [data-a=back]{grid-area:back}.rlplay [data-a=fwd]{grid-area:fwd}.rlplay .rlrate{grid-area:rate;justify-self:end}
+  .rlplay:not(:has([data-a=stop])){grid-template-areas:"pp bar bar tm" "rate rate rate rate"}
+}
 .rltts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 10px}
 .inkbox{position:relative}.inkcv{position:absolute;left:0;top:0;pointer-events:none;z-index:2}.inkbox.inkmouse{cursor:crosshair;-webkit-user-select:none;user-select:none}
 .rlinkbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px;padding:6px 8px;border:1px solid var(--line);border-radius:12px;background:var(--sunken,var(--paper))}
