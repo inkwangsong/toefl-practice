@@ -137,7 +137,8 @@ main{width:100%;max-width:1120px;padding-block:26px 80px;padding-left:max(24px,e
 .btabs,.mbrand,.gear,.sheetclose{display:none}
 @media (max-width:720px){
   body{font-size:16px}
-  .lnb,.lnbscrim,.lnbscrim.open,.menubtn,.envchip span{display:none!important}
+  /* 폰: 왼쪽 메뉴는 평소엔 숨기고, 하단 '문제 목록'으로 열 때만 서랍처럼 나와요 */
+  .lnb:not(.open),.lnbscrim:not(.open),.menubtn,.envchip span{display:none!important}
   .mbrand{display:inline-flex}.mbrand .mk{width:28px;height:28px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 13px var(--mono)}
   .gear{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;text-decoration:none;color:var(--ink);font-size:20px;margin-left:4px}
   .envchip{margin-left:auto;padding:6px}
@@ -3020,7 +3021,7 @@ function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))ret
   const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
   t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back" role="button" aria-label="이전 화면">${ICON('back')}이전</a><a href="#start" class="bt-dash" aria-label="대시보드로">${ICON('grid')}대시보드</a>`);
   setTimeout(btBackFace,0);
-  if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
+  if(/^#(rd|rb|ls|vc|w|home)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
 /* 풀이 화면에서는 하단 버튼 이름을 '나가기'로 바꿔 보여 줘요 */
 function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';runTabs(run);if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'나가기':ICON('back')+'이전';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
 /* 폰에서 문제를 푸는 동안은 하단 메뉴가 풀이 조작(나가기 · 이전 · 다음)으로 바뀌어요: 위쪽의 작은 Next까지 손이 안 닿아서요 */
