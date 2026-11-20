@@ -755,7 +755,8 @@ span.wen{font-weight:600;color:var(--ink)}.wko{color:var(--mute);font-size:13px;
 .wto{line-height:1.7}
 .wedit{border:1px solid #c9cfc8;border-radius:10px;overflow:hidden;background:#fff}
 .wtools{display:flex;gap:6px;align-items:center;padding:8px;background:#f2f3f2;border-bottom:1px solid #c9cfc8}.wtb{padding:5px 12px;border:1px solid #b9c0b9;border-radius:6px;background:#dfe3df;font:inherit;font-size:15px;cursor:pointer;color:#111}
-.wwc{margin-left:auto;font-size:15px}
+.wwc{margin-left:auto;font-size:15px;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+@media (max-width:600px){.wtools{flex-wrap:wrap}.wwc{flex-basis:100%;margin-left:0;justify-content:flex-end;font-size:13px}}
 #wta{border:0;border-radius:0;min-height:320px;background:#fff;color:#111}
 .wpost{display:flex;gap:12px;margin-bottom:14px}.wpost .av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;background:#334155}.wpost .av.s0{background:#a3123a}.wpost .av.s1{background:#1d4ed8}.wpost p{margin:4px 0 0;line-height:1.6;font-size:18px}
 .wring{position:relative;width:150px;height:150px;flex:none;margin:0 auto}.wring svg{width:100%;height:100%;transform:rotate(-90deg)}.wring circle{fill:none;stroke-width:10}.wring .rbg{stroke:var(--line)}.wring .rfg{stroke:var(--accent);stroke-linecap:round}.wring .rv{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.wring .rv b{font-size:28px}.wring .rv span{font-size:14px;color:var(--mute)}
@@ -929,6 +930,8 @@ button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
 :root[data-theme="dark"] .vcart{background:radial-gradient(circle at 50% 40%,#2a3150 0,#1b2135 72%)}
 .art-box{position:relative;display:inline-block;flex-shrink:0;vertical-align:middle}.art-e{position:absolute;line-height:1;transform:translate(-50%,-50%);white-space:nowrap;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;pointer-events:none}.art-s{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 @media (max-width:720px){.vcart{width:180px;height:180px}.vcart .art-box{transform:scale(.85)}}
+@media (max-width:720px) and (max-height:900px){.vcstage .vcf .vcart{width:132px;height:132px;border-radius:22px}.vcstage .vcf .vcart .art-box{transform:scale(.62)}.vcstage>.vccard{padding:18px 18px 22px;min-height:0}}
+@media (max-width:520px){.vcfilt{flex-wrap:wrap;overflow:visible}.vcfilt button{flex-shrink:1}}
 
 /* ===== v20 theme: dark premium (glass cards · violet/lime neon) — exam screens keep the ETS light look ===== */
 :root[data-theme="dark"]{--paper:#090b12; --surface:#121624; --ink:#eeedf7; --mute:#9ba1b9; --line:#20253a; --line2:#2d3350;
@@ -1193,7 +1196,8 @@ body.navmin main{max-width:1500px}
 .hmsp{display:grid;gap:4px}.hmspark{width:100%;height:42px;display:block}.hmspark.empty{height:42px;display:grid;place-items:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
 .hmcard footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hmnext{background:var(--sc)!important;color:#fff!important;border-color:transparent!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hmact{overflow-x:auto}.hmtbl{display:grid;gap:5px;min-width:calc(140px + var(--n,21) * 27px)}
+.hmact{overflow:hidden}.hmscroll{overflow-x:auto;scrollbar-width:thin;margin:0 -6px;padding:0 6px}.hmtbl{display:grid;gap:5px;min-width:calc(140px + var(--n,21) * 27px)}
+.hmrow>span:first-child{position:sticky;left:0;z-index:1;background:var(--surface);padding-right:6px;box-shadow:6px 0 6px -6px rgba(0,0,0,.18)}.hmhead>span:first-child{box-shadow:none}
 .hmrow{display:grid;grid-template-columns:130px repeat(var(--n,21),minmax(22px,1fr));gap:5px;align-items:center}
 .hmrow>span:first-child{font-size:15px;font-weight:600;white-space:nowrap}
 .hmhead span{font-size:12px;color:var(--mute);text-align:center}.hmhead .sun{color:#e5484d}.hmhead .hmtd{color:var(--accent);font-weight:800}
@@ -1453,6 +1457,7 @@ html,body{overflow-x:clip;overscroll-behavior-x:none}   /* clip(hidden 아님): 
   .btabs a[aria-current="page"] .i{stroke-width:2}
   .btabs .bt-back{color:var(--ink2,var(--mute))}
   .btabs .bt-dash{color:var(--ink2,var(--mute))}
+  .btabs .emj{font-size:20px;line-height:24px;height:24px;display:block;filter:grayscale(1);opacity:.75}.btabs a[aria-current="page"] .emj{filter:none;opacity:1}
   @media (max-width:420px){.btabs a{font-size:11px;letter-spacing:-.02em;white-space:nowrap}}
   .gear{display:inline-grid}
   main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
@@ -1688,6 +1693,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .badc,.rlopt.wrong{--tone:var(--bad)}
 .rlopt.ans{background:color-mix(in srgb,var(--ok) 10%,transparent);border-color:color-mix(in srgb,var(--ok) 42%,transparent)}
 .rlopt.wrong{background:color-mix(in srgb,var(--bad) 9%,transparent);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+/* 채점 뒤에는 고른 답의 강조색보다 정답(초록)·오답(빨강) 표시가 우선이에요 */
+.rlopt.ans:has(input:checked){border-color:color-mix(in srgb,var(--ok) 60%,transparent);background:color-mix(in srgb,var(--ok) 12%,transparent)}.rlopt.wrong:has(input:checked){border-color:color-mix(in srgb,var(--bad) 55%,transparent);background:color-mix(in srgb,var(--bad) 10%,transparent)}
+.rlopt.ans:has(input:checked) .rlL{background:#2a9d5c;border-color:#2a9d5c;color:#fff}.rlopt.wrong:has(input:checked) .rlL{background:#d33;border-color:#d33;color:#fff}
 .okc{color:var(--ok)}.badc{color:var(--bad)}
 /* 밴드 점수는 1~6 색 눈금을 그대로 */
 .rlsumv,.scoreband{letter-spacing:-.04em}
@@ -3496,7 +3504,7 @@ function rstCount(g){try{if(g.rl)return store.get('rlhist',[]).filter(h=>h.sec==
   if(g.k==='star')return Object.keys(store.get('rlvoc',{})).length;if(g.k==='plan')return store.get('plan',null)?1:0;if(g.k==='bg')return Object.keys(store.get('bgseen',{})).length;if(g.k==='ink')return rstKeys(g).length}catch(e){}return 0}
 function rstHTML(){const bak=store.get('gh:bak',null),old=bak&&Date.now()-bak.at<7*864e5;
   return `<div class="field rstf"><label>학습 기록 초기화</label><div class="hint">지울 기록을 고르세요. 설정과 템플릿 페르소나는 그대로 남아요.</div>
-    <div class="rstl">${RSTG.map(g=>{const n=rstCount(g);return `<label class="rsti ${n?'':'muted'}"><input type="checkbox" data-rst="${g.k}" ${n?'':'disabled'}> <span>${esc(g.t)}</span><span class="small mono muted">${n?n+'개':'없음'}</span></label>`}).join('')}</div>
+    <div class="rstl">${RSTG.map(g=>{const n=rstCount(g);return `<label class="rsti ${n?'':'muted'}"><input type="checkbox" data-rst="${g.k}" ${n?'':'disabled'}> <span>${esc(g.t)}</span><span class="small mono muted">${n?n+'개':'0개'}</span></label>`}).join('')}</div>
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm" id="rstall">전체 선택</button><button class="btn sm danger" id="rstgo" disabled>선택한 기록 지우기</button>${old?`<button class="btn sm quiet" id="rstundo">↶ 방금 지운 기록 되돌리기 (${new Date(bak.at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})})</button>`:''}</div>
     <div class="hint" id="rstst"></div></div>`}
 function rstWire(){const st=t=>{const e=$('#rstst');if(e)e.textContent=t},sel=()=>$$('[data-rst]:checked').map(x=>RSTG.find(g=>g.k===x.dataset.rst));
@@ -3520,6 +3528,7 @@ function rstWire(){const st=t=>{const e=$('#rstst');if(e)e.textContent=t},sel=()
 /* ---------- settings ---------- */
 function renderSettings(){
   setCrumb(['내 학습','설정']);
+  {const t=$('.btabs');if(t)t.innerHTML=`<a href="#settings" aria-current="page">${ICON('gear')}설정</a><a href="#history">${ICON('list')}스피킹 기록</a>`}
   const e=envState();
   view.innerHTML=`<div class="cathead"><div><h1>설정</h1></div></div>
   <div class="panel form">
@@ -4607,8 +4616,8 @@ function renderWHist(){
   setCrumb(['Writing','응시 기록']);
   const H=[...W.hist].reverse();
   view.innerHTML=`<div class="cathead"><div><h1>Writing 응시 기록</h1><p>행을 누르면 그때의 답안과 채점·첨삭을 다시 볼 수 있어요.</p></div></div>
-    <div class="panel"><table class="htab"><thead><tr><th>날짜</th><th>시험</th><th>Task 1</th><th>Task 2</th><th>Task 3</th><th>밴드</th></tr></thead><tbody>
-    ${H.map(h=>`<tr class="wrow" tabindex="0" data-ts="${h.ts}"><td>${new Date(h.ts).toLocaleDateString()}</td><td>${esc(h.title)}${h.partial?' <span class="small muted">(중간 종료)</span>':''}</td><td class="mono">${h.t1?h.t1.c+'/'+h.t1.n:'–'}</td><td class="mono">${h.t2??'–'}</td><td class="mono">${h.t3??'–'}</td><td class="mono">${h.band?h.band.toFixed(1):'–'}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">아직 기록이 없어요.</td></tr>'}</tbody></table></div>`;
+    ${H.length?`<div class="panel"><table class="htab"><thead><tr><th>날짜</th><th>시험</th><th>Task 1</th><th>Task 2</th><th>Task 3</th><th>밴드</th></tr></thead><tbody>
+    ${H.map(h=>`<tr class="wrow" tabindex="0" data-ts="${h.ts}"><td>${new Date(h.ts).toLocaleDateString()}</td><td>${esc(h.title)}${h.partial?' <span class="small muted">(중간 종료)</span>':''}</td><td class="mono">${h.t1?h.t1.c+'/'+h.t1.n:'–'}</td><td class="mono">${h.t2??'–'}</td><td class="mono">${h.t3??'–'}</td><td class="mono">${h.band?h.band.toFixed(1):'–'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">아직 기록이 없어요. 모의고사를 한 번 풀면 여기에 쌓여요.</div>'}`;
   $$('.wrow').forEach(r=>{r.onclick=()=>location.hash='w-r-'+r.dataset.ts;r.onkeydown=e=>{if(e.key==='Enter')r.click()}});
 }
 
@@ -5000,8 +5009,8 @@ function rlTtsBar(lbl='지문 듣기'){return `<div class="rltts"><button type="
   <p class="rlvhint small muted" hidden></p></div>`}
 /* the hint only appears when something is missing, so the bar stays small */
 function rlPvUI(bar){const v=rlPV(),h=$('.rlvhint',bar),sel=$('[data-pvs]',bar);if(sel)sel.value=v;if(!h)return;
-  const p=RLPV[v];if(p.rec){const m=!window.PACKBLOB?'📱 이 파일에는 녹음이 없어서 기기 음성으로 읽어요. 깃허브 앱에 팩을 불러오면 녹음된 목소리로 들려요.'
-    :!window.HASVOICES?'🎙 리딩 기본 교재 녹음과 영국 목소리는 <b>toefl-voices.bin</b>에 들어 있어요. 설정 › 교재 데이터에서 이 파일을 불러오면 바로 나와요.':'';
+  const p=RLPV[v];if(p.rec){const m=!window.PACKBLOB?'이 파일에는 녹음이 없어서 기기 음성으로 읽어요.'
+    :!window.HASVOICES?'목소리 녹음을 아직 받지 않아 기기 음성으로 읽어요. 녹음은 뒤에서 받고 있고, 다 받은 뒤 앱을 다시 열면 녹음으로 들려요.':'';
     h.innerHTML=m;h.hidden=!m;return}
   const dv=rlVoicesG(p.acc,p.g)[0];
   h.innerHTML=dv?'📱 호주는 녹음이 없어서 지문을 이 기기의 호주 영어 음성('+esc(dv.name)+')으로 읽어요. 단어는 녹음된 목소리 그대로예요.':'⚠️ 이 기기에 호주 영어 음성이 없어 기본 목소리로 읽어요. iPhone은 <b>설정 › 손쉬운 사용 › 읽기 및 말하기 › 음성 › 영어</b>에서 호주 음성('+(p.g==='f'?'Karen · Matilda':'Lee · Gordon')+')을 내려받은 뒤 앱을 다시 여세요.'}
@@ -6321,12 +6330,12 @@ function renderHome(){
         <footer>${t.next?`<a class="btn sm hmnext" href="${t.next.href}">▶ ${esc(t.next.t)}</a>`:'<span class="small muted">모든 세트 완료 🎉</span>'}<a class="btn sm quiet" href="${s.href}">메인</a></footer>
       </article>`}).join('')}</section>
     <section class="panel ph hmact"><div class="plhead" style="margin-bottom:8px"><h2 style="flex:1">학습 기록 · ${days[0].getMonth()+1}/${days[0].getDate()} – ${days[N-1].getMonth()+1}/${days[N-1].getDate()} <span class="small muted" style="font-weight:500">그날 공부한 과목에 색이 칠해져요</span></h2><label class="small hmfrom">시작일 <input type="date" id="hmfrom" value="${hmKey(days[0])}"></label></div>
-      <div class="hmtbl" role="table" aria-label="과목별 학습 기록" style="--n:${N}">
+      <div class="hmscroll"><div class="hmtbl" role="table" aria-label="과목별 학습 기록" style="--n:${N}">
         <div class="hmrow hmhead" role="row"><span role="columnheader"></span>${days.map(d=>`<span role="columnheader" class="${hmKey(d)===today?'hmtd':''}${d.getDay()===0?' sun':''}${d>t0?' fut':''}">${d.getDate()===1||d===days[0]?(d.getMonth()+1)+'/':''}${d.getDate()}</span>`).join('')}</div>
         ${HM_SUBJ.map(s=>`<div class="hmrow" role="row" style="--sc:${s.c}"><span role="rowheader"><span class="hmrh" style="color:${s.c}">${ICON(s.ic)}</span>${s.name}</span>${days.map(d=>{const n=(byDay[hmKey(d)]||{})[s.k]||0;return `<span role="cell" class="hmc ${n?'on':''} ${d>t0?'fut':''} ${hmKey(d)===today?'tdc':''}" title="${d.getMonth()+1}/${d.getDate()} ${s.name} ${n?(s.k==='v'?n+'번 답함':n+'회'):'기록 없음'}"></span>`}).join('')}</div>`).join('')}
-      </div></section>
+      </div></div></section>
   </div>`;
-  const a=$('.hmact'),tc=a&&$('.hmhead .hmtd',a);if(a&&tc)a.scrollLeft=Math.max(0,tc.offsetLeft-a.clientWidth*.6);
+  const a=$('.hmact .hmscroll'),tc=a&&$('.hmhead .hmtd',a);if(a&&tc)a.scrollLeft=Math.max(0,tc.offsetLeft-a.clientWidth*.6);
   hmPlanWire();
   const hfi=$('#hmfrom');if(hfi)hfi.onchange=()=>{if(hfi.value){store.set('hmfrom',hfi.value);const y=scrollY;renderHome();scrollTo(0,y)}};
 }
@@ -6419,6 +6428,7 @@ function bgIndex(){setCrumb(['배경지식']);const D=bgData(),seen=bgSeen();
       <div class="navgrp"><div class="gh">주제</div>${D.map(t=>`<a class="nl sub" href="#bg-${t.id}" ${h==='bg-'+t.id?'aria-current="page"':''}><span>${t.ic} ${esc(t.ko)}</span><span class="cnt">${t.ps.length}</span></a>`).join('')}</div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>배경지식 · 리딩·리스닝 학술 지문</span>'}
+    {const t=$('.btabs');if(t)t.innerHTML=`<a href="#bg" data-tab="bg" ${h==='bg'?'aria-current="page"':''}>${ICON('book')}메인</a>${D.slice(0,3).map(x=>`<a href="#bg-${x.id}" ${h==='bg-'+x.id?'aria-current="page"':''}><span class="emj" aria-hidden="true">${x.ic}</span>${esc(x.ko).split('·')[0].slice(0,5)}</a>`).join('')}`}
     if(h==='bg')bgIndex();else bgTopic(h.slice(3));window.scrollTo(0,0);try{hmMsec()}catch(e){}return}
   _routeH();
   // add the menu link to every section menu
