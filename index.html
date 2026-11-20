@@ -930,7 +930,7 @@ button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
 :root[data-theme="dark"] .vcart{background:radial-gradient(circle at 50% 40%,#2a3150 0,#1b2135 72%)}
 .art-box{position:relative;display:inline-block;flex-shrink:0;vertical-align:middle}.art-e{position:absolute;line-height:1;transform:translate(-50%,-50%);white-space:nowrap;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;pointer-events:none}.art-s{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 @media (max-width:720px){.vcart{width:180px;height:180px}.vcart .art-box{transform:scale(.85)}}
-@media (max-width:720px) and (max-height:900px){.vcstage .vcf .vcart{width:132px;height:132px;border-radius:22px}.vcstage .vcf .vcart .art-box{transform:scale(.62)}.vcstage>.vccard{padding:18px 18px 22px;min-height:0}}
+@media (max-width:720px) and (max-height:900px){.vcstage .vcf .vcart{width:136px;height:136px;border-radius:22px}.vcstage .vcf .vcart .art-box{transform:none}.vcstage>.vccard{padding:18px 18px 22px;min-height:0}}
 @media (max-width:520px){.vcfilt{flex-wrap:wrap;overflow:visible}.vcfilt button{flex-shrink:1}}
 
 /* ===== v20 theme: dark premium (glass cards · violet/lime neon) — exam screens keep the ETS light look ===== */
@@ -5784,6 +5784,8 @@ addEventListener('hashchange',()=>{if(PINK.key&&location.hash!==PINK.hash)inkPag
 })();
 
 addEventListener('hashchange',()=>{try{rlSayCtlStop()}catch(e){}});
+/* 화면이 바뀔 때 입력칸에 있던 포커스를 풀어요: iOS는 입력칸이 사라져도 키보드를 안 내려서 화면이 반 토막 났어요 */
+addEventListener('hashchange',()=>{try{const a=document.activeElement;if(a&&a!==document.body&&(/INPUT|TEXTAREA|SELECT/.test(a.tagName)||a.isContentEditable))a.blur()}catch(e){}},true);
 /* 다른 화면으로 옮기면 나던 소리를 모두 멈춰요: 문제 음성·읽어 주기·단어 발음·기기 음성 전부.
    새 화면이 틀 소리보다 먼저 멈추도록 capture 단계에서, 그리고 이동하기 전에 시작된 소리만 멈춰요. */
 const RLMEDIA=new Set();
@@ -5986,11 +5988,13 @@ function vcStudy(kind){const ws=kind==='rev'?vcDue():VC.data.filter(w=>vcSt(w)==
   if(!ws.length){$('#vcbody').innerHTML=`<div class="empty">${kind==='rev'?'오늘 복습할 단어가 없어요 🎉 새 Day를 시작해 보세요.':'모르는 단어가 없어요 👍'}</div>`;return}
   vcVoiceMount(ws[0]);vcCards($('#vcbody'),ws.slice().sort(()=>Math.random()-.5),{scope:kind})}
 
+/* 폰(좁고 낮은 화면)에서는 그림을 처음부터 작게 그려요: CSS로 줄이면 iOS에서 자리가 틀어져요 */
+function vcArtSize(){return matchMedia('(max-width:720px) and (max-height:900px)').matches?120:200}
 function vcArtOf(w,size){try{const a=w.vref||w;if(window.vcArt&&typeof a.id==='number'){const h=vcArt(a.id,size);if(h)return h}
   const sp=window.RLART&&RLART[String(w.word||'').toLowerCase()];if(sp&&window.vcArtSpec)return vcArtSpec(sp,size)}catch(e){}return `<span class="vcemo">${esc(w.emoji||'📘')}</span>`}
 function vcCardHTML(w){const e=VC.ety[w.id];
   return `<div class="vccard" tabindex="0" aria-label="단어 카드 (눌러서 뒤집기)">
-   <div class="vcf"><div class="vcart pos-${esc(String(w.pos||'').split(/[,/ ]+/)[0])}" aria-hidden="true">${vcArtOf(w,200)}</div><div class="vcw">${esc(w.word)}</div><div class="vcmeta"><span class="mtag sm">${esc(vcPos(w))}</span> <span class="mono small">${esc(w.ipa||'')}</span></div>
+   <div class="vcf"><div class="vcart pos-${esc(String(w.pos||'').split(/[,/ ]+/)[0])}" aria-hidden="true">${vcArtOf(w,vcArtSize())}</div><div class="vcw">${esc(w.word)}</div><div class="vcmeta"><span class="mtag sm">${esc(vcPos(w))}</span> <span class="mono small">${esc(w.ipa||'')}</span></div>
      ${store.get('vckrfront',false)?`<p class="vcfkr">${esc(vcKr(w))}</p>`:`<button type="button" class="vckrpeek" data-peek>👀 한글 뜻 살짝 보기</button>`}${store.get('vcsynfront',false)?vcSynHTML(vcSynAll(w),'front'):''}<p class="small muted vcflip">눌러서 전체 뜻·예문 보기 · Space</p></div>
    <div class="vcb" hidden>
      ${w.vref&&w.ctx&&w.ctx.c?`<div class="vcctx"><p class="small"><span class="vcctxl">📖 지문 속 문장</span> 이 지문에서는 <b>${esc(w.rlk)}</b></p><p class="vcex">${vcTx(w.ctx.c)} <button class="btn sm quiet" data-say="c" aria-label="지문 문장 듣기">🔊</button></p>${w.ctx.ck?`<p class="small muted">${esc(w.ctx.ck)}</p>`:''}<p class="small muted vcctxh">교재 단어장의 뜻 ↓</p></div>`:''}${w.rk?`<p class="vcpsg"><button type="button" class="btn sm" data-psg>📖 이 단어가 나온 지문 전체 보기</button></p>`:''}
