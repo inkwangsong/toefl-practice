@@ -1482,7 +1482,7 @@ html,body{overflow-x:clip;overscroll-behavior-x:none}   /* clip(hidden 아님): 
   .btabs .emj{font-size:20px;line-height:24px;height:24px;display:block;filter:grayscale(1);opacity:.75}.btabs a[aria-current="page"] .emj{filter:none;opacity:1}
   @media (max-width:420px){.btabs a{font-size:11px;letter-spacing:-.02em;white-space:nowrap}}
   .gear{display:inline-grid}
-  main{padding-bottom:100px}
+  main{padding-bottom:108px}
 }
 @media (max-width:720px){
   .btabs a{font-size:12px}
@@ -1892,26 +1892,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
     border:.5px solid rgba(255,255,255,.22);
     box-shadow:inset 0 1.5px 1px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.1),inset 1.5px 0 1px rgba(255,255,255,.18),inset -1.5px 0 1px rgba(255,255,255,.08),inset 0 0 18px rgba(255,255,255,.06),0 12px 34px rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.4)}
 .btabs>*{pointer-events:auto}
-.btabs .bt-back{flex:0 0 58px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;padding:0;gap:0;color:var(--ink)}
-.btabs .bt-back .t{display:none}.btabs .bt-back .i{width:26px;height:26px}
-.btpill{flex:1;min-width:0;display:flex;align-items:center;height:58px;padding:0 6px;border-radius:29px;overflow:hidden;touch-action:pan-y;overscroll-behavior-x:none}
+.btabs .bt-back{flex:0 0 64px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;padding:0;gap:0;color:var(--ink)}
+.btabs .bt-back .t{display:none}.btabs .bt-back .i{width:28px;height:28px}
+.btpill{flex:1;min-width:0;display:flex;align-items:center;height:64px;padding:0 6px;border-radius:32px;overflow:hidden;touch-action:pan-y;overscroll-behavior-x:none}
 .btpill::-webkit-scrollbar{display:none}
 .btpill.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
-.btpill>a{flex:1 1 0;min-width:0;height:48px;padding:0 2px;border-radius:24px;justify-content:center;gap:3px;font-size:12px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:var(--ink2,var(--mute))}
-.btpill>a .i{width:26px;height:26px}
+.btpill>a{flex:1 1 0;min-width:0;height:54px;padding:0 2px;border-radius:27px;justify-content:center;gap:3px;font-size:13px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:var(--ink2,var(--mute))}
+.btpill>a .i{width:28px;height:28px}
 .btpill>a[aria-current="page"]{color:var(--accent);font-weight:700;background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,255,255,.35));box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.3),0 2px 8px rgba(0,0,0,.08)}
 :root[data-theme="dark"] .btpill>a[aria-current="page"]{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.08),0 2px 8px rgba(0,0,0,.3)}
-.btpill>a .i{width:26px;height:26px}
 .btpill>a[data-home]{display:none}   /* 폰에서는 '메인' 탭을 빼요: 둥근 ‹ 로 돌아가면 되니까요 */
-.btpill>a .emj{font-size:21px;line-height:26px;height:26px}
+.btpill>a .emj{font-size:22px;line-height:28px;height:28px}
 /* 풀이 중 */
 .btabs.runctl .btpill>a:not(.bt-prev):not(.bt-next){display:none}
 .btabs.runctl .btpill{padding:4px;gap:6px}
-.btabs.runctl .btpill>a{height:52px}
-.btabs.runctl .bt-prev{flex:0 0 52px;min-width:0;border-radius:50%;background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.9);color:var(--ink)}
+.btabs.runctl .btpill>a{height:56px}
+.btabs.runctl .bt-prev{flex:0 0 56px;min-width:0;border-radius:50%;background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.9);color:var(--ink)}
 :root[data-theme="dark"] .btabs.runctl .bt-prev{background:rgba(255,255,255,.12);box-shadow:inset 0 1px 1px rgba(255,255,255,.25)}
 .btabs.runctl .bt-prev .i{width:24px;height:24px}
-.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 88%,#fff),var(--accent));color:#fff;font-size:16px;font-weight:700;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 4px 12px color-mix(in srgb,var(--accent) 35%,transparent)}
+.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:28px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 88%,#fff),var(--accent));color:#fff;font-size:16px;font-weight:700;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 4px 12px color-mix(in srgb,var(--accent) 35%,transparent)}
 .btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-2px}
 .btabs.runctl .bt-next.final{background:var(--ok)}
 .btabs.runctl .dis{opacity:.35;pointer-events:none}
@@ -1920,11 +1919,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 /* 실전 시험 아래쪽 Back·Next: 같은 규칙 (← 둥근 버튼, Next 알약) */
 .tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:12px;align-items:center;padding:6px 20px 24px;background:transparent;pointer-events:none}
 .tfoot>*{pointer-events:auto}
-.tfb{height:58px;border-radius:29px;font:700 15px var(--ui);letter-spacing:-.01em;color:#1f2430}
-.tfb:not(.primary){flex:0 0 58px;width:58px;font-size:0;display:grid;place-items:center;padding:0}
+.tfb{height:64px;border-radius:32px;font:700 15px var(--ui);letter-spacing:-.01em;color:#1f2430}
+.tfb:not(.primary){flex:0 0 64px;width:64px;font-size:0;display:grid;place-items:center;padding:0}
 .tfb:not(.primary)::before{content:"";width:11px;height:11px;border-left:2.2px solid currentColor;border-bottom:2.2px solid currentColor;transform:translateX(3px) rotate(45deg)}
 .tfb.primary{flex:1;background:linear-gradient(180deg,#3b6ff0,#1d4ed8);color:#fff;border:.5px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 6px 16px rgba(29,78,216,.35)}.tfb:disabled{opacity:.55;color:#9aa1ab}
-#test.has-tfoot .tmain{padding-bottom:96px}
+#test.has-tfoot .tmain{padding-bottom:104px}
 }
 </style>
 </head>
@@ -6459,7 +6458,9 @@ function renderHome(){
       <div class="navgrp"><div class="gh">과목</div>${HM_SUBJ.map(s=>`<a class="nl" href="${s.href}"><span class="ic" aria-hidden="true" style="color:${s.c}">${ICON(s.ic)}</span><span>${s.name}</span></a>`).join('')}</div>
       <div class="navgrp"><div class="gh">내 학습</div><a class="nl" href="#settings"><span class="ic" aria-hidden="true">${ICON('gear')}</span><span>설정</span></a></div>`;
     $$('#lnb a').forEach(a=>a.addEventListener('click',()=>toggleLnb(false)));
-    const t=$('.btabs');if(t)t.innerHTML=HM_SUBJ.map(s=>`<a href="${s.href}" aria-label="${s.name}">${ICON(s.k==='r2'?'book':s.ic)}${s.k==='v'?'보카':s.ko}</a>`).join('');
+    /* 폰에서는 탭을 5개까지만: 리딩은 마지막에 보던 급(중급/기본)으로 들어가요 */
+    const t=$('.btabs');if(t){const ph=matchMedia('(max-width:700px)').matches;const L=ph?[{k:'r',name:'Reading',ko:'리딩',ic:'read',href:'#'+store.get('rdlv','rd')},...HM_SUBJ.filter(s=>s.k!=='r'&&s.k!=='r2')]:HM_SUBJ;
+      t.innerHTML=L.map(s=>`<a href="${s.href}" aria-label="${s.name}">${ICON(s.k==='r2'?'book':s.ic)}${s.k==='v'?'보카':s.ko}</a>`).join('')}
     const c=$('#env');if(c){c.className='envchip';c.innerHTML='<i></i><span>5과목 한눈에 보기</span>'}
     renderHome();window.scrollTo(0,0);hmMsec();return}
   _routeV();const b=$('#lnb .brand');if(b)b.setAttribute('href','#start');hmMsec()};
