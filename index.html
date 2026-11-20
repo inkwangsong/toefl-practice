@@ -1856,6 +1856,23 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .xv2 q.wen{background:none;border:0;padding:0;font-weight:600}.xv2 q.wen::before{content:"‘"}.xv2 q.wen::after{content:"’"}
 .xv2 .wsx,.xv2 .wsy{padding:0 3px}
 @media (max-width:600px){.rlfb,.rlq.rev .rlexp.xv2{margin-left:0}.xv2 .xk{font-size:14.5px}}
+
+/* 폰: 풀이 중 하단 조작 바 */
+@media (max-width:700px){
+.btabs.runctl a:not(.bt-back):not(.bt-prev):not(.bt-next){display:none}
+.btabs.runctl{grid-template-columns:72px 1fr 1.4fr;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));align-items:stretch}
+.btabs.runctl .bt-back{padding:6px 0}
+.btabs.runctl .bt-prev,.btabs.runctl .bt-next{flex-direction:row;justify-content:center;gap:6px;min-height:50px;padding:0 10px;border-radius:14px;border:1px solid var(--line2,var(--line));background:var(--surface);color:var(--ink);font-size:15px;font-weight:700}
+.btabs.runctl .bt-prev .i,.btabs.runctl .bt-next .i{width:20px;height:20px}
+.btabs.runctl .bt-next{flex-direction:row-reverse;background:var(--accent);border-color:var(--accent);color:#fff}
+.btabs.runctl .bt-next.final{background:var(--ok);border-color:var(--ok)}
+.btabs.runctl .dis{opacity:.4;pointer-events:none}
+.rlrun .wbar #rln,.rlrun .wbar #rlb{display:none}
+.tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #d6d9de}
+.tfb{flex:1;min-height:48px;font:600 16px var(--ui);border-radius:12px;border:1px solid #c3c8d0;background:#f3f4f6;color:#111}
+.tfb.primary{flex:1.5;background:#1d4ed8;color:#fff;border-color:#1d4ed8}.tfb:disabled{opacity:.4}
+#test.has-tfoot .tmain{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -2991,7 +3008,25 @@ function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))ret
   setTimeout(btBackFace,0);
   if(/^#(rd|rb|ls|vc)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
 /* 풀이 화면에서는 하단 버튼 이름을 '나가기'로 바꿔 보여 줘요 */
-function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'나가기':ICON('back')+'이전';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
+function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';runTabs(run);if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'나가기':ICON('back')+'이전';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
+/* 폰에서 문제를 푸는 동안은 하단 메뉴가 풀이 조작(나가기 · 이전 · 다음)으로 바뀌어요: 위쪽의 작은 Next까지 손이 안 닿아서요 */
+function runTabs(run){const t=$('.btabs');if(!t)return;const on=run&&matchMedia('(max-width:700px)').matches;t.classList.toggle('runctl',on);
+  if(!on){$$('.bt-prev,.bt-next',t).forEach(x=>x.remove());return}
+  const rb=$('#view #rlb'),rn=$('#view #rln');let pv=$('.bt-prev',t),nx=$('.bt-next',t);
+  if(!nx){t.insertAdjacentHTML('beforeend',`<a href="#" class="bt-prev" role="button" aria-label="이전 문제">${ICON('back')}이전 문제</a><a href="#" class="bt-next" role="button" aria-label="다음 문제">${ICON('chev')}<span></span></a>`);pv=$('.bt-prev',t);nx=$('.bt-next',t)}
+  pv.classList.toggle('dis',!rb);const lab=rn?rn.textContent.replace(/[›>]/g,'').trim():'다음';const sp=$('span',nx);if(sp.textContent!==lab)sp.textContent=lab==='Next'?'다음 문제':lab;nx.classList.toggle('dis',!rn||rn.disabled);nx.classList.toggle('final',/채점/.test(lab))}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btabs .bt-prev,.btabs .bt-next');if(!b)return;e.preventDefault();if(b.classList.contains('dis'))return;const s=$(b.classList.contains('bt-prev')?'#view #rlb':'#view #rln');s&&!s.disabled&&s.click()});
+addEventListener('resize',()=>runTabs(!!$('#view .rlrun #rlx')));
+/* 실전 시험(#tst)도 폰에서는 Back·Next를 아래쪽에 한 번 더 두어요 */
+(function(){const NARROW=()=>matchMedia('(max-width:700px)').matches,SRC=[['rlb','‹ Back'],['rln',null],['wback','‹ Back'],['wbk2','‹ Back'],['wnextq',null],['wnx2',null]];
+  function sync(){const t=document.getElementById('test');if(!t)return;if(t.hidden||!NARROW()){document.getElementById('tfoot')?.remove();t.classList.remove('has-tfoot');return}
+    const found=SRC.map(([id,l])=>[document.getElementById(id),l]).filter(x=>x[0]&&t.contains(x[0]));
+    if(!found.length){document.getElementById('tfoot')?.remove();t.classList.remove('has-tfoot');return}
+    let f=document.getElementById('tfoot');if(!f){f=document.createElement('div');f.id='tfoot';f.className='tfoot';t.appendChild(f)}
+    const html=found.map(([b,l])=>`<button type="button" class="tfb ${/rln|wnextq|wnx2/.test(b.id)?'primary':''}" data-for="${b.id}" ${b.disabled?'disabled':''}>${l||b.textContent.trim()}</button>`).join('');
+    if(f.dataset.h!==html){f.dataset.h=html;f.innerHTML=html}if(!t.classList.contains('has-tfoot'))t.classList.add('has-tfoot')}
+  document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.tfb');if(!b)return;const s=document.getElementById(b.dataset.for);if(s&&!s.disabled)s.click()});
+  const go=()=>{const t=document.getElementById('test');if(!t)return setTimeout(go,300);let q=0;new MutationObserver(rs=>{if(rs.every(r=>r.target.closest&&r.target.closest('#tfoot')))return;cancelAnimationFrame(q);q=requestAnimationFrame(sync)}).observe(t,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','hidden']});addEventListener('resize',sync);sync()};go()})();
 (function(){const go=()=>{const v=$('#view');if(!v)return setTimeout(go,300);new MutationObserver(btBackFace).observe(v,{childList:true})};go()})();
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btabs .bt-back,.btabs .bt-list');if(!b)return;e.preventDefault();if(b.classList.contains('bt-back'))navBack();else toggleLnb(true)});
 (function(){const go=()=>{const t=$('.btabs');if(!t)return setTimeout(go,300);new MutationObserver(()=>btabsDecor()).observe(t,{childList:true});btabsDecor()};go()})();
