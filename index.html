@@ -1857,20 +1857,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .xv2 .wsx,.xv2 .wsy{padding:0 3px}
 @media (max-width:600px){.rlfb,.rlq.rev .rlexp.xv2{margin-left:0}.xv2 .xk{font-size:14.5px}}
 
-/* 폰: 풀이 중 하단 조작 바 */
+/* 폰: 풀이 중 하단 조작 바 — 같은 높이·같은 모서리의 버튼 세 개 */
 @media (max-width:700px){
 .btabs.runctl a:not(.bt-back):not(.bt-prev):not(.bt-next){display:none}
-.btabs.runctl{grid-template-columns:72px 1fr 1.4fr;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));align-items:stretch}
-.btabs.runctl .bt-back{padding:6px 0}
-.btabs.runctl .bt-prev,.btabs.runctl .bt-next{flex-direction:row;justify-content:center;gap:6px;min-height:50px;padding:0 10px;border-radius:14px;border:1px solid var(--line2,var(--line));background:var(--surface);color:var(--ink);font-size:15px;font-weight:700}
-.btabs.runctl .bt-prev .i,.btabs.runctl .bt-next .i{width:20px;height:20px}
-.btabs.runctl .bt-next{flex-direction:row-reverse;background:var(--accent);border-color:var(--accent);color:#fff}
-.btabs.runctl .bt-next.final{background:var(--ok);border-color:var(--ok)}
-.btabs.runctl .dis{opacity:.4;pointer-events:none}
+.btabs.runctl{display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));align-items:center;background:color-mix(in srgb,var(--surface) 96%,transparent)}
+.btabs.runctl a{height:46px;border-radius:13px;font-size:15px;font-weight:700;letter-spacing:-.01em;gap:4px;padding:0;transition:transform .08s,opacity .15s}
+.btabs.runctl a:active{transform:scale(.97)}
+.btabs.runctl .bt-back{flex:0 0 46px;width:46px;font-size:0;color:var(--mute);border:1px solid var(--line);background:var(--surface)}
+.btabs.runctl .bt-back .i{width:20px;height:20px;stroke-width:1.9}
+.btabs.runctl .bt-prev,.btabs.runctl .bt-next{flex:1;flex-direction:row;justify-content:center}
+.btabs.runctl .bt-prev{color:var(--ink);border:1px solid var(--line);background:var(--surface)}
+.btabs.runctl .bt-prev .i{width:18px;height:18px;margin-left:-4px}
+.btabs.runctl .bt-next{flex:1.35;flex-direction:row-reverse;color:#fff;background:var(--accent);border:1px solid var(--accent);box-shadow:0 6px 16px -8px color-mix(in srgb,var(--accent) 70%,transparent)}
+.btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-4px;stroke-width:2.2}
+.btabs.runctl .bt-next.final{background:var(--ok);border-color:var(--ok);box-shadow:0 6px 16px -8px color-mix(in srgb,var(--ok) 70%,transparent)}
+.btabs.runctl .dis{opacity:.35;pointer-events:none}
 .rlrun .wbar #rln,.rlrun .wbar #rlb{display:none}
-.tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #d6d9de}
-.tfb{flex:1;min-height:48px;font:600 16px var(--ui);border-radius:12px;border:1px solid #c3c8d0;background:#f3f4f6;color:#111}
-.tfb.primary{flex:1.5;background:#1d4ed8;color:#fff;border-color:#1d4ed8}.tfb:disabled{opacity:.4}
+.tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #e3e6ea}
+.tfb{flex:1;height:46px;font:700 15px var(--ui);letter-spacing:-.01em;border-radius:13px;border:1px solid #d5d9df;background:#fff;color:#1f2430}
+.tfb.primary{flex:1.35;background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 6px 16px -8px rgba(29,78,216,.6)}.tfb:disabled{opacity:.35}
 #test.has-tfoot .tmain{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 }
 </style>
@@ -3013,8 +3018,8 @@ function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#
 function runTabs(run){const t=$('.btabs');if(!t)return;const on=run&&matchMedia('(max-width:700px)').matches;t.classList.toggle('runctl',on);
   if(!on){$$('.bt-prev,.bt-next',t).forEach(x=>x.remove());return}
   const rb=$('#view #rlb'),rn=$('#view #rln');let pv=$('.bt-prev',t),nx=$('.bt-next',t);
-  if(!nx){t.insertAdjacentHTML('beforeend',`<a href="#" class="bt-prev" role="button" aria-label="이전 문제">${ICON('back')}이전 문제</a><a href="#" class="bt-next" role="button" aria-label="다음 문제">${ICON('chev')}<span></span></a>`);pv=$('.bt-prev',t);nx=$('.bt-next',t)}
-  pv.classList.toggle('dis',!rb);const lab=rn?rn.textContent.replace(/[›>]/g,'').trim():'다음';const sp=$('span',nx);if(sp.textContent!==lab)sp.textContent=lab==='Next'?'다음 문제':lab;nx.classList.toggle('dis',!rn||rn.disabled);nx.classList.toggle('final',/채점/.test(lab))}
+  if(!nx){t.insertAdjacentHTML('beforeend',`<a href="#" class="bt-prev" role="button" aria-label="이전 문제">${ICON('back')}이전</a><a href="#" class="bt-next" role="button" aria-label="다음 문제">${ICON('chev')}<span></span></a>`);pv=$('.bt-prev',t);nx=$('.bt-next',t)}
+  pv.classList.toggle('dis',!rb);const lab=rn?rn.textContent.replace(/[›>]/g,'').trim():'다음';const sp=$('span',nx);if(sp.textContent!==lab)sp.textContent=lab==='Next'?'다음':lab;nx.classList.toggle('dis',!rn||rn.disabled);nx.classList.toggle('final',/채점/.test(lab))}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btabs .bt-prev,.btabs .bt-next');if(!b)return;e.preventDefault();if(b.classList.contains('dis'))return;const s=$(b.classList.contains('bt-prev')?'#view #rlb':'#view #rln');s&&!s.disabled&&s.click()});
 addEventListener('resize',()=>runTabs(!!$('#view .rlrun #rlx')));
 /* 실전 시험(#tst)도 폰에서는 Back·Next를 아래쪽에 한 번 더 두어요 */
