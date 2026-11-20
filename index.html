@@ -1875,8 +1875,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .btabs .bt-back{flex:0 0 54px;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;padding:0;gap:0;color:var(--ink);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 10px 28px -14px rgba(0,0,0,.45)}
 .btabs .bt-back .t{display:none}.btabs .bt-back .i{width:22px;height:22px}
 .btpill{flex:1;min-width:0;display:flex;align-items:stretch;height:54px;padding:0 4px;border-radius:27px;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 10px 28px -14px rgba(0,0,0,.45);overflow:hidden}
-.btpill>a{flex:1;min-width:0;justify-content:center;padding:0;gap:3px;font-size:11px;letter-spacing:-.02em;white-space:nowrap}
-.btpill>a .i{width:22px;height:22px}
+.btpill>a{flex:1;min-width:0;justify-content:center;padding:0;gap:3px;font-size:12px;letter-spacing:-.02em;white-space:nowrap}
+.btpill>a .i{width:24px;height:24px}
+.btpill>a[data-home]{display:none}   /* 폰에서는 '메인' 탭을 빼요: 둥근 ‹ 로 돌아가면 되니까요 */
 .btpill>a .emj{font-size:18px;line-height:22px;height:22px}
 /* 풀이 중 */
 .btabs.runctl .btpill>a:not(.bt-prev):not(.bt-next){display:none}
