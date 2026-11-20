@@ -177,7 +177,8 @@ main{width:100%;max-width:1120px;padding-block:26px 80px;padding-left:max(24px,e
 @media (max-width:900px){
   .shell{grid-template-columns:1fr}
   .lnb{position:fixed;z-index:40;left:0;top:0;bottom:0;width:min(300px,86vw);transform:translateX(-102%);transition:transform .22s;box-shadow:0 10px 40px rgba(0,0,0,.25)}
-  .lnb.open{transform:none}
+  .lnb.open{transform:none;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  body.lnblock{position:fixed;left:0;right:0;overflow:hidden;width:100%}
   .lnbscrim.open{display:block;position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.35)}
   .menubtn{display:inline-grid;place-items:center}
   .topbar,main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -3005,7 +3006,14 @@ function msecSync(){const h=location.hash.slice(1)||'start';   /* an empty addre
   document.documentElement.dataset.sec=k;
   $$('#msecsw a').forEach(a=>{a.setAttribute('aria-selected',String(a.dataset.s===k));if(a.dataset.s==='r')a.setAttribute('href',store.get('rdlv','rd')==='rb'?'#rb':'#rd')})}
 window.addEventListener('hashchange',msecSync);msecSync();
-function toggleLnb(open){$('#lnb').classList.toggle('open',open);$('#lnbscrim').classList.toggle('open',open)}
+/* 서랍을 여는 동안 뒤 화면은 고정해요: iOS에서 손가락 스크롤이 뒤 화면으로 새면 서랍이 안 움직여요 */
+let LNBY=0;
+function toggleLnb(open){const was=$('#lnb').classList.contains('open');$('#lnb').classList.toggle('open',open);$('#lnbscrim').classList.toggle('open',open);
+  if(!matchMedia('(max-width:900px)').matches)return;
+  if(open&&!was){LNBY=window.scrollY;document.body.style.top=-LNBY+'px';document.body.classList.add('lnblock')}
+  else if(!open&&was){document.body.classList.remove('lnblock');document.body.style.top='';window.scrollTo(0,LNBY)}}
+(function(){const sc=$('#lnbscrim');if(sc)sc.addEventListener('touchmove',e=>e.preventDefault(),{passive:false})})();
+addEventListener('hashchange',()=>{if($('#lnb').classList.contains('open'))toggleLnb(false)});
 /* ---- 하단 바: ← 이전 + (리딩·리스닝·보카) 문제 목록 ----
    앱 안에서 지나온 화면을 기억해 두었다가 '이전'은 그 순서대로 돌아가요. 처음 연 화면이면 그 과목의 첫 화면으로 가요. */
 const NAVS=(()=>{try{return JSON.parse(sessionStorage.getItem('navs')||'[]')}catch(e){return []}})();
