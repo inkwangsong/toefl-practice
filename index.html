@@ -1140,6 +1140,7 @@ body.navmin main{max-width:1500px}
 .vccard{max-width:900px!important}.vcbtns{max-width:900px;margin-inline:auto}
 /* 몰라요·애매해요·외웠어요는 해설이 열려도 늘 같은 자리(화면 아래)에 있어요 */
 .vcstage{display:flex;flex-direction:column;min-height:calc(100dvh - 210px)}
+.vcstage>.vccard{width:100%;box-sizing:border-box}
 .vcjudge{position:sticky;bottom:14px;z-index:20;margin-top:auto;display:grid;grid-template-columns:48px 1fr 1fr 1fr 48px;gap:8px;width:100%;max-width:900px;margin-inline:auto;padding:8px;border-radius:18px;
   background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
 .vcstage .vcbtns{margin-bottom:14px}
@@ -6032,9 +6033,9 @@ function vcCards(host,ws,{scope,pos}){let filt=store.get('vcfilt','all');const P
       for(let r=0;r<o.w;r++){await vcPlay(me,'w');if(!ok())return;await wait(r<o.w-1?450:gap*.6);if(!ok())return}
       flip();
       const ss=me.senses||[],pk=!!VC.am.ks;
-      if(o.k&&!pk){await vcPlay(me,'k');if(!ok())return;await wait(gap*.4);if(!ok())return}
+      if(o.k&&!pk){for(let r=0;r<o.k;r++){await vcPlay(me,'k');if(!ok())return;await wait(r<o.k-1?450:gap*.4);if(!ok())return}}
       for(let si=0;si<ss.length;si++){
-        if(o.k&&pk){await vcPlay(me,'k',si);if(!ok())return;await wait(gap*.3);if(!ok())return}
+        if(o.k&&pk){for(let r=0;r<o.k;r++){await vcPlay(me,'k',si);if(!ok())return;await wait(r<o.k-1?450:gap*.3);if(!ok())return}}
         if(o.y&&vcSyn(ss[si]).length){await vcPlay(me,'y',si);if(!ok())return;await wait(gap*.4);if(!ok())return}
         if(o.ex!=='none'&&ss[si].ex&&(o.ex==='all'||si===0)){await vcPlay(me,'s',si);if(!ok())return;await wait(gap*.5);if(!ok())return}
         if(o.ex==='first'&&!o.y)break}
@@ -6047,16 +6048,16 @@ function vcCards(host,ws,{scope,pos}){let filt=store.get('vcfilt','all');const P
   host.onkeydown=null;document.onkeydown=e=>{if(!document.body.contains(host)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
     if(e.key===' '){e.preventDefault();$('.vccard',host)?.click()}else if(e.key==='ArrowRight')$('#vcyes',host)?.click();else if(e.key==='ArrowLeft')$('#vcno',host)?.click();else if(e.key==='ArrowDown'){e.preventDefault();$('#vcmeh',host)?.click()}else if(e.key==='s'||e.key==='S'){const w=deck[i];if(w){$('[data-say="w"]',host)?.click()}}};
   draw()}
-const VCAPD={w:1,k:true,y:true,ex:'all',next:true,gap:1};
-const vcAp=()=>Object.assign({},VCAPD,store.get('vcap',{}));
-function vcApLabel(){const o=vcAp();return ['단어'+(o.w>1?'×'+o.w:''),o.k&&'뜻',o.y&&'동의어',o.ex==='all'?'예문 전부':o.ex==='first'?'예문 1개':'',o.next?'다음':'멈춤'].filter(Boolean).join('→')}
+const VCAPD={w:1,k:1,y:true,ex:'all',next:true,gap:1};
+const vcAp=()=>{const o=Object.assign({},VCAPD,store.get('vcap',{}));if(o.k===true)o.k=1;else if(o.k===false)o.k=0;return o};
+function vcApLabel(){const o=vcAp();return ['단어'+(o.w>1?'×'+o.w:''),o.k&&'뜻'+(o.k>1?'×'+o.k:''),o.y&&'동의어',o.ex==='all'?'예문 전부':o.ex==='first'?'예문 1개':'',o.next?'다음':'멈춤'].filter(Boolean).join('→')}
 function vcBasicHTML(){const row=(k,lab,cur,opts)=>`<div class="vcaprow"><span class="small vcapk">${lab}</span><span class="rlrate" role="group" aria-label="${lab}">${opts.map(([v,t])=>`<button type="button" data-vb="${k}" data-v='${JSON.stringify(v)}' aria-pressed="${cur===v}">${t}</button>`).join('')}</span></div>`;
   return `<p class="vcaph">카드 넘길 때</p>${row('vcbasic','소리',store.get('vcbasic','wk'),[['wk','단어 + 뜻'],['w','단어만'],['off','끄기']])}
    <p class="vcaph">앞면에 보이기</p>${row('vckrfront','한글 뜻',store.get('vckrfront',false),[[true,'보이기'],[false,'숨기기']])}${row('vcsynfront','동의어',store.get('vcsynfront',false),[[true,'보이기'],[false,'숨기기']])}
    <p class="vcaph">자동 재생 순서</p>`}
 function vcApHTML(){const o=vcAp(),grp=(k,lab,opts)=>`<div class="vcaprow"><span class="small vcapk">${lab}</span><span class="rlrate" role="group" aria-label="${lab}">${opts.map(([v,t])=>`<button type="button" data-ap="${k}" data-v='${JSON.stringify(v)}' aria-pressed="${o[k]===v}">${t}</button>`).join('')}</span></div>`;
   return `<p class="small muted" style="margin:0 0 6px">여러 뜻이 있는 단어는 뜻마다 동의어·예문을 차례로 읽어요.</p>
-   ${grp('w','① 단어',[[1,'1번'],[2,'2번'],[3,'3번']])}${grp('k','② 한글 뜻',[[true,'읽기'],[false,'건너뛰기']])}${grp('y','③ 동의어',[[true,'읽기'],[false,'건너뛰기']])}
+   ${grp('w','① 단어',[[1,'1번'],[2,'2번'],[3,'3번']])}${grp('k','② 한글 뜻',[[1,'1번'],[2,'2번'],[3,'3번'],[0,'건너뛰기']])}${grp('y','③ 동의어',[[true,'읽기'],[false,'건너뛰기']])}
    ${grp('ex','④ 예문',[['all','전부'],['first','첫 번째만'],['none','건너뛰기']])}${grp('next','⑤ 끝나면',[[true,'다음 카드로'],[false,'멈춤']])}${grp('gap','간격',[[0.5,'짧게'],[1,'보통'],[2,'길게']])}`}
 function vcApWire(p,cb){if(!p)return;$$('[data-ap]',p).forEach(b=>b.onclick=()=>{const o=vcAp();o[b.dataset.ap]=JSON.parse(b.dataset.v);store.set('vcap',o);
   $$(`[data-ap="${b.dataset.ap}"]`,p).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb&&cb()})}
