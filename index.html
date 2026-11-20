@@ -1874,19 +1874,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .btabs.runctl{display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));align-items:center;background:color-mix(in srgb,var(--surface) 96%,transparent)}
 .btabs.runctl a{height:46px;border-radius:13px;font-size:15px;font-weight:700;letter-spacing:-.01em;gap:4px;padding:0;transition:transform .08s,opacity .15s}
 .btabs.runctl a:active{transform:scale(.97)}
-.btabs.runctl .bt-back{flex:0 0 46px;width:46px;font-size:0;color:var(--mute);border:1px solid var(--line);background:var(--surface)}
+.btabs.runctl .bt-back{flex:0 0 46px;width:46px;display:grid;place-items:center;padding:0;color:var(--mute);border:1px solid var(--line);background:var(--surface)}.btabs.runctl .bt-back .t{display:none}
 .btabs.runctl .bt-back .i{width:20px;height:20px;stroke-width:1.9}
 .btabs.runctl .bt-prev,.btabs.runctl .bt-next{flex:1;flex-direction:row;justify-content:center}
 .btabs.runctl .bt-prev{color:var(--ink);border:1px solid var(--line);background:var(--surface)}
 .btabs.runctl .bt-prev .i{width:18px;height:18px;margin-left:-4px}
-.btabs.runctl .bt-next{flex:1.35;flex-direction:row-reverse;color:#fff;background:var(--accent);border:1px solid var(--accent);box-shadow:0 6px 16px -8px color-mix(in srgb,var(--accent) 70%,transparent)}
-.btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-4px;stroke-width:2.2}
-.btabs.runctl .bt-next.final{background:var(--ok);border-color:var(--ok);box-shadow:0 6px 16px -8px color-mix(in srgb,var(--ok) 70%,transparent)}
+.btabs.runctl .bt-next{flex-direction:row-reverse;color:#fff;background:var(--accent);border:1px solid var(--accent)}
+.btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-4px}
+.btabs.runctl .bt-next.final{background:var(--ok);border-color:var(--ok)}
 .btabs.runctl .dis{opacity:.35;pointer-events:none}
 .rlrun .wbar #rln,.rlrun .wbar #rlb{display:none}
 .tfoot{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #e3e6ea}
 .tfb{flex:1;height:46px;font:700 15px var(--ui);letter-spacing:-.01em;border-radius:13px;border:1px solid #d5d9df;background:#fff;color:#1f2430}
-.tfb.primary{flex:1.35;background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 6px 16px -8px rgba(29,78,216,.6)}.tfb:disabled{opacity:.35}
+.tfb.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}.tfb:disabled{opacity:.35}
 #test.has-tfoot .tmain{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 }
 </style>
@@ -3031,7 +3031,7 @@ function btabsDecor(){const t=$('.btabs');if(!t||t.querySelector('.bt-back'))ret
   setTimeout(btBackFace,0);
   if(/^#(rd|rb|ls|vc|w|home)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`)}
 /* 풀이 화면에서는 하단 버튼 이름을 '나가기'로 바꿔 보여 줘요 */
-function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';runTabs(run);if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'나가기':ICON('back')+'이전';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
+function btBackFace(){const b=$('.btabs .bt-back');if(!b)return;const run=!!$('#view .rlrun #rlx'),want=run?'run':'nav';runTabs(run);if(b.dataset.face===want)return;b.dataset.face=want;b.innerHTML=run?ICON('close')+'<span class="t">나가기</span>':ICON('back')+'<span class="t">이전</span>';b.setAttribute('aria-label',run?'풀이 나가기':'이전 화면')}
 /* 폰에서 문제를 푸는 동안은 하단 메뉴가 풀이 조작(나가기 · 이전 · 다음)으로 바뀌어요: 위쪽의 작은 Next까지 손이 안 닿아서요 */
 function runTabs(run){const t=$('.btabs');if(!t)return;const on=run&&matchMedia('(max-width:700px)').matches;t.classList.toggle('runctl',on);
   if(!on){$$('.bt-prev,.bt-next',t).forEach(x=>x.remove());return}
