@@ -700,7 +700,18 @@ span.wen{font-weight:600;color:var(--ink)}.wko{color:var(--mute);font-size:13px;
 #test .rlexam{--paper:#f5f7fb;--line:#d5dbe3;--mute:#5b6676;--accent:#1d4ed8;--accent-ink:#fff;--ink:#111;color:#111}
 #test .rlexam .panel{background:#fff;border-color:#d5dbe3;color:#111}
 #test .rlexam.rd{max-width:1200px}#test .rlexam.lis{max-width:760px}
-.rltime.hid{visibility:hidden}.vkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}@media(max-width:700px){.vkpis{grid-template-columns:repeat(2,minmax(0,1fr))}}.vtabs{margin-bottom:14px;max-width:640px;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:560px){.vtabs{grid-template-columns:repeat(2,minmax(0,1fr))}}.tbar .tbtn.primary{background:#fff;color:#111;border-color:#fff}
+.rltime.hid{visibility:hidden}.vkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+/* 폰: 단어장 머리 부분을 납작하게 — 설명은 숨기고, 숫자 4개는 한 줄, 범위 고르기는 접어 둬요 */
+@media (max-width:700px){
+  .vdesc{display:none}
+  .vkpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px;margin-bottom:10px}
+  .vkpis .kpi{padding:10px 6px;text-align:center}.vkpis .kpi .k{font-size:11px;white-space:nowrap}.vkpis .kpi .v{font-size:20px;margin:2px 0}.vkpis .kpi .v .small{display:none}.vkpis .kpi .s{display:none}
+  .vsd{margin-bottom:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  .vsd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:11px 14px;font-size:14px}.vsd>summary::-webkit-details-marker{display:none}
+  .vsd>summary>span{color:var(--mute)}.vsd>summary>b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vsd>summary>i{font-style:normal;white-space:nowrap}
+  .vsd>summary::after{content:"";width:7px;height:7px;border-right:1.6px solid var(--mute);border-bottom:1.6px solid var(--mute);transform:rotate(45deg);margin-left:4px}.vsd[open]>summary::after{transform:rotate(-135deg)}
+  .vsd .rlscope{border:0;border-top:1px solid var(--line);border-radius:0 0 12px 12px;box-shadow:none}.vsd .rlscopeh{display:none}
+}@media(max-width:700px){.vkpis{grid-template-columns:repeat(2,minmax(0,1fr))}}.vtabs{margin-bottom:14px;max-width:640px;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:560px){.vtabs{grid-template-columns:repeat(2,minmax(0,1fr))}}.tbar .tbtn.primary{background:#fff;color:#111;border-color:#fff}
 .vprog{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:15px;color:var(--mute)}.vprog .rlbar{flex:1}
 .vcard{perspective:1200px;cursor:pointer;max-width:560px;margin:0 auto;outline:none}.vin{position:relative;min-height:260px;transition:transform .45s;transform-style:preserve-3d}.vcard.on .vin{transform:rotateY(180deg)}
 .vf,.vb{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;border:1px solid var(--line);background:var(--surface);display:grid;place-content:center;justify-items:center;gap:10px;padding:24px;text-align:center;box-shadow:0 10px 30px rgba(15,23,42,.08)}
@@ -5264,6 +5275,8 @@ function rlSetPage(sec,id){const set=rlSets(sec).find(s=>s.id===id);if(!set){vie
    <section class="section"><h2>문제 유형</h2><p class="small">${Object.entries(types).map(([t,n])=>`<span class="mtag sm">${esc(t)} ${n}</span>`).join(' ')}</p></section>`;
   $$('.rlmode').forEach(b=>b.onclick=()=>rlRun(sec,set,b.dataset.m))}
 /* ---- runner ---- */
+/* 브라우저 기본 confirm 대신 앱 안의 대화상자로 물어요 (iPhone 홈 화면 앱에서 기본 대화상자가 안 뜨는 경우가 있어요) */
+async function rlAsk(body,yes='네',no='아니요'){return (await modal({title:'확인',body,actions:[{label:yes,value:'y',kind:'primary'},{label:no,value:'n',kind:'quiet'}]}))==='y'}
 function rlRun(sec,set,mode){if(mode==='exam')return rlExam(sec,set);
   const S_=RLSEC[sec],st={i:0,ans:{},mode,left:rlTime(set),tm:null,done:{},streak:0};
   document.body.classList.add('rltest');
@@ -5275,7 +5288,7 @@ function rlRun(sec,set,mode){if(mode==='exam')return rlExam(sec,set);
     $('#rlsfx')?.addEventListener('click',()=>{store.set('sfx',!SFX.on());$('#rlsfx').innerHTML=ICON(SFX.on()?'bell':'belloff');if(SFX.on())SFX.ok()});
     $('#rlx').onclick=async()=>{const v=await rlExitAsk(set,st,'풀이를');if(v==='save')finish(true);else if(v==='drop'){leave();location.hash='#'+S_.pre+'-s-'+set.id;route()}};
     $('#rlb')?.addEventListener('click',()=>{st.i--;rlStopAudio();frame()});
-    $('#rln').onclick=()=>{if(st.i===set.blocks.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!confirm(`답하지 않은 문항이 ${miss}개 있어요. 채점할까요?`))return;finish()}else{st.i++;rlStopAudio();frame()}};
+    $('#rln').onclick=async()=>{if(st.i===set.blocks.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!await rlAsk(`답하지 않은 문항이 <b>${miss}개</b> 있어요. 그래도 채점할까요?`,'채점하기','계속 풀기'))return;finish()}else{st.i++;rlStopAudio();frame()}};
     $$('.rldots button').forEach(x=>x.onclick=()=>{st.i=+x.dataset.k;rlStopAudio();frame()});
     if(rlIsR(sec)&&mode==='exam'){const tick=()=>{const e=$('#rltm');if(e)e.textContent='⏱ '+Math.floor(st.left/60)+':'+String(st.left%60).padStart(2,'0');e?.classList.toggle('warn',st.left<=60)};tick();clearInterval(st.tm);st.tm=setInterval(()=>{st.left--;tick();if(st.left<=0){clearInterval(st.tm);toast('시간이 끝났어요. 채점할게요.');finish()}},1000)}
     rlBlock($('#rlbody'),sec,b,st,mode)}
@@ -5312,10 +5325,10 @@ function rlExam(sec,set){const S_=RLSEC[sec],isL=sec==='l',st={ans:{},mode:'exam
   $('#rlvolr').oninput=e=>{const v=e.target.value/100;setVol(v);if(rlAud)rlAud.volume=Math.min(1,v)};
   $('#rlx').onclick=async()=>{const v=await rlExitAsk(set,st,'시험을');if(v==='save')finish(true);else if(v==='drop'){leave();location.hash='#'+S_.pre+'-s-'+set.id;route()}};
   $('#rlb')?.addEventListener('click',()=>{if(st.i>0){st.i--;show()}});
-  $('#rln').onclick=()=>{const s=steps[st.i];if(s.audio&&!st.done[s.b.audio])return;
+  $('#rln').onclick=async()=>{const s=steps[st.i];if(s.audio&&!st.done[s.b.audio])return;if(st.asking)return;st.asking=true;try{
     if(!s.audio&&!isL&&false)return;
-    if(st.i===steps.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!confirm(`답하지 않은 문항이 ${miss}개 있어요. 이 섹션을 마칠까요?`))return;finish()}
-    else{if(isL&&!s.audio&&st.ans[s.qs[0].n]==null&&!confirm('답을 고르지 않았어요. 다음으로 넘어갈까요? (리스닝은 이전 문항으로 돌아갈 수 없어요)'))return;st.i++;show()}};
+    if(st.i===steps.length-1){const miss=rlQs(set).filter(q=>st.ans[q.n]==null||st.ans[q.n]==='').length;if(miss&&!await rlAsk(`답하지 않은 문항이 <b>${miss}개</b> 있어요. 이 섹션을 마칠까요?`,'마치기','돌아가기'))return;finish()}
+    else{if(isL&&!s.audio&&st.ans[s.qs[0].n]==null&&!await rlAsk('답을 고르지 않았어요. 다음으로 넘어갈까요?<br><span class="small muted">리스닝은 이전 문항으로 돌아갈 수 없어요</span>','넘어가기','돌아가기'))return;st.i++;show()}}finally{st.asking=false}};
   if(!isL){$('#rlht').onclick=()=>{const t=$('#rltm');t.classList.toggle('hid');$('#rlht').innerHTML=(t.classList.contains('hid')?'Show':'Hide')+'<span class="tvl"> Time</span>'};
     const tick=()=>{const e=$('#rltm');if(!e)return;e.textContent=Math.floor(st.left/60)+':'+String(st.left%60).padStart(2,'0');e.classList.toggle('warn',st.left<=60);if(st.left<=60)e.classList.remove('hid')};
     tick();st.tm=setInterval(()=>{st.left--;tick();if(st.left<=0){clearInterval(st.tm);alertBox('시간이 끝났어요. 채점할게요.');finish()}},1000)}
@@ -5559,12 +5572,12 @@ function rlQVoice(){try{return rlAiOK()&&store.get('vceng','orig')!=='dev'?'ai':
 function rlStopSpeak(){window.RLSAYSEQ++;try{speechSynthesis.cancel();if(RLAIA)RLAIA.pause()}catch(e){}}
 /* leaving mid-way: keep a score for only the answered questions, leave without a record, or keep going */
 async function rlExitAsk(set,st,kind){const qs=rlQs(set),a=qs.filter(q=>st.ans[q.n]!=null&&st.ans[q.n]!=='').length;
-  if(!a){return confirm(kind+' 그만둘까요? 아직 답한 문항이 없어서 기록은 남지 않아요.')?'drop':'cancel'}
+  if(!a){return (await rlAsk(kind+' 그만둘까요?<br><span class="small muted">아직 답한 문항이 없어서 기록은 남지 않아요</span>','나가기','계속 풀기'))?'drop':'cancel'}
   return await modal({title:kind+' 그만둘까요?',body:`지금까지 <b>${qs.length}문항 중 ${a}문항</b>에 답했어요.<br>푼 문제만 채점해서 기록에 남길지 골라 주세요.`,
     actions:[{label:`✓ 푼 ${a}문항만 채점하고 나가기`,value:'save',kind:'primary'},{label:'기록 없이 나가기',value:'drop'},{label:'계속 풀기',value:'cancel',kind:'quiet'}]})}
 /* grade every question of the current passage at once, then show a summary card */
 function rlAllWire(host,b,st){const btn=$('[data-all]',host);if(!btn)return;
-  btn.onclick=()=>{const miss=b.qs.filter(q=>st.ans[q.n]==null||st.ans[q.n]==='');if(miss.length&&!confirm(`답하지 않은 문항이 ${miss.length}개 있어요 (${miss.map(q=>q.n+'번').join(', ')}). 그래도 채점할까요?`))return;
+  btn.onclick=async()=>{const miss=b.qs.filter(q=>st.ans[q.n]==null||st.ans[q.n]==='');if(miss.length&&!await rlAsk(`답하지 않은 문항이 <b>${miss.length}개</b> 있어요 (${miss.map(q=>q.n+'번').join(', ')}). 그래도 채점할까요?`,'채점하기','계속 풀기'))return;
     window.RLBULK=1;try{$$('.rlchk',host).forEach(c=>{if(!c.dataset.done)c.onclick()})}finally{window.RLBULK=0}
     const res=b.qs.map(q=>({n:q.n,ok:rlCorrect(q,st.ans[q.n]),t:q.t})),ok=res.filter(r=>r.ok).length,p=ok/res.length;
     try{p===1?(SFX.combo(),rlConfetti()):p>=.6?SFX.ok():SFX.bad()}catch(e){}
@@ -5776,9 +5789,10 @@ function rlVoc(sec,tab){if(tab)RLVT=tab;const S_=RLSEC[sec],P=S_.pre;setCrumb([S
   const sc=rlVScope(sec),narrow=sc.set!=='all',deck=rlScopedDeck(sec,sc),now=Date.now(),st=k=>RLSRS[k.key];
   const due=deck.filter(v=>st(v)&&st(v).due<=now),fresh=deck.filter(v=>!st(v)),known=deck.filter(v=>st(v)&&st(v).box>=4),star=deck.filter(v=>RLH.voc[v.key]);
   const todayN=Math.min(due.length+Math.min(fresh.length,15),40);
-  view.innerHTML=`<div class="cathead"><div><span class="badge">${S_.name}</span><h1>단어장</h1><p>교재에 나온 어휘를 <b>간격 반복</b>으로 외워요. 아는 단어는 점점 늦게, 모르는 단어는 자주 다시 나와요.</p></div></div>
+  const ph=matchMedia('(max-width:700px)').matches,scopeLab=sc.set!=='all'?(rlSets(sec).find(x=>x.id===sc.set)||{}).title||'':sc.cat!=='all'?(RLCAT[sc.cat]||sc.cat):'전체';
+  view.innerHTML=`<div class="cathead"><div><span class="badge">${S_.name}</span><h1>단어장</h1><p class="vdesc">교재에 나온 어휘를 <b>간격 반복</b>으로 외워요. 아는 단어는 점점 늦게, 모르는 단어는 자주 다시 나와요.</p></div></div>
    <div class="c12 kpis vkpis"><div class="panel kpi"><div class="k">오늘 학습</div><div class="v">${todayN}</div><div class="s">복습 ${due.length} · 새 단어 ${Math.min(fresh.length,15)}</div></div><div class="panel kpi"><div class="k">익힌 단어</div><div class="v">${known.length}<span class="small muted"> / ${deck.length}</span></div><div class="s">4단계 이상</div></div><div class="panel kpi"><div class="k">학습 중</div><div class="v">${deck.length-fresh.length-known.length}</div><div class="s">한 번 이상 본 단어</div></div><div class="panel kpi"><div class="k">★ 저장</div><div class="v">${star.length}</div><div class="s">해설 화면에서 저장</div></div></div>
-   ${rlScopeHTML(sec,sc,deck.length)}
+   ${ph?`<details class="vsd"><summary><span>공부할 범위</span><b>${esc(String(scopeLab).replace(/ · Hackers /,' · '))}</b><i class="small muted">${deck.length}단어</i></summary>${rlScopeHTML(sec,sc,deck.length)}</details>`:rlScopeHTML(sec,sc,deck.length)}
    <div class="secsw vtabs" role="tablist">${[['today',narrow?'카드':'오늘의 카드'],['quiz','퀴즈'],['spell','철자 쓰기'],['list','목록']].map(([k,t])=>`<a href="javascript:void 0" role="tab" data-t="${k}" aria-selected="${RLVT===k}">${t}</a>`).join('')}</div>
    <div id="vbody"></div>`;
   $$('.vtabs a').forEach(a=>a.onclick=()=>rlVoc(sec,a.dataset.t));rlScopeWire(sec,sc);
