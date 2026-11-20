@@ -1880,7 +1880,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 @media (max-width:600px){.rlfb,.rlq.rev .rlexp.xv2{margin-left:0}.xv2 .xk{font-size:14.5px}}
 
 /* 아이패드·데스크톱: 알약 묶음은 상자 없이 그냥 통과(탭이 원래 자리에 그대로 놓여요) */
-@media (min-width:701px){.btpill{display:contents}}
+@media (min-width:701px){.btpill{display:contents}.btabs:has(.btpill:empty){grid-auto-columns:max-content;justify-content:start;padding-left:10px}.btabs:has(.btpill:empty) .bt-back{padding-left:14px;padding-right:14px}}
 /* 폰: 하단 메뉴 = 둥근 ← 버튼 + 알약 탭 묶음. 풀이 중엔 ✕ · ‹ · 다음 */
 @media (max-width:700px){
 .btabs{display:flex;align-items:center;gap:12px;padding:6px 20px 24px;background:transparent;border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
@@ -1898,6 +1898,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .btabs .bt-back .t{display:none}.btabs .bt-back .i{width:28px;height:28px}
 .btpill{flex:1;min-width:0;display:flex;align-items:center;height:64px;min-height:64px;box-sizing:border-box;padding:0 6px;border-radius:32px;align-self:center;overflow:hidden;touch-action:pan-y;overscroll-behavior-x:none}
 .btpill::-webkit-scrollbar{display:none}
+.btpill:empty{display:none}
 .btpill.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 /* 폰 탭은 아이콘만 (글자는 보조 기술용으로만 남겨요) */
 .btpill>a{flex:1 1 0;min-width:0;height:54px;padding:0 2px;border-radius:27px;justify-content:center;gap:0;font-size:0;line-height:0;color:var(--ink2,var(--mute))}
@@ -3070,7 +3071,7 @@ function btPill(){const t=$('.btabs');if(!t)return;let p=$('.btpill',t);if(!p){p
   if(!p.querySelector('a[aria-current]')){const h=location.hash||'#start';p.querySelectorAll('a[href^="#"]').forEach(a=>{if(a.getAttribute('href')===h)a.setAttribute('aria-current','page')})}
   const more=()=>p.classList.toggle('more',p.scrollWidth-p.clientWidth-p.scrollLeft>4);if(!p.dataset.w){p.dataset.w=1;p.addEventListener('scroll',more,{passive:true});addEventListener('resize',more)}requestAnimationFrame(more)}
 function btabsDecor(){const t=$('.btabs');if(!t)return;if(t.querySelector('.bt-back')){btPill();return}const h=location.hash.slice(1);if(h===''||h==='start'){btPill();return}
-  const first=t.querySelector('a[href]');if(!first)return;first.dataset.home='1';const href=first.getAttribute('href');
+  const first=t.querySelector('a[href]');if(!first){t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back lg" role="button" aria-label="이전 화면">${ICON('back')}<span class="t">이전</span></a>`);btPill();return}first.dataset.home='1';const href=first.getAttribute('href');
   t.insertAdjacentHTML('afterbegin',`<a href="#" class="bt-back lg" role="button" aria-label="이전 화면">${ICON('back')}이전</a><a href="#start" class="bt-dash" aria-label="대시보드로">${ICON('grid')}대시보드</a>`);
   setTimeout(btBackFace,0);
   if(/^#(rd|rb|ls|vc|w|home)$/.test(href))first.insertAdjacentHTML('afterend',`<a href="#" class="bt-list" role="button" aria-label="문제 목록 열기">${ICON('book')}${href==='#vc'?'Day 목록':'문제 목록'}</a>`);btPill()}
@@ -3630,7 +3631,7 @@ function rstWire(){const st=t=>{const e=$('#rstst');if(e)e.textContent=t},sel=()
 /* ---------- settings ---------- */
 function renderSettings(){
   setCrumb(['내 학습','설정']);
-  {const t=$('.btabs');if(t)t.innerHTML=`<a href="#settings" aria-current="page">${ICON('gear')}설정</a><a href="#history">${ICON('list')}스피킹 기록</a>`}
+  {const t=$('.btabs');if(t)t.innerHTML=''}   /* 설정은 끝 화면: 하단엔 ‹ 하나만 */
   const e=envState();
   view.innerHTML=`<div class="cathead"><div><h1>설정</h1></div></div>
   <div class="panel form">
