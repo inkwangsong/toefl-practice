@@ -918,7 +918,7 @@ body.inkshow.pinkon #view{outline:2px dashed color-mix(in srgb,var(--accent) 35%
 .vcmn,.vcnote{margin:0;padding:8px 12px;border-radius:10px;background:var(--paper);font-size:16px}.vcety summary{cursor:pointer;font-weight:700}.vcety p{margin:6px 0;font-size:16px}
 .vcbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px auto 6px;max-width:720px}.vcbtns .vcno{border-color:color-mix(in srgb,var(--bad) 50%,var(--line2));color:var(--bad)}
 .center{text-align:center}
-.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcdone .row{justify-content:center}
+.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcqtap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}.vcdone .row{justify-content:center}
 .vcq{max-width:720px}.vcqw{font-size:24px;font-weight:800;margin:4px 0 14px}
 .rlopt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}.rlopt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
 button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
@@ -6144,7 +6144,7 @@ function vcDayPage(d,mode){mode=mode&&VCM[mode]?mode:store.get('vcmode','card');
   const run=()=>{const f=store.get('vcfilt','all'),sub=vcFiltered(ws,f);fb.innerHTML=vcFiltHTML(f);
     $$('[data-filt]',fb).forEach(b=>b.onclick=()=>{store.set('vcfilt',b.dataset.filt);run()});
     if(!sub.length){host.innerHTML='<div class="empty">이 범위에 맞는 단어가 없어요.</div>';return}
-    if(mode==='quiz')vcQuiz(host,sub,{pos:'d'+d+':quiz:'+f,pool:ws});else if(mode==='spell')vcSpell(host,sub,{pos:'d'+d+':spell:'+f});else vcList(host,sub)};
+    if(mode==='quiz')vcQuiz(host,sub,{pos:'d'+d+':quiz:'+f,pool:ws,exit:'#vc'});else if(mode==='spell')vcSpell(host,sub,{pos:'d'+d+':spell:'+f,exit:'#vc'});else vcList(host,sub)};
   run()}
 function vcStudy(kind){const ws=kind==='rev'?vcDue():VC.data.filter(w=>vcSt(w)==='learning'||vcSt(w)==='unsure');setCrumb(['Vocab',kind==='rev'?'오늘의 복습':'모르는 단어']);
   view.innerHTML=`<div class="cathead"><div><a class="small" href="#vc">← 보카 메인</a><h1 style="margin-top:6px">${kind==='rev'?'↻ 오늘의 복습':'✕ 모름 · 애매 단어'}</h1><p>${ws.length}단어 · ${kind==='rev'?'간격 반복으로 오늘 다시 볼 단어':'‘모름’·‘애매’로 표시한 단어'}</p></div></div><div id="vcbody"></div>`;
@@ -6258,12 +6258,12 @@ function vcQItem(w,ws,dir){const sh=a=>a.slice().sort(()=>Math.random()-.5),othe
   return {q:'≈ '+cue.join(' / '),opts:sh([{t:w.word,ok:true},...bad.map(o=>({t:o.word,ok:false}))])}}
 function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])dir='en';
   const mk=(src=ws)=>src.slice().sort(()=>Math.random()-.5).filter(w=>dir==='en'||dir==='kr'||vcSynAll(w).length);
-  let order=mk(),i=0,ok=0,wrong=[],K=opt.pos?opt.pos+':'+dir:null,resumed=false;
+  let order=mk(),i=0,ok=0,wrong=[],K=opt.pos?opt.pos+':'+dir:null,resumed=false,tk=0;const EXIT=opt.exit||'#start';
   const resume=()=>{const r=vcPosLoad(K,ws);if(r){order=r.order;i=r.i;ok=r.ok;wrong=r.wrong;resumed=true}};resume();
-  const draw=()=>{vcStop();delete host.dataset.lock;
+  const draw=()=>{vcStop();delete host.dataset.lock;tk++;
     const dirs=`<span class="rlrate vcqdirs" role="group" aria-label="퀴즈 유형">${Object.entries(VCQD).map(([k,t])=>`<button type="button" data-dir="${k}" aria-pressed="${dir===k}">${t}</button>`).join('')}</span>`;
     if(i>=order.length){vcPosClear(K);const W=wrong.slice();host.innerHTML=`<div class="vcprog">${dirs}</div><div class="panel ph vcdone"><h2>${ok===order.length?'🎯 만점!':'✅ 끝!'}</h2><p>${order.length}문제 중 <b>${ok}</b>개 정답${W.length?` · 틀린 단어 <b class="badc">${W.length}</b>개 (‘모름’으로 표시했어요)`:''}</p>${vcWrongHTML(W)}
-        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcqw">✕ 틀린 것만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcqa">처음부터 다시</button></div></div>`;
+        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcqw">✕ 틀린 것만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcqa">처음부터 다시</button><a class="btn quiet" href="${EXIT}">종료</a></div></div>`;
       if(ok/(order.length||1)>=.8){try{rlConfetti();SFX.done()}catch(e){}}$('#vcqa').onclick=()=>{order=mk();i=ok=0;wrong=[];draw()};const qw=$('#vcqw');if(qw){qw.onclick=()=>{order=mk(W);i=ok=0;wrong=[];draw()};qw.focus()}wireD();return}
     const w=order[i],it=vcQItem(w,(opt.pool&&opt.pool.length>=4)?opt.pool:(ws.length>=4?ws:VC.data.filter(x=>!x.rk).slice(0,400)),dir);if(!it){i++;return draw()}
     const syn=dir==='syn'||dir==='synr',img=store.get('vcqimg',false);
@@ -6277,8 +6277,12 @@ function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])d
     $$('.rlopt',host).forEach(b=>b.onclick=()=>{if(host.dataset.lock)return;host.dataset.lock=1;const good=b.dataset.ok==='1';
       $$('.rlopt',host).forEach(x=>{if(x.dataset.ok==='1')x.classList.add('ok');else if(x===b)x.classList.add('bad')});
       if(good){ok++;try{SFX.ok()}catch(e){}}else{vcMark(w,false);if(!wrong.includes(w))wrong.push(w);try{SFX.bad()}catch(e){}}
-      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}<button class="btn primary" id="vcqn">다음 →</button>`;
-      $('#vcqn').onclick=()=>{i++;resumed=false;draw()};$('#vcqn').focus()});
+      /* 정답이면 잠깐 보여 주고 저절로 다음 문제로, 오답이면 멈춰서 정답을 보여 줘요. 어느 쪽이든 카드 아무 곳이나 누르면 바로 넘어가요. */
+      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p><p class="small muted vcqtap">${good?'곧 다음 문제로 넘어가요':'카드 아무 곳이나 누르면 다음 문제로'} <button class="btn sm ${good?'quiet':'primary'}" id="vcqn">다음 →</button></p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}`;
+      const me=tk,go=()=>{if(me!==tk||!document.body.contains(host))return;i++;resumed=false;draw()};
+      $('#vcqn').onclick=e=>{e.stopPropagation();go()};try{$('#vcqn').focus({preventScroll:true})}catch(e){}
+      setTimeout(()=>{if(me!==tk)return;const pn=$('.vcq',host);if(pn)pn.addEventListener('click',e=>{if(e.target.closest('[data-say],a,input,label'))return;go()})},0);
+      if(good)setTimeout(go,1300)});
     $('#vcrestart',host)?.addEventListener('click',()=>{vcPosClear(K);order=mk();i=ok=0;wrong=[];resumed=false;draw()})};
   const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);K=opt.pos?opt.pos+':'+dir:null;order=mk();i=ok=0;wrong=[];resumed=false;resume();draw()});
   draw()}
@@ -6294,7 +6298,7 @@ function vcSpell(host,ws,opt={}){let order=ws.slice().sort(()=>Math.random()-.5)
   const draw=()=>{vcStop();if(i>=order.length){vcPosClear(SK);const W=wrong;
       host.innerHTML=`<div class="panel ph vcdone"><h2>⌨ 끝!${round>1?` <span class="small muted">· ${round}번째 도전</span>`:''}</h2><p>${order.length}단어 중 <b>${ok}</b>개를 한 번에 맞혔어요${W.length?` · 틀리거나 힌트를 쓴 단어 <b class="badc">${W.length}</b>개`:' · 모두 한 번에 맞혔어요 🎉'}</p>
         ${W.length?`<div class="vcspw">${W.map(w=>`<span class="vcspc"><b>${esc(w.word)}</b> <span class="small muted">${esc(vcKr(w))}</span></span>`).join('')}</div>`:''}
-        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcsw">✍ 틀린 단어만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcsa">처음부터 다시</button><a class="btn quiet" href="#vc-sp">철자 오답 노트 →</a></div>
+        <div class="row" style="margin-top:12px">${W.length?`<button class="btn primary" id="vcsw">✍ 틀린 단어만 다시 (${W.length})</button>`:''}<button class="btn ${W.length?'':'primary'}" id="vcsa">처음부터 다시</button><a class="btn quiet" href="#vc-sp">철자 오답 노트 →</a><a class="btn quiet" href="${opt.exit||'#start'}">종료</a></div>
         <p class="small muted" style="margin:10px 0 0">틀린 단어는 ‘철자 오답 노트’에 남아요. 두 번 연속 한 번에 맞히면 노트에서 빠져요. 카드에서 ‘안다’로 표시한 단어도 여기서 틀리면 ‘애매’로 바뀌어 다시 복습에 나와요.</p></div>`;
       $('#vcsa').onclick=()=>{round=1;start(ws)};vcPosClear(SK);const b=$('#vcsw');if(b){b.onclick=()=>{round++;start(W)};b.focus()}return}
     const w=order[i],ans=w.word,tries={n:0};
