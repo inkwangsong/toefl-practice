@@ -1885,14 +1885,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 @media (max-width:700px){
 .btabs{display:flex;align-items:center;gap:12px;padding:6px 20px 24px;background:transparent;border-top:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
   /* iOS 26 Liquid Glass 흉내: 맑은 유리(배경 거의 투명 + 강한 블러·채도), 가장자리 굴절 띠, 위쪽 반사광, 떠 있는 그림자 */
-  .lg{background:linear-gradient(145deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.28) 40%,rgba(255,255,255,.18) 60%,rgba(255,255,255,.42) 100%);
-    backdrop-filter:blur(26px) saturate(2) brightness(1.08);-webkit-backdrop-filter:blur(26px) saturate(2) brightness(1.08);
-    border:.5px solid rgba(255,255,255,.65);
-    box-shadow:inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.45),inset 1.5px 0 1px rgba(255,255,255,.55),inset -1.5px 0 1px rgba(255,255,255,.35),inset 0 0 18px rgba(255,255,255,.25),0 10px 30px rgba(0,0,0,.16),0 1px 2px rgba(0,0,0,.08)}
-  :root[data-theme="dark"] .lg{background:linear-gradient(145deg,rgba(60,64,78,.55) 0%,rgba(32,35,45,.35) 40%,rgba(24,26,34,.3) 60%,rgba(50,54,68,.45) 100%);
-    backdrop-filter:blur(26px) saturate(1.8) brightness(1.15);-webkit-backdrop-filter:blur(26px) saturate(1.8) brightness(1.15);
-    border:.5px solid rgba(255,255,255,.22);
-    box-shadow:inset 0 1.5px 1px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.1),inset 1.5px 0 1px rgba(255,255,255,.18),inset -1.5px 0 1px rgba(255,255,255,.08),inset 0 0 18px rgba(255,255,255,.06),0 12px 34px rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.4)}
+  .lg{background:rgba(255,255,255,.55);
+    backdrop-filter:blur(22px) saturate(1.8);-webkit-backdrop-filter:blur(22px) saturate(1.8);
+    border:.5px solid rgba(255,255,255,.55);
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06)}
+  :root[data-theme="dark"] .lg{background:rgba(44,46,54,.6);
+    backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);
+    border:.5px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.18),0 0 0 .5px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.5),0 1px 2px rgba(0,0,0,.4)}
 .btabs>*{pointer-events:auto}
 .btabs .bt-back{flex:0 0 64px;width:64px;height:64px;min-height:64px;box-sizing:border-box;border-radius:50%;display:grid;place-items:center;padding:0;margin:0;gap:0;line-height:1;color:var(--ink);align-self:center}
 .btabs .bt-back .t{display:none}.btabs .bt-back .i{width:28px;height:28px}
@@ -1902,19 +1902,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .btpill.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
 /* 폰 탭은 아이콘만 (글자는 보조 기술용으로만 남겨요) */
 .btpill>a{flex:1 1 0;min-width:0;height:54px;padding:0 2px;border-radius:27px;justify-content:center;gap:0;font-size:0;line-height:0;color:var(--ink2,var(--mute))}
-.btpill>a .i{width:30px;height:30px;stroke-width:1.7}
-.btpill>a[aria-current="page"]{color:var(--accent);font-weight:700;background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,255,255,.35));box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.3),0 2px 8px rgba(0,0,0,.08)}
-:root[data-theme="dark"] .btpill>a[aria-current="page"]{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.08));box-shadow:inset 0 1px 1px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.08),0 2px 8px rgba(0,0,0,.3)}
+.btpill>a .i{width:28px;height:28px;stroke-width:1.6}
+.btpill>a[aria-current="page"]{color:var(--ink);background:rgba(0,0,0,.07);box-shadow:none}
+:root[data-theme="dark"] .btpill>a[aria-current="page"]{color:#fff;background:rgba(255,255,255,.14);box-shadow:none}
 .btpill>a[data-home]{display:none}   /* 폰에서는 '메인' 탭을 빼요: 둥근 ‹ 로 돌아가면 되니까요 */
 .btpill>a .emj{font-size:26px;line-height:30px;height:30px}
 /* 풀이 중 */
 .btabs.runctl .btpill>a:not(.bt-prev):not(.bt-next){display:none}
 .btabs.runctl .btpill{padding:4px;gap:6px}
 .btabs.runctl .btpill>a{height:56px}
-.btabs.runctl .bt-prev{flex:0 0 56px;min-width:0;border-radius:50%;background:rgba(255,255,255,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.9);color:var(--ink)}
-:root[data-theme="dark"] .btabs.runctl .bt-prev{background:rgba(255,255,255,.12);box-shadow:inset 0 1px 1px rgba(255,255,255,.25)}
+.btabs.runctl .bt-prev{flex:0 0 56px;min-width:0;border-radius:50%;background:rgba(0,0,0,.07);box-shadow:none;color:var(--ink)}
+:root[data-theme="dark"] .btabs.runctl .bt-prev{background:rgba(255,255,255,.14);box-shadow:none}
 .btabs.runctl .bt-prev .i{width:24px;height:24px}
-.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:28px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 88%,#fff),var(--accent));color:#fff;font-size:16px;font-weight:700;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 4px 12px color-mix(in srgb,var(--accent) 35%,transparent)}
+.btabs.runctl .bt-next{flex:1;min-width:0;flex-direction:row-reverse;gap:2px;border-radius:28px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;box-shadow:none}
 .btabs.runctl .bt-next .i{width:18px;height:18px;margin-right:-2px}
 .btabs.runctl .bt-next.final{background:var(--ok)}
 .btabs.runctl .dis{opacity:.35;pointer-events:none}
@@ -1926,7 +1926,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .tfb{box-sizing:border-box;height:64px;min-height:64px;max-height:64px;margin:0;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none;border-radius:32px;font:700 15px var(--ui);letter-spacing:-.01em;color:#1f2430;align-self:center}
 .tfb:not(.primary){flex:0 0 64px;width:64px;font-size:0}
 .tfb:not(.primary)::before{content:"";width:11px;height:11px;border-left:2.2px solid currentColor;border-bottom:2.2px solid currentColor;transform:translateX(3px) rotate(45deg)}
-.tfb.primary{flex:1;background:linear-gradient(180deg,#3b6ff0,#1d4ed8);color:#fff;border:.5px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 6px 16px rgba(29,78,216,.35)}.tfb:disabled{opacity:.55;color:#9aa1ab}
+.tfb.primary{flex:1;background:#1d4ed8;color:#fff;border:0;box-shadow:0 8px 24px rgba(0,0,0,.12)}.tfb:disabled{opacity:.55;color:#9aa1ab}
 #test.has-tfoot .tmain{padding-bottom:104px}
 }
 </style>
@@ -3053,7 +3053,7 @@ function lnbEnhance(){const l=$('#lnb');if(!l)return;
 new MutationObserver(lnbEnhance).observe($('#lnb'),{childList:true});
 
 function msecSync(){const h=location.hash.slice(1)||'start';   /* an empty address is the landing page, not Speaking (#home) */
-  const k=/^(rd|rb|r-|r2-)/.test(h)?'r':/^(ls|l-)/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
+  const k=/^(rd|rb)/.test(h)?'r':/^ls/.test(h)?'l':/^w($|-)/.test(h)?'w':/^vc($|-)/.test(h)?'v':/^(settings|bg|start)/.test(h)?'':'s';
   /* the whole screen takes the section's colour, so you can tell where you are without reading a label */
   document.documentElement.dataset.sec=k;
   $$('#msecsw a').forEach(a=>{a.setAttribute('aria-selected',String(a.dataset.s===k));if(a.dataset.s==='r')a.setAttribute('href',store.get('rdlv','rd')==='rb'?'#rb':'#rd')})}
@@ -3930,6 +3930,7 @@ let resTab='t1';
 function renderResults(ctx){
   const {sets,title,partial}=ctx;const review=!!RES._review;
   setCrumb(['결과',title]);
+  RES.forEach(x=>{if(x.task===1&&!x.sc)x.sc={score:null}});   /* 저장본에 점수가 비어 있어도 화면이 깨지지 않게 */
   const t1=RES.filter(x=>x.task===1),t2=RES.filter(x=>x.task===2);
   if(!t1.length&&resTab==='t1')resTab='t2';if(!t2.length&&resTab==='t2')resTab='t1';
   t2.forEach(x=>{if(!x.sc&&!x.r.noMic&&!(AI.audioOK()&&!x.r.text))x.sc=estimateInterview(x.q,x.r)});
@@ -4058,7 +4059,7 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
   function body(){
     const host=$('#rbody');host.innerHTML='';
     const list=resTab==='t1'?t1:t2,p=el('<div class="panel acc"></div>');
-    list.forEach((x,i)=>{
+    list.forEach((x,i)=>{try{
       const s=x.sc?x.sc.score:null,j=x.sc||{},qn=resTab==='t1'?i+1:t1.length+i+1;
       const summary=resTab==='t1'?esc(x.ref):esc(x.q.text);
       const it=el(`<details class="aitem" ${s!=null&&s<4||x.sc&&x.sc.fail?'open':''}><summary><span class="sbadge sm ${s==null?'pending':''}" data-s="${s??''}">${s??'?'}</span><span class="aq"><span class="small muted">Q${pad2(qn)} ${srcTag(x.sc)}</span><span class="atx">${summary}</span></span></summary><div class="abody">
@@ -4075,8 +4076,8 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
             ${(j.improvements||[]).length?`<h4>고칠 점</h4><ul>${j.improvements.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}
             ${(j.grammar_fixes||[]).length?`<h4>문법·표현 교정</h4>${j.grammar_fixes.map(g=>`<p class="rp-gf"><s>${esc(g.original)}</s><br><ins>${esc(g.corrected)}</ins>${g.note?`<span class="small muted"> — ${esc(g.note)}</span>`:''}</p>`).join('')}`:''}
             ${j.upgraded_answer?`<h4>이렇게 말해 보세요 (모범 답안)</h4><pre>${esc(j.upgraded_answer)}</pre>`:''}</div>`:''}
-          ${j.est?`<ul class="notes">${j.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
-          ${x.q.tpl?`<div class="tplans"><div class="row"><span class="mtag mine sm">템플릿 모범 답안</span><b>${esc(ADDON[x.q.tpl.a].n)} · ${esc(ADDON[x.q.tpl.a].k)}</b><button class="btn sm" data-a="tpl" style="margin-left:auto">이 질문으로 템플릿 연습</button></div>
+          ${j.est&&(j.why||[]).length?`<ul class="notes">${j.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
+          ${x.q.tpl&&ADDON[x.q.tpl.a]?`<div class="tplans"><div class="row"><span class="mtag mine sm">템플릿 모범 답안</span><b>${esc(ADDON[x.q.tpl.a].n)} · ${esc(ADDON[x.q.tpl.a].k)}</b><button class="btn sm" data-a="tpl" style="margin-left:auto">이 질문으로 템플릿 연습</button></div>
             ${stepsHtml(x.q.tpl.a,tplSteps(x.q))}${(()=>{const ck=checkSteps(x.q.tpl.a,x.r.text);return x.r.text?`<p class="small muted" style="margin:6px 0 0">내 답변 템플릿 체크: ${stepNames(x.q.tpl.a).map((n,i)=>(ck[i]?'✓ ':'✕ ')+n).join(' · ')}</p>`:''})()}</div>`:''}`}
         <div class="row" style="margin-top:10px"><span class="small muted">점수 고치기</span><div class="self" role="group" aria-label="직접 채점">${[0,1,2,3,4,5].map(v=>`<button data-v="${v}" aria-pressed="${s===v&&!!j.self}" title="${esc((resTab==='t1'?RUB1:RUB2)[v])}">${v}</button>`).join('')}</div>
           ${resTab==='t2'?'<button class="btn sm quiet" data-a="copy">채점 프롬프트 복사</button>':''}</div>
@@ -4086,7 +4087,7 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
       it.querySelector('[data-a=tpl]')?.addEventListener('click',()=>{const set=SETS.find(s=>s.id===x.set.id);const q=set.questions[x.idx];TPLQ={set,q,i:x.idx};go('tpl-'+q.tpl.a)});
       it.querySelector('[data-a=copy]')?.addEventListener('click',async()=>{const ok=await copyText(interviewPrompt(x.q,x.r));toast(ok?'복사했어요. Gemini나 Claude 채팅에 붙여 넣으세요.':'복사하지 못했어요.')});
       $$('.self button',it).forEach(b=>b.onclick=()=>{if(x.task===1){x.sc.score=+b.dataset.v;x.sc.self=true;x.sc.ai=null;x.sc.fail=false}else x.sc=Object.assign({},x.sc||{},{score:+b.dataset.v,self:true,est:false,ai:null});body();summarize()});
-      p.appendChild(it)});
+      p.appendChild(it)}catch(e){console.error('result item',e);p.appendChild(el(`<details class="aitem"><summary><span class="sbadge sm pending">?</span><span class="aq"><span class="small muted">Q${pad2(resTab==='t1'?i+1:t1.length+i+1)}</span><span class="atx">이 문항은 표시하지 못했어요</span></span></summary><div class="abody"><p class="small muted">${esc(e.message)}</p></div></details>`))}});
     host.appendChild(p);
   }
   function summarize(){
