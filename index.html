@@ -2743,7 +2743,8 @@ Paraphrase rule: if the candidate kept the meaning in a complete, intelligible s
 Reply with ONLY a JSON array with one object per clip, in order: [{"i":1,"transcript":"...","score":<0-5>,"note":"<one short reason in ${LANGNAME[S.cfg.fbLang]||LANGNAME.ko}, mention pronunciation if relevant>"}, ...]`;
 }
 async function wavB64(blob){   // recording → 16 kHz mono 16-bit WAV (base64) for Gemini
-  const b=await actx().decodeAudioData(await blob.arrayBuffer());
+  let ab;try{ab=await blob.arrayBuffer()}catch(e){throw new Error('녹음 파일을 읽을 수 없어요 (기기에서 지워졌거나 손상됐어요)')}
+  let b;try{b=await actx().decodeAudioData(ab)}catch(e){throw new Error('녹음을 해독할 수 없어요')}
   const n=Math.max(1,Math.round(b.duration*16000)),oc=new OfflineAudioContext(1,n,16000),s=oc.createBufferSource();s.buffer=b;s.connect(oc.destination);s.start();
   const x=(await oc.startRendering()).getChannelData(0),buf=new ArrayBuffer(44+x.length*2),v=new DataView(buf);
   const W=(o,str)=>{for(let i=0;i<str.length;i++)v.setUint8(o+i,str.charCodeAt(i))};
@@ -3889,20 +3890,20 @@ const RDB={db:null,
 };
 function packResult(ctx){
   return {title:ctx.title,partial:!!ctx.partial,sets:ctx.sets.map(s=>s.retry?{id:s.id,retry:true,idxMap:s.idxMap}:{id:s.id}),
-    items:RES.map(x=>({task:x.task,setId:x.set.id,idx:x.idx,ref:x.ref,start:x.start,end:x.end,q:x.q?{text:x.q.text,start:x.q.start,end:x.q.end,window:x.q.window}:null,
+    items:RES.map(x=>({task:x.task,setId:x.set?x.set.id:x.setId,idx:x.idx,ref:x.ref,start:x.start,end:x.end,q:x.q?{text:x.q.text,start:x.q.start,end:x.q.end,window:x.q.window}:null,
       r:{text:x.r.text,engine:x.r.engine,peak:x.r.peak,dur:x.r.dur,noMic:x.r.noMic,latency:x.r.latency,speakSecs:x.r.speakSecs},sc:x.sc,blob:x.r.blob||null}))};
 }
-async function openSaved(id){
+async function openSaved(id){try{
   /* 아직 AI 채점이 돌고 있는 결과면 저장본 대신 살아 있는 결과를 그대로 보여요 */
   if(AIJOB.running&&AIJOB.id===id&&AIJOB.res&&AIJOB.ctx){RES=AIJOB.res;renderResults(AIJOB.ctx);return}
   const v=await RDB.get(id);
   if(!v){view.innerHTML='<div class="empty">이 시험의 상세 결과가 저장돼 있지 않아요(이 기능 이전의 기록이거나 다른 기기에서 본 시험이에요).</div>';return}
   const setOf=id=>SETS.find(s=>s.id===id);
-  RES=v.items.map(it=>({task:it.task,set:setOf(it.setId),idx:it.idx,ref:it.ref,start:it.start,end:it.end,q:it.q,r:{...it.r,blob:it.blob},sc:it.sc}));
+  RES=v.items.map(it=>({task:it.task,set:setOf(it.setId),setId:it.setId,idx:it.idx,ref:it.ref,start:it.start,end:it.end,q:it.q,r:{...it.r,blob:it.blob},sc:it.sc}));
   RES._hi=S.hist.findIndex(h=>h.ts===id);if(RES._hi<0)RES._hi=null;RES._aiDone=1;RES._rid=id;RES._review=true;
   const sets=v.sets.map(s=>{const b=setOf(s.id);return s.retry?Object.assign({},b,{retry:true,idxMap:s.idxMap}):b});
   renderResults({sets,title:v.title,partial:v.partial,ts:id});
-}
+}catch(e){console.error(e);view.innerHTML=`<div class="empty">결과를 여는 중 문제가 생겼어요.<br><span class="small muted">${esc(e.message)}</span></div>`}}
 
 /* ---------- red-pen helpers ---------- */
 function redpen(ops){   // reference-centred correction marks
@@ -3992,9 +3993,10 @@ function renderResults(ctx){
       if(AI.audioOK()){
         const all=[...t1,...t2].filter(x=>!x.r.noMic&&x.r.blob);
         const quiet=all.filter(x=>(x.r.peak||0)<0.06);quiet.forEach(silent);
-        const loud=all.filter(x=>(x.r.peak||0)>=0.06),L1=loud.filter(x=>x.task===1),L2=loud.filter(x=>x.task===2);
+        const loud=all.filter(x=>(x.r.peak||0)>=0.06);
         setProg('녹음 준비');
-        const b64=new Map(await Promise.all(loud.map(async x=>[x,await wavB64(x.r.blob)])));
+        const b64=new Map(await Promise.all(loud.map(async x=>{try{return [x,await wavB64(x.r.blob)]}catch(e){x.sc=Object.assign(x.task===1?scoreRepeat(x.ref,x.r):{score:null},{aiNote:e.message,summary:e.message,ai:null});return [x,null]}})));
+        const L1=loud.filter(x=>x.task===1&&b64.get(x)),L2=loud.filter(x=>x.task===2&&b64.get(x));
         let done=0;const total=(L1.length?1:0)+L2.length;const tick=()=>{done++;setProg(`${done} / ${total}`);refresh('run',`${done} / ${total}`);persist()};
         const jobs=[];
         /* Task 1: 전부 한 번에 (오디오 여러 개를 한 요청에) */
@@ -4117,7 +4119,8 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
     }
     const tr=$('#trend');if(tr){tr.innerHTML='';tr.appendChild(trendPanels(S.hist.slice(-20),true))}
   }
-  body();summarize();
+  try{body()}catch(e){console.error(e);const h=$('#rbody');if(h)h.innerHTML=`<div class="empty">문항 목록을 그리지 못했어요.<br><span class="small muted">${esc(e.message)}</span></div>`}
+  try{summarize()}catch(e){console.error(e);const h=$('#vhead');if(h)h.textContent='점수 계산 오류: '+e.message}
   if(AIJOB.running&&AIJOB.res===RES)aiBar('run',AIJOB.prog);else if(!review&&AI.ready()&&!RES._aiDone){RES._aiDone=1;runAI()}else aiBar(RES._aiDone&&AI.ready()?'done':'idle');
 }
 function retryWrong(list){
