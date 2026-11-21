@@ -2730,6 +2730,18 @@ const AI={
   async json(prompt){const t=await this.text(prompt);const a=t.search(/[\[{]/),b=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));return JSON.parse(t.slice(a,b+1))}
 };
 const claudeScore=p=>AI.json(p);
+let AIJOB={running:false,res:null,id:null,prog:''};
+AI.jsonAudioMany=async function(prompt,b64s){const parts=[{text:prompt}];b64s.forEach((b,i)=>{parts.push({text:`[clip ${i+1}]`});parts.push({inline_data:{mime_type:'audio/wav',data:b}})});
+  const t=await this.gem(parts);const a=t.search(/[\[{]/),b=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));return JSON.parse(t.slice(a,b+1))};
+function repeatBatchPrompt(refs){
+  return `You are an expert TOEFL iBT (2026 format) Speaking rater. Attached are ${refs.length} audio clips, each a candidate's response to a separate "Listen and Repeat" item. Clip i is preceded by the text marker [clip i].
+The sentence to repeat for each clip:
+${refs.map((r,i)=>`${i+1}. "${r}"`).join('\n')}
+For EACH clip: 1) transcribe exactly what the candidate said in English, verbatim (keep mistakes; "" if silent). 2) score 0-5 with the official ETS scale, judging the AUDIO (accuracy of words AND intelligibility: pronunciation, stress, intonation):
+5 = exact repetition, fully intelligible. 4 = meaning captured with minor changes (missing article/preposition, small word-form change), fully intelligible. 3 = essentially complete but with content/wording changes or several missing words; may have some intelligibility problems. 2 = misses a significant part; fragmentary; frequent intelligibility problems. 1 = very little captured or mostly unintelligible. 0 = no response/unintelligible/unrelated.
+Paraphrase rule: if the candidate kept the meaning in a complete, intelligible sentence, give 4 for small changes and 3 for large wording changes; never 0-2 for a complete sentence that keeps the meaning.
+Reply with ONLY a JSON array with one object per clip, in order: [{"i":1,"transcript":"...","score":<0-5>,"note":"<one short reason in ${LANGNAME[S.cfg.fbLang]||LANGNAME.ko}, mention pronunciation if relevant>"}, ...]`;
+}
 async function wavB64(blob){   // recording → 16 kHz mono 16-bit WAV (base64) for Gemini
   const b=await actx().decodeAudioData(await blob.arrayBuffer());
   const n=Math.max(1,Math.round(b.duration*16000)),oc=new OfflineAudioContext(1,n,16000),s=oc.createBufferSource();s.buffer=b;s.connect(oc.destination);s.start();
@@ -3881,6 +3893,8 @@ function packResult(ctx){
       r:{text:x.r.text,engine:x.r.engine,peak:x.r.peak,dur:x.r.dur,noMic:x.r.noMic,latency:x.r.latency,speakSecs:x.r.speakSecs},sc:x.sc,blob:x.r.blob||null}))};
 }
 async function openSaved(id){
+  /* 아직 AI 채점이 돌고 있는 결과면 저장본 대신 살아 있는 결과를 그대로 보여요 */
+  if(AIJOB.running&&AIJOB.id===id&&AIJOB.res&&AIJOB.ctx){RES=AIJOB.res;renderResults(AIJOB.ctx);return}
   const v=await RDB.get(id);
   if(!v){view.innerHTML='<div class="empty">이 시험의 상세 결과가 저장돼 있지 않아요(이 기능 이전의 기록이거나 다른 기기에서 본 시험이에요).</div>';return}
   const setOf=id=>SETS.find(s=>s.id===id);
@@ -3958,34 +3972,53 @@ function renderResults(ctx){
     b.innerHTML=state==='run'?`<span class="small">⏳ ${AI.name()} AI가 ${AI.audioOK()?'녹음을 듣고 ':''}채점하는 중… ${esc(prog||'')}</span>`:state==='err'?`<span class="small" style="color:var(--bad)">AI 채점 실패: ${esc(aiErr)}</span> <button class="btn sm" id="aire">다시 시도</button>`:state==='done'?`<span class="small">✓ ${AI.name()} AI 채점</span> <button class="btn sm quiet" id="aire">다시 채점</button>`:`<button class="btn primary sm" id="aire">${AI.name()} AI로 채점하기</button>`;
     $('#aire')?.addEventListener('click',runAI);
   }
+  /* 화면과 분리된 채점 작업: 다른 화면으로 가도 끝까지 돌고, 돌아오면 이어서 보여요 */
+  const live=()=>!!document.getElementById('aibar')&&AIJOB.res===RES;
+  const refresh=(st,prog)=>{if(!live())return;try{body();summarize();if(st)aiBar(st,prog)}catch(e){}};
+  const persist=()=>{try{const ts=ctx.ts||(RES._hi!=null&&S.hist[RES._hi]?.ts);if(ts){RDB.put(ts,packResult(ctx));RDB.prune(40)}}catch(e){}};
   async function runAI(){
-    aiBar('run');aiErr='';
+    if(AIJOB.running&&AIJOB.res===RES)return;
+    AIJOB={running:true,res:RES,id:ctx.ts||RES._rid||null,prog:'',ctx};aiBar('run');aiErr='';
+    const setProg=t=>{AIJOB.prog=t;if(!AIJOB.id)AIJOB.id=ctx.ts||RES._rid||null;if(live())aiBar('run',t)};
+    const clamp=v=>Math.max(0,Math.min(5,Math.round(+v||0)));
+    const silent=x=>{x.r.text='';if(x.task===1){x.sc=scoreRepeat(x.ref,x.r);x.sc.score=0}else x.sc={score:0,ai:AI.name(),summary:'말소리가 녹음되지 않았어요.'}};
+    const applyT1=(x,j)=>{if(!x.r.text&&j.transcript){x.r.text=j.transcript;x.r.engine='gemini'}
+      const loc=scoreRepeat(x.ref,x.r);x.sc=Object.assign(loc,{rule:loc.fail?null:loc.score,score:meanFloor(loc,clamp(j.score)),ai:AI.name(),aiNote:j.note,fail:false,self:false})};
+    const applyT2=(x,j)=>{if(!x.r.text&&j.transcript){x.r.text=j.transcript;x.r.engine='gemini'}j.score=clamp(j.score);j.ai=AI.name();j.est0=x.sc&&x.sc.est?x.sc.score:null;x.sc=j;saveGrammar(x)};
+    /* 동시에 n개까지 */
+    const pool=async(items,n,fn)=>{let i=0,done=0;const w=async()=>{while(i<items.length){const k=i++;try{await fn(items[k],k)}catch(e){if(!AIJOB.err)AIJOB.err=e}done++;setProg(`${done} / ${items.length}`);refresh('run',`${done} / ${items.length}`);persist()}};await Promise.all(Array.from({length:Math.min(n,items.length)},w))};
     try{
       if(AI.audioOK()){
-        const all=[...t1,...t2].filter(x=>!x.r.noMic&&x.r.blob);let k=0;
-        for(const x of all){k++;aiBar('run',`${k} / ${all.length}`);
-          if((x.r.peak||0)<0.06){x.r.text='';if(x.task===1){x.sc=scoreRepeat(x.ref,x.r);x.sc.score=0}else x.sc={score:0,ai:AI.name(),summary:'말소리가 녹음되지 않았어요.'};continue}
-          const b64=await wavB64(x.r.blob);
-          if(x.task===1){const j=await AI.jsonAudio(repeatAudioPrompt(x.ref),b64);
-            if(!x.r.text&&j.transcript){x.r.text=j.transcript;x.r.engine='gemini'}
-            const loc=scoreRepeat(x.ref,x.r);x.sc=Object.assign(loc,{rule:loc.fail?null:loc.score,score:meanFloor(loc,Math.max(0,Math.min(5,Math.round(+j.score||0)))),ai:AI.name(),aiNote:j.note,fail:false,self:false});
-          }else{const j=await AI.jsonAudio(interviewPrompt(x.q,{text:'(the response is attached as audio — transcribe it into the "transcript" field first)',dur:x.r.dur,speakSecs:x.r.speakSecs})+`
-The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciation, intonation, rhythm, fluency, pace) from the audio itself. Add one more field to the JSON: "transcript": "<verbatim transcription of the audio>".`,b64);
-            if(!x.r.text&&j.transcript){x.r.text=j.transcript;x.r.engine='gemini'}
-            j.score=Math.max(0,Math.min(5,Math.round(+j.score||0)));j.ai=AI.name();j.est0=x.sc&&x.sc.est?x.sc.score:null;x.sc=j;saveGrammar(x)}
-          body();summarize()}
+        const all=[...t1,...t2].filter(x=>!x.r.noMic&&x.r.blob);
+        const quiet=all.filter(x=>(x.r.peak||0)<0.06);quiet.forEach(silent);
+        const loud=all.filter(x=>(x.r.peak||0)>=0.06),L1=loud.filter(x=>x.task===1),L2=loud.filter(x=>x.task===2);
+        setProg('녹음 준비');
+        const b64=new Map(await Promise.all(loud.map(async x=>[x,await wavB64(x.r.blob)])));
+        let done=0;const total=(L1.length?1:0)+L2.length;const tick=()=>{done++;setProg(`${done} / ${total}`);refresh('run',`${done} / ${total}`);persist()};
+        const jobs=[];
+        /* Task 1: 전부 한 번에 (오디오 여러 개를 한 요청에) */
+        if(L1.length)jobs.push((async()=>{try{const arr=await AI.jsonAudioMany(repeatBatchPrompt(L1.map(x=>x.ref)),L1.map(x=>b64.get(x)));
+            L1.forEach((x,i)=>{const j=(Array.isArray(arr)?arr:[]).find(a=>+a.i===i+1)||(Array.isArray(arr)?arr[i]:null);if(j)applyT1(x,j)})}
+          catch(e){/* 묶음이 실패하면 하나씩 */await pool(L1,3,async x=>{const j=await AI.jsonAudio(repeatAudioPrompt(x.ref),b64.get(x));applyT1(x,j)})}
+          tick()})());
+        /* Task 2: 3개씩 동시에 */
+        jobs.push(pool(L2,3,async x=>{const j=await AI.jsonAudio(interviewPrompt(x.q,{text:'(the response is attached as audio — transcribe it into the "transcript" field first)',dur:x.r.dur,speakSecs:x.r.speakSecs})+`
+The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciation, intonation, rhythm, fluency, pace) from the audio itself. Add one more field to the JSON: "transcript": "<verbatim transcription of the audio>".`,b64.get(x));applyT2(x,j)}));
+        await Promise.all(jobs);
+        if(AIJOB.err)throw AIJOB.err;
       }else{
         const need=[...t1,...t2].filter(x=>!x.r.noMic&&x.r.blob&&!x.r.text&&(x.r.peak||0)>=0.06);
-        if(need.length&&AI.canHearAudio()){let k=0;for(const x of need){k++;aiBar('run',`받아쓰기 ${k} / ${need.length}`);x.r.text=await AI.transcribe(x.r.blob);x.r.engine='gemini';if(x.task===1)x.sc=scoreRepeat(x.ref,x.r);else if(!x.sc||x.sc.est)x.sc=estimateInterview(x.q,x.r)}body();summarize();aiBar('run','채점')}
+        if(need.length&&AI.canHearAudio()){setProg(`받아쓰기 0 / ${need.length}`);await pool(need,3,async x=>{x.r.text=await AI.transcribe(x.r.blob);x.r.engine='gemini';if(x.task===1)x.sc=scoreRepeat(x.ref,x.r);else if(!x.sc||x.sc.est)x.sc=estimateInterview(x.q,x.r)});setProg('채점')}
         const items=t1.filter(x=>!x.r.noMic&&x.r.text!==undefined);
-        if(items.length){const arr=await AI.json(repeatPrompt(items));
-          items.forEach((x,i)=>{const a=arr[i];if(a&&Number.isFinite(+a.score)){x.sc.rule=x.sc.rule??(x.sc.self?null:x.sc.score);x.sc.score=meanFloor(x.sc,Math.max(0,Math.min(5,Math.round(+a.score))));x.sc.ai=AI.name();x.sc.aiNote=a.note;x.sc.self=false;x.sc.fail=false}})}
-        for(const x of t2){if(x.r.noMic)continue;
-          if(!norm(x.r.text).length){x.sc={score:0,ai:AI.name(),summary:'말이 인식되지 않았어요.'};continue}
-          const j=await AI.json(interviewPrompt(x.q,x.r));j.score=Math.max(0,Math.min(5,Math.round(+j.score)));j.ai=AI.name();j.est0=x.sc&&x.sc.est?x.sc.score:null;x.sc=j;saveGrammar(x);body();summarize()}
+        const jobs=[];
+        if(items.length)jobs.push((async()=>{const arr=await AI.json(repeatPrompt(items));
+          items.forEach((x,i)=>{const a=arr[i];if(a&&Number.isFinite(+a.score)){x.sc.rule=x.sc.rule??(x.sc.self?null:x.sc.score);x.sc.score=meanFloor(x.sc,clamp(a.score));x.sc.ai=AI.name();x.sc.aiNote=a.note;x.sc.self=false;x.sc.fail=false}});refresh('run');persist()})());
+        jobs.push(pool(t2.filter(x=>!x.r.noMic),3,async x=>{if(!norm(x.r.text).length){x.sc={score:0,ai:AI.name(),summary:'말이 인식되지 않았어요.'};return}
+          const j=await AI.json(interviewPrompt(x.q,x.r));j.score=clamp(j.score);j.ai=AI.name();j.est0=x.sc&&x.sc.est?x.sc.score:null;x.sc=j;saveGrammar(x)}));
+        await Promise.all(jobs);if(AIJOB.err)throw AIJOB.err;
       }
-      body();summarize();aiBar('done');
-    }catch(e){aiErr=e.message;aiBar('err');body();summarize()}
+      AIJOB.running=false;persist();refresh('done');
+    }catch(e){aiErr=e.message;AIJOB.running=false;AIJOB.error=e.message;persist();refresh('err');if(!live())try{toast('AI 채점 실패: '+e.message)}catch(_){}}
   }
   /* ---- red pen ---- */
   function paintRedpen(){
@@ -4084,7 +4117,7 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
     const tr=$('#trend');if(tr){tr.innerHTML='';tr.appendChild(trendPanels(S.hist.slice(-20),true))}
   }
   body();summarize();
-  if(!review&&AI.ready()&&!RES._aiDone){RES._aiDone=1;runAI()}else aiBar(RES._aiDone&&AI.ready()?'done':'idle');
+  if(AIJOB.running&&AIJOB.res===RES)aiBar('run',AIJOB.prog);else if(!review&&AI.ready()&&!RES._aiDone){RES._aiDone=1;runAI()}else aiBar(RES._aiDone&&AI.ready()?'done':'idle');
 }
 function retryWrong(list){
   const bySet=new Map();list.forEach(x=>{if(!bySet.has(x.set.id))bySet.set(x.set.id,{base:x.set,idx:[]});bySet.get(x.set.id).idx.push(x.idx)});
