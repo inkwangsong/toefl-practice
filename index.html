@@ -1286,9 +1286,15 @@ body.navmin main{max-width:1500px}
 .bgtile{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:2px 12px;align-items:center;padding:16px;text-decoration:none;color:var(--ink);border-left:5px solid var(--sc)}
 .bgtile:hover{transform:translateY(-1px);border-color:var(--sc)}.bgic{grid-row:1/3;font-size:28px}.bgt b{font-size:17px}.bgt small{display:block;color:var(--mute);font-size:13px}.bgn{grid-column:2}
 .bgpage .cathead h1 .bgen{font-size:16px;font-weight:500;color:var(--mute);margin-left:6px}
-.bgnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:8px 0;margin-bottom:6px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px)}
+.bgtop{position:sticky;top:var(--tbh,56px);z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px);margin-bottom:10px}
+.bgplay{padding:10px 14px;display:grid;gap:8px}.bgplay.on .bgpl2{display:none}
+@media(max-width:700px){.bgpage.playing .bgnav{display:none}}
+.bgpl1{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.bgpl1 .bgpst{flex:1 1 160px;color:var(--mute)}
+.bgpl2{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bgnow{outline:2px solid color-mix(in srgb,var(--sc,var(--accent)) 60%,transparent);outline-offset:3px;border-radius:14px}
+.bgnav{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0;margin-bottom:6px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px)}
 .bgnav a{padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px}.bgnav a:hover{border-color:var(--sc)}
-.bgpage section{margin-bottom:14px;scroll-margin-top:60px}.bgpage h2{margin:0 0 10px;font-size:18px}.bgpage h3{margin:0 0 6px;font-size:15px;color:var(--sc)}
+.bgpage section{margin-bottom:14px;scroll-margin-top:calc(var(--tbh,56px) + var(--bgtoph,0px) + 10px)}.bgpage h2{margin:0 0 10px;font-size:18px}.bgpage h3{margin:0 0 6px;font-size:15px;color:var(--sc)}
 .bgov{display:grid;grid-template-columns:1fr 1fr;gap:18px}.bgov p{margin:0;line-height:1.75;font-size:15px}.bgoe{font-size:15px}
 .bgfg{margin:0;color:var(--ink)}.bgfg em,.bgnote h2 em,.bgtoc em{font-style:normal;font-weight:500;color:var(--mute);font-size:.88em}
 .bgfg figcaption{margin-bottom:8px}.bgfg figcaption b{font-size:16px;display:block}.bgfg figcaption em{display:block}
@@ -6563,7 +6569,9 @@ function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();
   const N=t.n||[],BK=t.bk||[];
   view.innerHTML=`<div class="bgpage" style="--sc:${t.c}">
     <div class="cathead"><div><a class="small" href="#bg">← 배경지식</a><h1 style="margin-top:6px"><span class="bgtic">${t.ic}</span>${esc(t.ko)} <span class="bgen">${esc(t.en)}</span></h1><p>교재 지문 ${t.ps.length}개 · 개요 → 그림 → 배경지식 노트 → 핵심 개념${BK.length?' → 배경지식 사전':''} → 어휘 → 영상 → 지문 순서로 보세요.</p></div></div>
-    <nav class="bgnav">${[['bgo','개요'],['bgd','그림'],['bgn','배경지식 노트'],['bgc','핵심 개념'],...(BK.length?[['bgk','배경지식 사전']]:[]),['bgv','어휘'],['bgm','영상'],['bgp','교재 지문']].map(([a,b])=>`<a href="javascript:void 0" data-go="${a}">${b}</a>`).join('')}</nav>
+    <div class="bgtop"><nav class="bgnav">${[['bgo','개요'],['bgd','그림'],['bgn','배경지식 노트'],['bgc','핵심 개념'],...(BK.length?[['bgk','배경지식 사전']]:[]),['bgv','어휘'],['bgm','영상'],['bgp','교재 지문']].map(([a,b])=>`<a href="javascript:void 0" data-go="${a}">${b}</a>`).join('')}</nav>
+    <div class="bgplay panel" id="bgplay"><div class="bgpl1"><button type="button" class="btn primary sm" id="bgpp">▶ 전체 듣기</button><button type="button" class="btn sm quiet" id="bgprev" aria-label="이전 부분">‹</button><button type="button" class="btn sm quiet" id="bgnext" aria-label="다음 부분">›</button><span class="small bgpst" id="bgpst">개요부터 배경지식 노트, 사전까지 순서대로 읽어 드려요</span></div>
+      <div class="bgpl2"><span class="rlrate" role="group" aria-label="언어">${[['both','한글 → 영어'],['ko','한글만'],['en','영어만']].map(([k,l])=>`<button type="button" data-bgl="${k}" aria-pressed="${(store.get('bgplay:lang','both'))===k}">${l}</button>`).join('')}</span><label class="small inkm"><input type="checkbox" id="bgauto" ${store.get('bgplay:auto',false)?'checked':''}> 끝나면 다음 주제로</label></div></div></div>
     <section class="panel ph" id="bgo"><h2>개요 <span class="small muted" style="font-weight:500">한글과 영어를 각각 들을 수 있어요</span></h2>${two(t.ok,t.oe)}${N.length?`<ol class="bgtoc">${N.map((n,i)=>`<li><a href="javascript:void 0" data-go="bgn${i}">${esc(n.h[0])} <em>${esc(n.h[1])}</em></a></li>`).join('')}</ol>`:''}</section>
     <section class="panel ph" id="bgd"><h2>그림으로 보기</h2>${bgFig(t.dg,t.c)}</section>
     <div id="bgn">${N.map((n,i)=>`<section class="panel ph bgnote" id="bgn${i}"><h2><span class="bgno">${i+1}</span><span>${esc(n.h[0])}<em>${esc(n.h[1])}</em></span></h2>${two(n.ko,n.en)}${n.dg?bgFig(n.dg,t.c):''}</section>`).join('')}</div>
@@ -6576,7 +6584,41 @@ function bgTopic(id){const t=bgData().find(x=>x.id===id);if(!t)return bgIndex();
   $$('[data-go]',view).forEach(a=>a.onclick=()=>{const e=$('#'+a.dataset.go);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})});
   const off=b=>{if(!b)return;b.classList.remove('on');if(b.dataset.l.length>2)b.textContent=b.dataset.l};
   $$('[data-bgsay]',view).forEach(b=>b.onclick=()=>{try{const ko=!!b.dataset.ko;rlSayCtl(b,b.dataset.bgsay,{ko,rate:ko?1:undefined,eng:typeof vcEngRL==='function'?vcEngRL():'dev'})}catch(e){}});
-  $$('.bgpsb',view).forEach(b=>b.onclick=()=>{const p=t.ps[+b.dataset.i];try{rlShowBlock(p.sec,p.set,p.bi,'')}catch(e){toast('지문을 열지 못했어요')}})}
+  $$('.bgpsb',view).forEach(b=>b.onclick=()=>{const p=t.ps[+b.dataset.i];try{rlShowBlock(p.sec,p.set,p.bi,'')}catch(e){toast('지문을 열지 못했어요')}});
+  bgPlayerWire(t)}
+/* ===== 주제 전체 듣기: 개요 → 노트 → 사전을 한글/영어/둘 다로 이어서 읽어요 ===== */
+let BGP={gen:0,on:false,i:0,a:null};
+function bgSegs(t){const S=[];S.push({id:'bgo',name:'개요',ko:t.ok,en:t.oe});(t.n||[]).forEach((n,i)=>S.push({id:'bgn'+i,name:(i+1)+'. '+n.h[0],ko:n.ko,en:n.en}));
+  (t.bk||[]).forEach((k,i)=>S.push({id:'bgk',name:'사전 · '+k.ko,ko:k.ko+'. '+k.t,en:''}));return S}
+function bgStopAll(){BGP.gen++;BGP.on=false;try{if(BGP.a){BGP.a.pause();BGP.a=null}}catch(e){}try{window.RLSAYSEQ=(window.RLSAYSEQ||0)+1;speechSynthesis.cancel();if(window.RLAIA){RLAIA.pause()}}catch(e){}
+  $$('.bgnow').forEach(e=>e.classList.remove('bgnow'))}
+/* 한 덩어리 읽기: 영어는 팩에 녹음이 있으면 그걸, 없으면 기기 음성 · 한글은 기기 음성 */
+function bgSpeak(text,ko,gen){return new Promise(res=>{if(gen!==BGP.gen)return res();
+  if(!ko){try{const u=rlClipUrl(text,rlPV());if(u){const a=rlAiEl(u);BGP.a=a;a.playbackRate=rlRate();a.onended=()=>res();a.onerror=()=>res();a.play().catch(()=>{BGP.a=null;rlSayE(text,vcEngRL(),rlRate()).then(res)});return}}catch(e){}}
+  rlSayE(text,'dev',ko?1:rlRate(),{ko}).then(res)})}
+function bgPlayerWire(t){const bar=$('#bgplay');if(!bar)return;let setH=()=>{};try{const tb=$('.topbar'),bt=bar.closest('.bgtop'),R=document.documentElement.style;setH=()=>{R.setProperty('--tbh',(tb?tb.getBoundingClientRect().height:56)+'px');R.setProperty('--bgtoph',(bt&&document.body.contains(bt)?bt.getBoundingClientRect().height:0)+'px')};setH();if(!window.__tbro){window.__tbro=new ResizeObserver(setH);if(tb)window.__tbro.observe(tb)}if(bt)window.__tbro.observe(bt)}catch(e){}const segs=bgSegs(t),pp=$('#bgpp'),st=$('#bgpst');
+  const lang=()=>store.get('bgplay:lang','both');
+  const face=()=>{pp.textContent=BGP.on?'❚❚ 멈춤':(BGP.i>0?'▶ 이어 듣기':'▶ 전체 듣기');pp.classList.toggle('primary',!BGP.on);bar.classList.toggle('on',BGP.on);bar.closest('.bgpage')?.classList.toggle('playing',BGP.on);setH()};
+  const mark=(i)=>{$$('.bgnow').forEach(e=>e.classList.remove('bgnow'));const s=segs[i];if(!s)return;const e=$('#'+s.id);if(e){e.classList.add('bgnow');e.scrollIntoView({behavior:'smooth',block:'start'})}st.textContent=`${i+1} / ${segs.length} · ${s.name}`};
+  const run=async()=>{bgStopAll();const gen=++BGP.gen;BGP.on=true;face();
+    const ok=()=>gen===BGP.gen&&document.body.contains(bar),nap=ms=>new Promise(r=>setTimeout(r,ms));
+    while(BGP.i<segs.length){if(!ok())return;mark(BGP.i);const s=segs[BGP.i],L=lang();
+      if((L==='ko'||L==='both')&&s.ko){await bgSpeak(s.ko,true,gen);if(!ok())return;await nap(350);if(!ok())return}
+      if((L==='en'||L==='both')&&s.en){await bgSpeak(s.en,false,gen);if(!ok())return;await nap(350);if(!ok())return}
+      if(L==='en'&&!s.en&&s.ko){await bgSpeak(s.ko,true,gen);if(!ok())return}
+      await nap(400);if(!ok())return;BGP.i++}
+    if(gen!==BGP.gen)return;BGP.on=false;BGP.i=0;$$('.bgnow').forEach(e=>e.classList.remove('bgnow'));st.textContent='다 들었어요';face();
+    if(store.get('bgplay:auto',false)){const D=bgData(),k=D.findIndex(x=>x.id===t.id),nx=D[k+1];if(nx){st.textContent='다음 주제로 넘어가요: '+nx.ko;try{sessionStorage.setItem('bgplay:go','1')}catch(e){}setTimeout(()=>{location.hash='#bg-'+nx.id},1200)}}};
+  pp.onclick=()=>{if(BGP.on){bgStopAll();face();st.textContent=`${BGP.i+1} / ${segs.length}에서 멈췄어요 · ▶ 로 이어 들어요`}else run()};
+  $('#bgprev').onclick=()=>{BGP.i=Math.max(0,BGP.i-1);if(BGP.on)run();else mark(BGP.i)};
+  $('#bgnext').onclick=()=>{BGP.i=Math.min(segs.length-1,BGP.i+1);if(BGP.on)run();else mark(BGP.i)};
+  $$('[data-bgl]',bar).forEach(b=>b.onclick=()=>{store.set('bgplay:lang',b.dataset.bgl);$$('[data-bgl]',bar).forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  $('#bgauto').onchange=e=>store.set('bgplay:auto',e.target.checked);
+  bar.closest('.bgpage')?.addEventListener('click',e=>{if(e.target.closest('.bgsay')&&BGP.on){bgStopAll();face()}},true);
+  BGP.i=0;face();
+  let go=false;try{go=sessionStorage.getItem('bgplay:go')==='1';sessionStorage.removeItem('bgplay:go')}catch(e){}
+  if(go)setTimeout(run,600)}
+addEventListener('hashchange',()=>{if(BGP.on)bgStopAll()});
 function bgIndex(){setCrumb(['배경지식']);const D=bgData(),seen=bgSeen();
   if(!D.length){view.innerHTML='<div class="empty">배경지식 데이터가 없어요. 최신 toefl-pack.bin을 불러와 주세요.</div>';return}
   const n=D.reduce((a,t)=>a+t.ps.length,0);
