@@ -2745,7 +2745,7 @@ Paraphrase rule: if the candidate kept the meaning in a complete, intelligible s
 Reply with ONLY a JSON array with one object per clip, in order: [{"i":1,"transcript":"...","score":<0-5>,"note":"<one short reason in ${LANGNAME[S.cfg.fbLang]||LANGNAME.ko}, mention pronunciation if relevant>"}, ...]`;
 }
 async function wavB64(blob){   // recording → 16 kHz mono 16-bit WAV (base64) for Gemini
-  let ab;try{ab=await blob.arrayBuffer()}catch(e){throw new Error('녹음 파일을 읽을 수 없어요 (기기에서 지워졌거나 손상됐어요)')}
+  let ab;try{ab=blob.buf||await blob.arrayBuffer()}catch(e){throw new Error('녹음 파일을 읽을 수 없어요 (기기에서 지워졌거나 손상됐어요)')}
   let b;try{b=await actx().decodeAudioData(ab)}catch(e){throw new Error('녹음을 해독할 수 없어요 ('+((e&&e.message)||e||'decode')+')')}
   const n=Math.max(1,Math.round(b.duration*16000)),oc=new OfflineAudioContext(1,n,16000),s=oc.createBufferSource();s.buffer=b;s.connect(oc.destination);s.start();
   const x=(await oc.startRendering()).getChannelData(0),buf=new ArrayBuffer(44+x.length*2),v=new DataView(buf);
@@ -3890,10 +3890,13 @@ const RDB={db:null,
     const old=keys.sort((a,b)=>a-b).slice(0,Math.max(0,keys.length-keep));if(!old.length)return;const t=db.transaction('r','readwrite');old.forEach(k=>t.objectStore('r').delete(k))}catch(e){}},
   async clear(){try{const db=await this.open();db.transaction('r','readwrite').objectStore('r').clear()}catch(e){}}
 };
-function packResult(ctx,res){res=res||RES;
-  return {title:ctx.title,partial:!!ctx.partial,sets:ctx.sets.map(s=>s.retry?{id:s.id,retry:true,idxMap:s.idxMap}:{id:s.id}),
-    items:res.map(x=>({task:x.task,setId:x.set?x.set.id:x.setId,idx:x.idx,ref:x.ref,start:x.start,end:x.end,q:x.q?{text:x.q.text,start:x.q.start,end:x.q.end,window:x.q.window}:null,
-      r:{text:x.r.text,engine:x.r.engine,peak:x.r.peak,dur:x.r.dur,noMic:x.r.noMic,latency:x.r.latency,speakSecs:x.r.speakSecs},sc:x.sc,blob:x.r.blob||null}))};
+/* 녹음은 Blob이 아니라 바이트(ArrayBuffer)로 저장해요: iPhone Safari는 IndexedDB에 넣은 Blob을 나중에 못 읽는 경우가 있어요("The object can not be found here") */
+async function packResult(ctx,res){res=res||RES;
+  const items=[];for(const x of res){let buf=x.r.buf||null,btype=x.r.btype||(x.r.blob&&x.r.blob.type)||'';
+    if(!buf&&x.r.blob){try{buf=await x.r.blob.arrayBuffer();x.r.buf=buf;x.r.btype=btype}catch(e){buf=null}}
+    items.push({task:x.task,setId:x.set?x.set.id:x.setId,idx:x.idx,ref:x.ref,start:x.start,end:x.end,q:x.q?{text:x.q.text,start:x.q.start,end:x.q.end,window:x.q.window}:null,
+      r:{text:x.r.text,engine:x.r.engine,peak:x.r.peak,dur:x.r.dur,noMic:x.r.noMic,latency:x.r.latency,speakSecs:x.r.speakSecs},sc:x.sc,buf,btype,blob:buf?null:(x.r.blob||null)})}
+  return {title:ctx.title,partial:!!ctx.partial,sets:ctx.sets.map(s=>s.retry?{id:s.id,retry:true,idxMap:s.idxMap}:{id:s.id}),items};
 }
 async function openSaved(id){try{
   /* 아직 AI 채점이 돌고 있는 결과면 저장본 대신 살아 있는 결과를 그대로 보여요 */
@@ -3902,7 +3905,7 @@ async function openSaved(id){try{
   if(!v){view.innerHTML='<div class="empty">이 시험의 상세 결과가 저장돼 있지 않아요(이 기능 이전의 기록이거나 다른 기기에서 본 시험이에요).</div>';return}
   if(!v.items||!v.items.length){view.innerHTML='<div class="empty">이 기록의 문항 내용이 비어 있어요. 점수 요약만 기록 목록에 남아 있어요.</div>';return}
   const setOf=id=>SETS.find(s=>s.id===id);
-  RES=v.items.map(it=>({task:it.task,set:setOf(it.setId),setId:it.setId,idx:it.idx,ref:it.ref,start:it.start,end:it.end,q:it.q,r:{...it.r,blob:it.blob},sc:it.sc}));
+  RES=v.items.map(it=>({task:it.task,set:setOf(it.setId),setId:it.setId,idx:it.idx,ref:it.ref,start:it.start,end:it.end,q:it.q,r:{...it.r,blob:it.buf?new Blob([it.buf],{type:it.btype||'audio/mp4'}):it.blob,buf:it.buf||null,btype:it.btype||''},sc:it.sc}));
   RES._hi=S.hist.findIndex(h=>h.ts===id);if(RES._hi<0)RES._hi=null;RES._aiDone=1;RES._rid=id;RES._review=true;
   const sets=v.sets.map(s=>{const b=setOf(s.id);return s.retry?Object.assign({},b,{retry:true,idxMap:s.idxMap}):b});
   renderResults({sets,title:v.title,partial:v.partial,ts:id});
@@ -3981,7 +3984,7 @@ function renderResults(ctx){
   const live=()=>!!document.getElementById('aibar')&&AIJOB.res===RES;
   const refresh=(st,prog)=>{if(!live())return;try{body();summarize();if(st)aiBar(st,prog)}catch(e){}};
   const MINE=RES;   /* 이 결과의 문항 배열. 다른 기록을 여는 동안 전역 RES가 바뀌어도 이 결과만 저장해요 */
-  const persist=()=>{try{const ts=ctx.ts||MINE._rid||(MINE._hi!=null&&S.hist[MINE._hi]?.ts);if(ts&&MINE.length){RDB.put(ts,packResult(ctx,MINE));RDB.prune(40)}}catch(e){}};
+  let pq=Promise.resolve();const persist=()=>{const ts=ctx.ts||MINE._rid||(MINE._hi!=null&&S.hist[MINE._hi]?.ts);if(!ts||!MINE.length)return;pq=pq.then(async()=>{try{await RDB.put(ts,await packResult(ctx,MINE));RDB.prune(40)}catch(e){}})};
   async function runAI(){
     if(AIJOB.running&&AIJOB.res===RES)return;
     AIJOB={running:true,res:RES,id:ctx.ts||RES._rid||null,prog:'',ctx};aiBar('run');aiErr='';
@@ -4000,7 +4003,7 @@ function renderResults(ctx){
         const loud=all.filter(x=>(x.r.peak||0)>=0.06);
         setProg('녹음 준비');
         /* 녹음 → WAV 변환은 하나씩: iPhone은 오디오 해독을 여러 개 동시에 돌리면 실패해요. 실패하면 한 번 더 시도해요 */
-        const b64=new Map();for(const x of loud){let v=null;for(let t=0;t<2&&!v;t++){try{v=await wavB64(x.r.blob)}catch(e){if(t===1)x.sc=Object.assign(x.task===1?scoreRepeat(x.ref,x.r):{score:null},{aiNote:e.message,summary:e.message,ai:null});else await new Promise(r=>setTimeout(r,300))}}b64.set(x,v)}
+        const b64=new Map();for(const x of loud){let v=null;for(let t=0;t<2&&!v;t++){try{v=await wavB64(x.r.buf?{buf:x.r.buf}:x.r.blob)}catch(e){if(t===1)x.sc=Object.assign(x.task===1?scoreRepeat(x.ref,x.r):{score:null},{aiNote:e.message,summary:e.message,ai:null});else await new Promise(r=>setTimeout(r,300))}}b64.set(x,v)}
         const L1=loud.filter(x=>x.task===1&&b64.get(x)),L2=loud.filter(x=>x.task===2&&b64.get(x));
         let done=0;const total=(L1.length?1:0)+L2.length;const tick=()=>{done++;setProg(`${done} / ${total}`);refresh('run',`${done} / ${total}`);persist()};
         const jobs=[];
@@ -4025,7 +4028,9 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
           const j=await AI.json(interviewPrompt(x.q,x.r));j.score=clamp(j.score);j.ai=AI.name();j.est0=x.sc&&x.sc.est?x.sc.score:null;x.sc=j;saveGrammar(x)}));
         await Promise.all(jobs);if(AIJOB.err)throw AIJOB.err;
       }
-      AIJOB.running=false;persist();refresh('done');
+      AIJOB.running=false;persist();
+      const bad=[...t1,...t2].filter(x=>x.sc&&x.sc.score==null&&!x.r.noMic&&(x.sc.aiNote||x.sc.summary));
+      if(bad.length){aiErr=`${bad.length}문항의 녹음을 읽지 못했어요 — ${bad[0].sc.aiNote||bad[0].sc.summary}`;AIJOB.error=aiErr;refresh('err')}else refresh('done');
     }catch(e){aiErr=e.message;AIJOB.running=false;AIJOB.error=e.message;persist();refresh('err');if(!live())try{toast('AI 채점 실패: '+e.message)}catch(_){}}
   }
   /* ---- red pen ---- */
@@ -4120,7 +4125,7 @@ The candidate's spoken response is attached as AUDIO. Judge Delivery (pronunciat
       if(!sets.some(s=>s.retry)&&(!S.best[key]||raw/max>=S.best[key].raw/S.best[key].max))S.best[key]={raw,max};
       if(sets.length>1)sets.forEach(s=>{const xs=RES.filter(x=>x.set&&x.set.id===s.id&&x.sc&&x.sc.score!=null);const r=xs.reduce((q,x)=>q+x.sc.score,0),m=xs.length*5;if(m&&(!S.best[s.id]||r/m>S.best[s.id].raw/S.best[s.id].max))S.best[s.id]={raw:r,max:m}});
       store.set('best',S.best);
-      {const MINE2=RES;clearTimeout(RES._st);RES._st=setTimeout(()=>{if(MINE2.length){RDB.put(ts,packResult(ctx,MINE2));RDB.prune(40)}},400)}
+      {const MINE2=RES;clearTimeout(RES._st);RES._st=setTimeout(async()=>{if(MINE2.length){try{await RDB.put(ts,await packResult(ctx,MINE2));RDB.prune(40)}catch(e){}}},400)}
     }
     const tr=$('#trend');if(tr){tr.innerHTML='';tr.appendChild(trendPanels(S.hist.slice(-20),true))}
   }
