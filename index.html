@@ -918,7 +918,7 @@ body.inkshow.pinkon #view{outline:2px dashed color-mix(in srgb,var(--accent) 35%
 .vcmn,.vcnote{margin:0;padding:8px 12px;border-radius:10px;background:var(--paper);font-size:16px}.vcety summary{cursor:pointer;font-weight:700}.vcety p{margin:6px 0;font-size:16px}
 .vcbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px auto 6px;max-width:720px}.vcbtns .vcno{border-color:color-mix(in srgb,var(--bad) 50%,var(--line2));color:var(--bad)}
 .center{text-align:center}
-.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcqtap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}.vcdone .row{justify-content:center}
+.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcqtap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}.vcqbar{display:inline-block;width:72px;height:8px;border-radius:99px;background:var(--sunken);overflow:hidden;vertical-align:middle;flex:none}.vcqbar i{display:block;height:100%;width:0;border-radius:99px;background:var(--ok,#2a9d5c);animation:vcqfill 1.5s linear forwards}@keyframes vcqfill{to{width:100%}}@media (prefers-reduced-motion:reduce){.vcqbar i{animation-duration:.01s;width:100%}}.vcdone .row{justify-content:center}
 .vcq{max-width:720px}.vcqw{font-size:24px;font-weight:800;margin:4px 0 14px}
 .rlopt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}.rlopt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
 button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
@@ -1958,7 +1958,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
   background:linear-gradient(168deg,#fff 0%,#f6f8fc 100%);border:0;border-radius:var(--r3);
   box-shadow:inset 0 2px 0 var(--hi),inset 0 -2px 0 rgba(60,70,110,.06),0 1px 0 rgba(60,70,110,.10),0 16px 34px -16px var(--deep)}
 :root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .tile,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmcard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .vccard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmbg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .plopt{background:linear-gradient(168deg,#262c3d,#1d2230);box-shadow:inset 0 1px 0 var(--hi),0 1px 0 #0b0e16,0 16px 34px -16px var(--deep)}
-:root:root:root:root:root:root[data-ui="3d"] .panel .panel,:root:root:root:root:root:root[data-ui="3d"] .panel .tile,:root:root:root:root:root:root[data-ui="3d"] .panel .plopt{background:var(--surface);border:1px solid var(--line);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .panel .panel,:root:root:root:root:root:root[data-ui="3d"] .panel .tile,:root:root:root:root:root:root[data-ui="3d"] .panel .plopt{background:var(--surface);border:1px solid var(--line);box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12)}
 :root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .plopt{transition:transform .12s ease,box-shadow .12s ease}
 :root:root:root:root:root:root[data-ui="3d"] .tile:active,:root:root:root:root:root:root[data-ui="3d"] .hmcard:active,:root:root:root:root:root:root[data-ui="3d"] .plopt:active{transform:translateY(2px) scale(.995)}
 
@@ -1970,9 +1970,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n+2),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n+2),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n+2){--tile:var(--t2);--tink:var(--t2i)}
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n+3),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n+3),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n+3){--tile:var(--t3);--tink:var(--t3i)}
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n){--tile:var(--t4);--tink:var(--t4i)}
-:root:root:root:root:root:root[data-ui="3d"] .panel.kpi::before,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div::before,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div::before{content:"";position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:11px;
-  background:radial-gradient(circle at 32% 28%,#fff 0%,color-mix(in srgb,var(--tile) 55%,var(--tink)) 75%);
-  box-shadow:inset 0 -3px 5px rgba(0,0,0,.10),inset 0 2px 3px rgba(255,255,255,.7),0 5px 10px -4px rgba(0,0,0,.28)}
+:root:root:root:root:root:root[data-ui="3d"] .kcoin{position:absolute;left:14px;top:12px;width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:19px;line-height:1;
+  background:radial-gradient(circle at 32% 28%,#fff 0%,color-mix(in srgb,var(--tile) 60%,#fff) 70%);
+  box-shadow:inset 0 -3px 5px rgba(0,0,0,.08),inset 0 2px 3px rgba(255,255,255,.9),0 4px 8px -3px rgba(0,0,0,.22)}
+:root[data-ui="flat"] .kcoin{display:none}
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi .k,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div span,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div .k{color:var(--tink);font-weight:700}
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi .v,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div b,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div .v{font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--ink)}
 :root:root:root:root:root:root[data-ui="3d"] .panel.kpi .s{color:color-mix(in srgb,var(--tink) 70%,var(--ink))}
@@ -1981,29 +1982,36 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 
 /* 세그먼트·속도 등은 움푹 */
 :root:root:root:root:root:root[data-ui="3d"] .secsw,:root:root:root:root:root:root[data-ui="3d"] .rlrate,:root:root:root:root:root:root[data-ui="3d"] .seg{background:var(--sunken);border:0;box-shadow:inset 0 3px 6px -2px var(--deep2),inset 0 1px 0 rgba(0,0,0,.04),0 1px 0 var(--hi)}
-:root:root:root:root:root:root[data-ui="3d"] .secsw a[aria-current="page"],:root:root:root:root:root:root[data-ui="3d"] .rlrate button[aria-pressed="true"],:root:root:root:root:root:root[data-ui="3d"] .seg button[aria-pressed="true"]{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 4px 10px -4px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"] .secsw a[aria-current="page"],:root:root:root:root:root:root[data-ui="3d"] .rlrate button[aria-pressed="true"],:root:root:root:root:root:root[data-ui="3d"] .seg button[aria-pressed="true"]{box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12),0 4px 10px -4px var(--deep)}
 
-/* 버튼: 클레이 알약, 누르면 내려앉아요 */
-:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet){border:0;border-radius:14px;background:linear-gradient(180deg,#fff,#eef1f7);color:var(--ink);
-  box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -10px var(--deep);transform:translateY(0);transition:transform .07s ease,box-shadow .07s ease,background .13s}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .btn:not(.quiet){background:linear-gradient(180deg,#303749,#252b3a);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.primary,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child,:root:root:root:root:root:root[data-ui="3d"] .hmnext{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 72%,#fff),var(--accent) 60%);color:var(--accent-ink);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 0 color-mix(in srgb,var(--accent) 65%,#000),0 12px 22px -10px var(--accent)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.primary:active,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:active,:root:root:root:root:root:root[data-ui="3d"] .hmnext:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 color-mix(in srgb,var(--accent) 65%,#000)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet){border-radius:12px;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 6px 12px -8px var(--deep)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet):active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary,:root:root:root:root:root:root[data-ui="3d"] .hmnext{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 0 color-mix(in srgb,var(--accent) 65%,#000)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary:active,:root:root:root:root:root:root[data-ui="3d"] .hmnext:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 color-mix(in srgb,var(--accent) 65%,#000)}
+/* 버튼: 푹신한 클레이 — 위는 밝고 아래 안쪽이 살짝 어두워요. 누르면 가라앉아요 */
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet){border:0;border-radius:14px;background:linear-gradient(180deg,#fff,#f2f4f9);color:var(--ink);
+  box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(60,70,110,.07),0 1px 2px rgba(60,70,110,.10),0 8px 16px -10px rgba(60,70,110,.35);
+  transform:translateY(0);transition:transform .09s ease,box-shadow .09s ease,background .13s}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .btn:not(.quiet){background:linear-gradient(180deg,#323a4d,#262c3b);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.4),0 8px 16px -10px rgba(0,0,0,.6)}
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):hover{background:linear-gradient(180deg,#fff,#edf0f7)}
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):active{transform:translateY(1px) scale(.985);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(60,70,110,.07),0 1px 2px rgba(60,70,110,.10),0 3px 6px -4px rgba(60,70,110,.3)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child,:root:root:root:root:root:root[data-ui="3d"] .hmnext,:root:root:root:root:root:root[data-ui="3d"] .tfb.primary,:root:root:root:root:root:root[data-ui="3d"] .bt-next{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 84%,#fff),var(--accent) 70%);color:var(--accent-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2.5px 0 rgba(0,0,0,.16),0 1px 2px rgba(0,0,0,.08),0 10px 20px -10px color-mix(in srgb,var(--accent) 80%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary:hover,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:hover{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 78%,#fff),var(--accent) 70%)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary:active,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:active,:root:root:root:root:root:root[data-ui="3d"] .hmnext:active{transform:translateY(1px) scale(.985);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -1px 0 rgba(0,0,0,.16),0 1px 2px rgba(0,0,0,.08),0 4px 8px -6px color-mix(in srgb,var(--accent) 80%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet){border-radius:12px;box-shadow:inset 0 1px 0 #fff,inset 0 -1.5px 0 rgba(60,70,110,.07),0 1px 2px rgba(60,70,110,.10),0 5px 10px -8px rgba(60,70,110,.35)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .btn.sm:not(.quiet){box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1.5px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.4)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary,:root:root:root:root:root:root[data-ui="3d"] .hmnext{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.16),0 1px 2px rgba(0,0,0,.08),0 6px 12px -8px color-mix(in srgb,var(--accent) 80%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.ghost{background:var(--surface)}
 
-/* 보기(선택지)·달력 날짜도 눌리는 판 */
-:root:root:root:root:root:root[data-ui="3d"] .rlopt{background:var(--surface);border:0;border-radius:14px;box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 8px 14px -10px var(--deep);transition:transform .07s,box-shadow .07s,background .15s}
-:root:root:root:root:root:root[data-ui="3d"] .rlopt:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .rlopt:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--surface));box-shadow:inset 0 0 0 2px var(--accent),0 3px 0 color-mix(in srgb,var(--accent) 60%,var(--edge))}
-:root:root:root:root:root:root[data-ui="3d"] .rlL{border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .cd{border:0;border-radius:12px;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);transition:transform .07s,box-shadow .07s}
-:root:root:root:root:root:root[data-ui="3d"] .cd:active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+/* 보기(선택지)·달력 날짜: 같은 결, 더 얕게 */
+:root:root:root:root:root:root[data-ui="3d"] .rlopt{background:var(--surface);border:0;border-radius:14px;box-shadow:inset 0 1px 0 #fff,inset 0 -1.5px 0 rgba(60,70,110,.06),0 1px 2px rgba(60,70,110,.08),0 6px 12px -10px rgba(60,70,110,.3);transition:transform .09s,box-shadow .09s,background .15s}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .rlopt{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1.5px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.4)}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt:active{transform:translateY(1px) scale(.992)}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--surface));box-shadow:inset 0 0 0 2px var(--accent),0 6px 12px -10px color-mix(in srgb,var(--accent) 60%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt.ok,:root:root:root:root:root:root[data-ui="3d"] .rlopt.ans{background:color-mix(in srgb,var(--ok,#2a9d5c) 14%,var(--surface));box-shadow:inset 0 0 0 2px var(--ok,#2a9d5c)}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt.bad,:root:root:root:root:root:root[data-ui="3d"] .rlopt.wrong{background:color-mix(in srgb,var(--bad,#d33) 12%,var(--surface));box-shadow:inset 0 0 0 2px var(--bad,#d33)}
+:root:root:root:root:root:root[data-ui="3d"] .rlL{border:0;box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(60,70,110,.15)}
+:root:root:root:root:root:root[data-ui="3d"] .cd{border:0;border-radius:12px;background:var(--surface);box-shadow:inset 0 1px 0 #fff,inset 0 -1.5px 0 rgba(60,70,110,.06),0 1px 2px rgba(60,70,110,.08);transition:transform .09s,box-shadow .09s}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .cd{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -1.5px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.4)}
+:root:root:root:root:root:root[data-ui="3d"] .cd:active{transform:translateY(1px) scale(.97)}
 
 /* 환영 카드: 마스코트 + 인사 + 버튼 */
 :root:root:root:root:root:root[data-ui="3d"] .panel.welcome{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px 22px;padding:22px 26px;
@@ -2017,9 +2025,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 :root:root:root:root:root:root[data-ui="3d"] .hmhero .hmk{color:var(--accent);font-weight:700}:root:root:root:root:root:root[data-ui="3d"] .hmhero h1,:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmsub b{color:var(--ink)}:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmsub{color:var(--mute)}
 :root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmhero{background:linear-gradient(165deg,#2a3145,#1d2230);border:0}
 @media (max-width:860px){:root:root:root:root:root:root[data-ui="3d"] .hmhero{grid-template-columns:1fr}:root:root:root:root:root:root[data-ui="3d"] .hmhero .mascot{position:absolute;right:16px;top:14px;width:84px;height:84px}:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmhi{padding-right:90px}}
-:root:root:root:root:root:root[data-ui="3d"] .hmrec{border:0;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -10px var(--deep);border-radius:16px;color:var(--ink);padding:10px 16px 10px 10px}
+:root:root:root:root:root:root[data-ui="3d"] .hmrec{border:0;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),inset 0 -2px 0 rgba(60,70,110,.06),0 1px 2px rgba(60,70,110,.10),0 10px 18px -10px var(--deep);border-radius:16px;color:var(--ink);padding:10px 16px 10px 10px}
 :root:root:root:root:root:root[data-ui="3d"] .hmrec b{color:var(--ink)}:root:root:root:root:root:root[data-ui="3d"] .hmrec small{color:var(--mute)}:root:root:root:root:root:root[data-ui="3d"] .hmgo{color:var(--sc)}:root:root:root:root:root:root[data-ui="3d"] .hmrec:hover{background:var(--surface)}
-:root:root:root:root:root:root[data-ui="3d"] .hmbtn{background:var(--surface)!important;border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}:root:root:root:root:root:root[data-ui="3d"] .hmbtn[aria-current="page"]{color:var(--accent)}
+:root:root:root:root:root:root[data-ui="3d"] .hmbtn{background:var(--surface)!important;border:0;box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12)}:root:root:root:root:root:root[data-ui="3d"] .hmbtn[aria-current="page"]{color:var(--accent)}
 
 /* 왼쪽 메뉴(태블릿·PC): 떠 있는 클레이 패널 */
 @media (min-width:901px){
@@ -2029,10 +2037,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 :root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lnbmas{background:linear-gradient(168deg,#262c3d,#1d2230)}
 :root:root:root:root:root:root[data-ui="3d"] .lnbmas .mascot{width:88px;height:88px}:root:root:root:root:root:root[data-ui="3d"] .lnbmas b{font-size:17px;letter-spacing:-.02em}:root:root:root:root:root:root[data-ui="3d"] .lnbmas small{color:var(--mute);font-size:12.5px}
 :root:root:root:root:root:root[data-ui="3d"] .nl{border-radius:14px;padding:9px 12px;color:var(--ink2,var(--ink));font-weight:600}
-:root:root:root:root:root:root[data-ui="3d"] .nl .ic,:root:root:root:root:root:root[data-ui="3d"] .nl>svg.i:first-child{width:30px;height:30px;padding:6px;box-sizing:border-box;border-radius:10px;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);color:var(--mute);flex:none}
-:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]{background:linear-gradient(180deg,#fff,#f2f4fa);color:var(--accent);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -12px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"] .nl .ic,:root:root:root:root:root:root[data-ui="3d"] .nl>svg.i:first-child{width:30px;height:30px;padding:6px;box-sizing:border-box;border-radius:10px;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12);color:var(--mute);flex:none}
+:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]{background:linear-gradient(180deg,#fff,#f2f4fa);color:var(--accent);box-shadow:inset 0 1px 0 var(--hi),inset 0 -2px 0 rgba(60,70,110,.06),0 1px 2px rgba(60,70,110,.10),0 10px 18px -12px var(--deep)}
 :root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .nl[aria-current="page"]{background:linear-gradient(180deg,#303749,#252b3a)}
-:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"] .ic,:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]>svg.i:first-child{background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 65%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"] .ic,:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]>svg.i:first-child{background:var(--accent);color:var(--accent-ink);box-shadow:inset 0 -1.5px 0 rgba(0,0,0,.2),0 3px 6px -3px color-mix(in srgb,var(--accent) 70%,#000)}
 :root:root:root:root:root:root[data-ui="3d"] .navgrp>.gh{color:var(--mute);font-size:13px;font-weight:700;letter-spacing:.02em}
 :root:root:root:root:root:root[data-ui="3d"] .lnbfoot{color:var(--mute)}
 }
@@ -2042,7 +2050,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 :root:root:root:root:root:root[data-ui="3d"] .lg{background:rgba(255,255,255,.72);box-shadow:inset 0 1.5px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(60,70,110,.08),0 0 0 .5px rgba(60,70,110,.10),0 18px 40px -10px rgba(40,50,90,.35),0 3px 6px rgba(40,50,90,.08)}
 :root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{background:rgba(31,36,51,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 .5px rgba(255,255,255,.08),0 18px 40px -10px rgba(0,0,0,.75)}
 @media (min-width:701px){:root:root:root:root:root:root[data-ui="3d"] .lg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:none;background:transparent}}
-:root:root:root:root:root:root[data-ui="3d"] .bgnav a{border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .bgnav a{border:0;box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12)}
 
 /* 마스코트 공통 */
 .mascot{display:block;pointer-events:none;user-select:none;filter:drop-shadow(0 10px 14px rgba(40,50,90,.25))}
@@ -2055,7 +2063,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .uistyle b{font-size:15px}.uistyle small{color:var(--mute);font-size:13px;line-height:1.4}
 .uistyle .sw{height:46px;border-radius:10px;border:1px solid var(--line2);background:var(--paper);display:flex;align-items:center;gap:8px;padding:0 10px}
 .uistyle .sw i{display:block;width:34px;height:20px;border-radius:6px;background:var(--surface);border:1px solid var(--line2)}.uistyle .sw i.a{background:var(--accent);border-color:transparent}
-.uistyle .sw.d3 i{box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 3px 0 var(--line2)}.uistyle .sw.d3 i.a{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 color-mix(in srgb,var(--accent) 62%,#000)}
+.uistyle .sw.d3 i{box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(60,70,110,.08),0 3px 6px -3px rgba(60,70,110,.4)}.uistyle .sw.d3 i.a{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 4px 8px -4px var(--accent)}
 @media (prefers-reduced-motion:reduce){:root[data-ui="3d"] .btn,:root[data-ui="3d"] .rlopt,:root[data-ui="3d"] .tile,:root[data-ui="3d"] .hmcard{transition:none}}
 </style>
 </head>
@@ -2560,6 +2568,8 @@ function mascotSVG(kind='home',cls=''){const id='mg'+(++MASC_N),P=MASC_PROPS[kin
 function clayDecor(){if(document.documentElement.dataset.ui!=='3d')return;
   const sec=document.documentElement.dataset.sec||'',K={r:'read',l:'listen',s:'speak',w:'write',v:'vocab'};let kind=K[sec]||'home';if(/^#bg/.test(location.hash))kind='bg';
   $$('.panel.welcome').forEach(w=>{if(!w.querySelector('.mascot'))w.insertAdjacentHTML('afterbegin',mascotSVG(kind))});
+  const KC=[['연속','🔥'],['이번 주','📅'],['총 학습','🗓️'],['최근 밴드','📈'],['최고 밴드','🏆'],['완료','✅'],['횟수','🔁'],['오늘','☀️'],['외운','🧠'],['익힌','🧠'],['복습','🔔'],['모름','🤔'],['학습 중','📚'],['저장','⭐']];
+  $$('.panel.kpi,.hmstats>div').forEach(k=>{if(k.querySelector('.kcoin'))return;const lab=(k.querySelector('.k')||k.querySelector('span')||k).textContent||'';const hit=KC.find(([t])=>lab.includes(t));k.insertAdjacentHTML('afterbegin',`<span class="kcoin" aria-hidden="true">${hit?hit[1]:'🎯'}</span>`)});
   const h=$('.hmhero');if(h&&!h.querySelector('.mascot'))h.insertAdjacentHTML('afterbegin',mascotSVG('home'));
   const l=$('#lnb');if(l&&!l.querySelector('.lnbmas')){const b=l.querySelector('.brand');const hr=new Date().getHours(),hi=hr<6?'늦은 밤까지 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
     if(b)b.insertAdjacentHTML('afterend',`<div class="lnbmas">${mascotSVG(kind)}<b>TOEFL Practice</b><small>${hi}</small></div>`)}}
@@ -6307,8 +6317,17 @@ function vcStudy(kind){const ws=kind==='rev'?vcDue():VC.data.filter(w=>vcSt(w)==
 
 /* 폰(좁고 낮은 화면)에서는 그림을 처음부터 작게 그려요: CSS로 줄이면 iOS에서 자리가 틀어져요 */
 function vcArtSize(){return matchMedia('(max-width:720px) and (max-height:900px)').matches?120:200}
+/* 그림 찾기: 단어장 그림 → 교재 단어 그림 → 어형 변화(-ed/-ing/-ly/-s)를 벗긴 원형으로 다시 찾기 → 그래도 없으면 이모지 */
+let VCIDX=null;function vcIdx(){if(!VCIDX){VCIDX=new Map();try{VC.data.forEach(w=>{const k=String(w.word||'').toLowerCase().trim();if(k&&!VCIDX.has(k))VCIDX.set(k,w.id)})}catch(e){}}return VCIDX}
+function vcStems(w){const o=[];const p=x=>{if(x&&x.length>2&&!o.includes(x))o.push(x)};
+  if(/ies$/.test(w))p(w.slice(0,-3)+'y');if(/s$/.test(w))p(w.slice(0,-1));if(/es$/.test(w))p(w.slice(0,-2));
+  if(/ed$/.test(w)){p(w.slice(0,-2));p(w.slice(0,-1));if(/([^aeiou])\1ed$/.test(w))p(w.slice(0,-3))}
+  if(/ing$/.test(w)){p(w.slice(0,-3));p(w.slice(0,-3)+'e');if(/([^aeiou])\1ing$/.test(w))p(w.slice(0,-4))}
+  if(/ly$/.test(w)){p(w.slice(0,-2));if(/ily$/.test(w))p(w.slice(0,-3)+'y');if(/ally$/.test(w))p(w.slice(0,-4));if(/bly$/.test(w))p(w.slice(0,-2)+'le')}
+  if(/ness$/.test(w))p(w.slice(0,-4));if(/ment$/.test(w))p(w.slice(0,-4));if(/tion$/.test(w)){p(w.slice(0,-3)+'e');p(w.slice(0,-4))}return o}
 function vcArtOf(w,size){try{const a=w.vref||w;if(window.vcArt&&typeof a.id==='number'){const h=vcArt(a.id,size);if(h)return h}
-  const sp=window.RLART&&RLART[String(w.word||'').toLowerCase()];if(sp&&window.vcArtSpec)return vcArtSpec(sp,size)}catch(e){}return `<span class="vcemo">${esc(w.emoji||'📘')}</span>`}
+  const key=String(w.word||'').toLowerCase().trim();const tryK=k=>{const sp=window.RLART&&RLART[k];if(sp&&window.vcArtSpec)return vcArtSpec(sp,size);const id=vcIdx().get(k);if(id!=null&&window.vcArt){const h=vcArt(id,size);if(h)return h}return null};
+  const direct=tryK(key);if(direct)return direct;for(const st of vcStems(key)){const h=tryK(st);if(h)return h}}catch(e){}return `<span class="vcemo">${esc(w.emoji||'📘')}</span>`}
 function vcCardHTML(w){const e=VC.ety[w.id];
   return `<div class="vccard" tabindex="0" aria-label="단어 카드 (눌러서 뒤집기)">
    <div class="vcf"><div class="vcart pos-${esc(String(w.pos||'').split(/[,/ ]+/)[0])}" aria-hidden="true">${vcArtOf(w,vcArtSize())}</div><div class="vcw">${esc(w.word)}</div><div class="vcmeta"><span class="mtag sm">${esc(vcPos(w))}</span> <span class="mono small">${esc(w.ipa||'')}</span></div>
@@ -6432,11 +6451,11 @@ function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])d
       $$('.rlopt',host).forEach(x=>{if(x.dataset.ok==='1')x.classList.add('ok');else if(x===b)x.classList.add('bad')});
       if(good){ok++;try{SFX.ok()}catch(e){}}else{vcMark(w,false);if(!wrong.includes(w))wrong.push(w);try{SFX.bad()}catch(e){}}
       /* 정답이면 잠깐 보여 주고 저절로 다음 문제로, 오답이면 멈춰서 정답을 보여 줘요. 어느 쪽이든 카드 아무 곳이나 누르면 바로 넘어가요. */
-      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p><p class="small muted vcqtap">${good?'곧 다음 문제로 넘어가요':'카드 아무 곳이나 누르면 다음 문제로'} <button class="btn sm ${good?'quiet':'primary'}" id="vcqn">다음 →</button></p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}`;
+      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p><p class="small muted vcqtap">${good?'<span class="vcqbar" aria-hidden="true"><i></i></span>곧 다음 문제로':'카드 아무 곳이나 누르면 다음 문제로'} <button class="btn sm ${good?'quiet':'primary'}" id="vcqn">다음 →</button></p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}`;
       const me=tk,go=()=>{if(me!==tk||!document.body.contains(host))return;i++;resumed=false;draw()};
-      $('#vcqn').onclick=e=>{e.stopPropagation();go()};try{$('#vcqn').focus({preventScroll:true})}catch(e){}
+      $('#vcqn').onclick=e=>{e.stopPropagation();go()};try{$('#vcqn').focus({preventScroll:true})}catch(e){}try{$('#vcqf',host).scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}
       setTimeout(()=>{if(me!==tk)return;const pn=$('.vcq',host);if(pn)pn.addEventListener('click',e=>{if(e.target.closest('[data-say],a,input,label'))return;go()})},0);
-      if(good)setTimeout(go,1300)});
+      if(good)setTimeout(go,1500)});
     $('#vcrestart',host)?.addEventListener('click',()=>{vcPosClear(K);order=mk();i=ok=0;wrong=[];resumed=false;draw()})};
   const wireD=()=>$$('[data-dir]',host).forEach(b=>b.onclick=()=>{dir=b.dataset.dir;store.set('vcqdir',dir);K=opt.pos?opt.pos+':'+dir:null;order=mk();i=ok=0;wrong=[];resumed=false;resume();draw()});
   draw()}
