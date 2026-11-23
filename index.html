@@ -1937,6 +1937,72 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 .tfb.primary{flex:1;background:#1d4ed8;color:#fff;border:0;box-shadow:0 8px 24px rgba(0,0,0,.12)}.tfb:disabled{opacity:.55;color:#9aa1ab}
 #test.has-tfoot .tmain{padding-bottom:104px}
 }
+
+/* ===== 입체(3D) 화면 스타일: 설정에서 켜요. 면은 떠 있고, 버튼과 보기는 눌려요 ===== */
+:root:root:root:root:root:root[data-ui="3d"]{--hi:rgba(255,255,255,.8);--edge:color-mix(in srgb,var(--line2) 55%,#8b94a7);--deep:rgba(15,23,42,.26);--deep2:rgba(15,23,42,.09);--pressd:rgba(0,0,0,.26)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"]{--hi:rgba(255,255,255,.08);--edge:#06080c;--deep:rgba(0,0,0,.7);--deep2:rgba(0,0,0,.4);--pressd:rgba(0,0,0,.5)}
+:root:root:root:root:root:root[data-ui="3d"] body{background:
+  radial-gradient(1000px 520px at 50% -160px,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%),
+  linear-gradient(180deg,color-mix(in srgb,var(--paper) 94%,#fff),var(--paper) 480px)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] body{background:
+  radial-gradient(1000px 520px at 50% -160px,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%),var(--paper)}
+/* 떠 있는 면 */
+:root:root:root:root:root:root[data-ui="3d"] .panel,:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .vccard,:root:root:root:root:root:root[data-ui="3d"] .hmbg,:root:root:root:root:root:root[data-ui="3d"] .wtpl,:root:root:root:root:root:root[data-ui="3d"] .plopt{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 93%,#fff) 0%,var(--surface) 44px);
+  border:1px solid color-mix(in srgb,var(--line) 70%,var(--edge));
+  box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 16px 30px -12px var(--deep),0 1px 2px var(--deep2)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .tile,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmcard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .vccard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmbg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .plopt{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 88%,#fff) 0%,var(--surface) 48px);border-color:color-mix(in srgb,var(--line2) 70%,#fff 0%)}
+:root:root:root:root:root:root[data-ui="3d"] .panel .panel,:root:root:root:root:root:root[data-ui="3d"] .panel .tile,:root:root:root:root:root:root[data-ui="3d"] .panel .plopt{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 6px 12px -8px var(--deep)}  /* 면 안의 면은 얕게 */
+:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .plopt{transition:transform .1s ease,box-shadow .1s ease}
+:root:root:root:root:root:root[data-ui="3d"] .tile:active,:root:root:root:root:root:root[data-ui="3d"] .hmcard:active,:root:root:root:root:root:root[data-ui="3d"] .plopt:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge),0 4px 10px -8px var(--deep)}
+/* 환영/안내 면(색 깔린 면)도 같은 두께로 */
+:root:root:root:root:root:root[data-ui="3d"] .panel.welcome{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-soft) 55%,#fff),var(--accent-soft) 70px,color-mix(in srgb,var(--accent-soft) 55%,var(--surface)))}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel.welcome{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-soft) 60%,var(--surface)),var(--surface) 160px)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.welcome,:root:root:root:root:root:root[data-ui="3d"] .hero2{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 0 var(--edge),0 18px 34px -14px var(--deep)}
+/* 숫자 칸·세그먼트는 움푹 */
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div,:root:root:root:root:root:root[data-ui="3d"] .secsw,:root:root:root:root:root:root[data-ui="3d"] .rlrate,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div{
+  background:color-mix(in srgb,var(--paper) 55%,var(--sunken));border-color:color-mix(in srgb,var(--line) 70%,var(--edge));
+  box-shadow:inset 0 3px 6px -2px var(--deep2),inset 0 1px 0 rgba(0,0,0,.04),0 1px 0 var(--hi)}
+:root:root:root:root:root:root[data-ui="3d"] .secsw a[aria-current="page"],:root:root:root:root:root:root[data-ui="3d"] .rlrate button[aria-pressed="true"]{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 3px 8px -3px var(--deep)}
+/* 눌리는 버튼 */
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet){box-shadow:inset 0 1px 0 var(--hi),0 4px 0 var(--edge);transform:translateY(0);border-color:color-mix(in srgb,var(--line2) 70%,var(--edge));transition:transform .07s ease,box-shadow .07s ease,background .13s}
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):active{transform:translateY(4px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child,:root:root:root:root:root:root[data-ui="3d"] .hmbtn{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%);border-color:transparent;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 5px 0 var(--pressd)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary:active,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:active,:root:root:root:root:root:root[data-ui="3d"] .hmbtn:active{transform:translateY(5px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 var(--pressd)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet){box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet):active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 var(--pressd)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 var(--pressd)}
+/* 보기(선택지)도 눌리는 판 */
+:root:root:root:root:root:root[data-ui="3d"] .rlopt{background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge);transition:transform .07s,box-shadow .07s,border-color .15s,background .15s}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt:has(input:checked){box-shadow:inset 0 1px 0 var(--hi),0 3px 0 color-mix(in srgb,var(--accent) 55%,var(--edge))}
+:root:root:root:root:root:root[data-ui="3d"] .rlL{box-shadow:0 1px 0 var(--edge)}
+/* 달력 날짜 */
+:root:root:root:root:root:root[data-ui="3d"] .cd{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);background:var(--surface);transition:transform .07s,box-shadow .07s}
+:root:root:root:root:root:root[data-ui="3d"] .cd:active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+/* 검은 히어로: 빛 받은 유리판 */
+:root:root:root:root:root:root[data-ui="3d"] .hmhero{background:linear-gradient(160deg,#2a3142,#10131a 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.4),0 4px 0 #05070b,0 22px 44px -18px rgba(0,0,0,.6)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmhero{background:linear-gradient(160deg,#2a3858,#161c2c 70%);border-color:rgba(94,141,255,.22)}
+/* 하단 유리 바: 더 두껍고 더 떠 있게 */
+:root:root:root:root:root:root[data-ui="3d"] .lg{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(0,0,0,.06),0 0 0 .5px rgba(0,0,0,.08),0 18px 40px -10px rgba(0,0,0,.32),0 3px 6px rgba(0,0,0,.08)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 .5px rgba(255,255,255,.08),0 18px 40px -10px rgba(0,0,0,.75)}
+/* 칩 */
+:root:root:root:root:root:root[data-ui="3d"] .bgnav a{box-shadow:inset 0 1px 0 var(--hi),0 1px 0 var(--edge)}
+@media (min-width:701px){:root:root:root:root:root:root[data-ui="3d"] .lg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){:root:root:root:root:root:root[data-ui="3d"] .btn,:root:root:root:root:root:root[data-ui="3d"] .rlopt,:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .cd{transition:none}}
+/* 설정의 스타일 고르기 */
+.uistyle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.uistyle button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:8px;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}
+.uistyle button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.uistyle b{font-size:15px}.uistyle small{color:var(--mute);font-size:13px;line-height:1.4}
+.uistyle .sw{height:46px;border-radius:10px;border:1px solid var(--line2);background:var(--paper);display:flex;align-items:center;gap:8px;padding:0 10px}
+.uistyle .sw i{display:block;width:34px;height:20px;border-radius:6px;background:var(--surface);border:1px solid var(--line2)}.uistyle .sw i.a{background:var(--accent);border-color:transparent}
+.uistyle .sw.d3 i{box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 3px 0 var(--line2)}.uistyle .sw.d3 i.a{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 color-mix(in srgb,var(--accent) 62%,#000)}
+@media (prefers-reduced-motion:reduce){:root[data-ui="3d"] .btn,:root[data-ui="3d"] .rlopt,:root[data-ui="3d"] .tile,:root[data-ui="3d"] .hmcard{transition:none}}
 </style>
 </head>
 <body>
@@ -2407,10 +2473,11 @@ const THEMQ=matchMedia('(prefers-color-scheme: dark)');THEMQ.addEventListener?.(
 /* 시험 화면은 실제 시험처럼 늘 밝게: 시험을 시작하면 잠깐 밝은 화면으로 바꾸고, 끝나면 고른 화면 모드로 돌아가요 */
 (function(){const run=()=>{const t=document.body.classList.contains('testing');if(t&&!window.__thHold){window.__thHold=1;document.documentElement.setAttribute('data-theme','light')}else if(!t&&window.__thHold){window.__thHold=0;applyTheme()}};
   const go=()=>{if(!document.body)return setTimeout(go,50);new MutationObserver(run).observe(document.body,{attributes:true,attributeFilter:['class']});run()};go()})();
-function applyTheme(){if(window.__thHold)return;const t=S.cfg.theme||'light',r=document.documentElement;r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
+function applyTheme(){if(window.__thHold)return;const t=S.cfg.theme||'light',r=document.documentElement;r.dataset.ui=store.get('ui3d',true)?'3d':'flat';r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0c0e12':'#f2f4f6'}
 const THEMES=[['light','밝게','sun'],['dark','어둡게','moon'],['system','기기 설정 따라','theme']];
 function themeBtnSync(){const b=document.getElementById('themebtn');if(!b)return;const t=THEMES.find(x=>x[0]===S.cfg.theme)||THEMES[0];b.innerHTML=ICON(t[2]);b.title='화면 모드: '+t[1]+' (눌러서 바꾸기)'}
+document.addEventListener('click',e=>{const u=e.target.closest&&e.target.closest('[data-ui3d]');if(u){store.set('ui3d',u.dataset.ui3d==='3d');applyTheme();$$('[data-ui3d]').forEach(x=>x.setAttribute('aria-pressed',String(x===u)))}});
 document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#themebtn'))return;const i=THEMES.findIndex(x=>x[0]===S.cfg.theme),n=THEMES[(i+1)%THEMES.length];S.cfg.theme=n[0];saveCfg();applyTheme();themeBtnSync();try{toast('화면 모드: '+n[1])}catch(_){}});
 applyTheme();setTimeout(themeBtnSync,0);
 
@@ -3664,6 +3731,7 @@ function renderSettings(){
       :`<input type="password" id="ghtok2" placeholder="github_pat_… (토큰)" autocomplete="off" style="width:100%;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit"><button class="btn primary" id="ghcon" style="margin-top:8px">연결하기</button><div class="hint">연결하면 교재 데이터를 GitHub 비공개 저장소에서 받고, 공부 기록이 기기끼리 이어져요.</div>`}<div class="hint" id="ghst"></div></div>`:''}
     ${window.PACKIO?`<div class="field"><label>데이터 파일 ${window.HASVOICES?'· 영국 목소리·기본 교재 녹음 있음':'· 영국 목소리·기본 교재 녹음 아직 없음 (toefl-voices.bin)'}</label><label class="btn">받은 파일 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" multiple hidden></label>
       <div class="hint">Claude 채팅에서 받은 파일을 <b>한 번에 여러 개 같이</b> 골라도 돼요. <b>toefl-pack.bin</b>(교재 데이터)이 있으면 먼저 넣고, <b>toefl-voices.bin</b>(목소리·한국어 녹음)을 그 위에 얹어요. 목소리 파일만 골라도 돼요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>`:''}
+    <div class="field"><label>화면 스타일</label><div class="uistyle">${[['flat','기본','납작하고 조용한 면'],['3d','입체','면이 살짝 떠 있고, 버튼이 눌려요']].map(([k,t,d])=>`<button type="button" data-ui3d="${k}" aria-pressed="${(store.get('ui3d',true)?'3d':'flat')===k}"><span class="sw ${k==='3d'?'d3':''}"><i></i><i class="a"></i></span><b>${t}</b><small>${d}</small></button>`).join('')}</div></div>
     ${rstHTML()}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
       <textarea id="pers" rows="3" style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)">${esc((S.cfg.persona||'').trim()||PERSONA_DEF)}</textarea>
