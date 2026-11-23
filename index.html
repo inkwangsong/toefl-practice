@@ -918,7 +918,7 @@ body.inkshow.pinkon #view{outline:2px dashed color-mix(in srgb,var(--accent) 35%
 .vcmn,.vcnote{margin:0;padding:8px 12px;border-radius:10px;background:var(--paper);font-size:16px}.vcety summary{cursor:pointer;font-weight:700}.vcety p{margin:6px 0;font-size:16px}
 .vcbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px auto 6px;max-width:720px}.vcbtns .vcno{border-color:color-mix(in srgb,var(--bad) 50%,var(--line2));color:var(--bad)}
 .center{text-align:center}
-.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcqtap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}.vcqbar{display:inline-block;width:72px;height:8px;border-radius:99px;background:var(--sunken);overflow:hidden;vertical-align:middle;flex:none}.vcqbar i{display:block;height:100%;width:0;border-radius:99px;background:var(--ok,#2a9d5c);animation:vcqfill 1.5s linear forwards}@keyframes vcqfill{to{width:100%}}@media (prefers-reduced-motion:reduce){.vcqbar i{animation-duration:.01s;width:100%}}.vcdone .row{justify-content:center}
+.vcdone{text-align:center;max-width:520px;margin:0 auto}.vcqtap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}@keyframes vcqfill{to{width:100%}}@media (prefers-reduced-motion:reduce){.vcqbar i{animation-duration:.01s;width:100%}}.vcdone .row{justify-content:center}
 .vcq{max-width:720px}.vcqw{font-size:24px;font-weight:800;margin:4px 0 14px}
 .rlopt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}.rlopt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
 button.rlopt{width:100%;text-align:left;font:inherit;color:inherit}
@@ -2052,6 +2052,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 @media (min-width:701px){:root:root:root:root:root:root[data-ui="3d"] .lg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:none;background:transparent}}
 :root:root:root:root:root:root[data-ui="3d"] .bgnav a{border:0;box-shadow:inset 0 1px 0 var(--hi),0 1px 2px rgba(60,70,110,.12)}
 
+:root:root:root:root:root:root[data-ui="3d"] .mwrap{display:grid;justify-items:center;gap:6px}
+.mgrow{display:grid;justify-items:center;gap:3px;text-align:center}.mgrow b{font-size:13px;color:var(--accent);letter-spacing:-.01em}.mgrow .bar{width:96px;height:7px;border-radius:99px;background:var(--sunken);overflow:hidden;box-shadow:inset 0 1px 2px rgba(60,70,110,.15)}.mgrow .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 70%,#fff),var(--accent))}.mgrow small{font-size:11.5px;color:var(--mute)}
+@media (max-width:860px){:root:root:root:root:root:root[data-ui="3d"] .hmhero .mwrap{position:absolute;right:16px;top:12px}:root:root:root:root:root:root[data-ui="3d"] .hmhero .mwrap .mascot{position:static;width:76px;height:76px}.mgrow .bar{width:76px}.mgrow small{display:none}}
+.h2coin{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:10px;margin-right:8px;font-size:17px;line-height:1;vertical-align:-7px;background:radial-gradient(circle at 32% 28%,#fff 0%,color-mix(in srgb,var(--accent-soft) 70%,#fff) 70%);box-shadow:inset 0 -3px 5px rgba(0,0,0,.07),inset 0 2px 3px rgba(255,255,255,.9),0 3px 6px -2px rgba(0,0,0,.2)}
+:root[data-ui="flat"] .h2coin{display:none}
+.vcq{position:relative;overflow:hidden}.vcqline{position:absolute;left:0;top:0;right:0;height:5px;background:var(--sunken)}.vcqline i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ac77f,var(--ok,#2a9d5c));animation:vcqfill 1.5s linear forwards}
+.vcsyn.quiz{margin:12px 0 6px;padding:10px 12px;border-radius:14px;background:var(--accent-soft);gap:7px}.vcsyn.quiz .vcsc{font-size:16px;background:var(--surface);border-color:transparent;box-shadow:0 1px 2px rgba(60,70,110,.12)}.vcsyn.quiz .vcsynl{font-size:12.5px}
 /* 마스코트 공통 */
 .mascot{display:block;pointer-events:none;user-select:none;filter:drop-shadow(0 10px 14px rgba(40,50,90,.25))}
 :root[data-ui="flat"] .mascot,:root[data-ui="flat"] .lnbmas{display:none}
@@ -2552,11 +2559,23 @@ const MASC_PROPS={
  home:`<path d="M60 10l40 14-40 14-40-14z" fill="#2f3446"/><path d="M34 31v12c0 6 12 10 26 10s26-4 26-10V31" fill="none" stroke="#2f3446" stroke-width="7" stroke-linejoin="round"/><path d="M96 25v16" stroke="#ffd166" stroke-width="3" stroke-linecap="round"/><circle cx="96" cy="43" r="3.5" fill="#ffd166"/>`,
  bg:`<g transform="translate(84 10)"><circle cx="14" cy="14" r="13" fill="#ffe08a" stroke="#f3b531" stroke-width="2"/><path d="M8 30h12M9 35h10" stroke="#9aa3b8" stroke-width="3" stroke-linecap="round"/><path d="M14 8v6l4 3" fill="none" stroke="#f3b531" stroke-width="2.5" stroke-linecap="round"/></g>`};
 let MASC_N=0;
-function mascotSVG(kind='home',cls=''){const id='mg'+(++MASC_N),P=MASC_PROPS[kind]||'';
+/* 레벨별 꾸밈: 2 반짝이 · 3 리본 · 4 새싹→꽃 · 5 빛무리 · 6 왕관 · 7 날개 · 8 황금빛 */
+function mascotLvDeco(lv){let d='';
+  if(lv>=5)d+=`<circle cx="60" cy="66" r="52" fill="color-mix(in srgb,var(--accent) 30%,#fff)" opacity=".35"/><circle cx="60" cy="66" r="58" fill="none" stroke="color-mix(in srgb,var(--accent) 45%,#fff)" stroke-width="1.5" stroke-dasharray="3 6" opacity=".8"/>`;
+  if(lv>=7)d+=`<path d="M22 70c-14-6-22-20-18-34 10 4 16 14 18 34z" fill="#fff" stroke="#c9d1e4" stroke-width="1.5"/><path d="M98 70c14-6 22-20 18-34-10 4-16 14-18 34z" fill="#fff" stroke="#c9d1e4" stroke-width="1.5"/>`;
+  return d}
+function mascotLvFront(lv){let d='';
+  if(lv>=2)d+=`<path d="M16 36l2.2 5 5 2.2-5 2.2-2.2 5-2.2-5-5-2.2 5-2.2z" fill="#ffd166"/><path d="M106 44l1.6 3.6 3.6 1.6-3.6 1.6-1.6 3.6-1.6-3.6-3.6-1.6 3.6-1.6z" fill="#ffd166"/>`;
+  if(lv>=3)d+=`<g transform="translate(60 96)"><path d="M0 0l-11-7v14zM0 0l11-7v14z" fill="#ff7a90"/><circle cx="0" cy="0" r="3.5" fill="#ff5c78"/></g>`;
+  if(lv>=2&&lv<6)d+=`<g transform="translate(60 22)"><path d="M0 4C0 -2 -8 -8 -14 -6c2 6 8 10 14 10zM0 4c0-6 8-12 14-10-2 6-8 10-14 10z" fill="#5ac77f"/><path d="M0 4v-9" stroke="#2f8f52" stroke-width="2" stroke-linecap="round"/>${lv>=4?'<circle cx="0" cy="-8" r="5" fill="#ff8fa3"/><circle cx="0" cy="-8" r="2" fill="#ffd166"/>':''}</g>`;
+  if(lv>=6)d+=`<path d="M38 28l8 10 14-16 14 16 8-10-4 20H42z" fill="#ffd166" stroke="#e9b73a" stroke-width="2" stroke-linejoin="round"/><circle cx="46" cy="38" r="2.4" fill="#ff5c78"/><circle cx="60" cy="22" r="2.4" fill="#5e8dff"/><circle cx="74" cy="38" r="2.4" fill="#5ac77f"/>`;
+  return d}
+function mascotSVG(kind='home',cls='',lv){lv=lv||(window.hmGrowth?hmGrowth().lv:1);const id='mg'+(++MASC_N),P=(kind==='home'&&lv>=2)?'':(MASC_PROPS[kind]||'');  /* 대시보드 토피는 Lv.2부터 모자 대신 새싹·꽃·왕관 */
   return `<svg class="mascot ${cls}" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><defs>
-    <radialGradient id="${id}b" cx="36%" cy="28%" r="78%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="color-mix(in srgb,var(--accent) 34%,#fff)"/><stop offset="1" stop-color="color-mix(in srgb,var(--accent) 62%,#8a94b8)"/></radialGradient>
+    <radialGradient id="${id}b" cx="36%" cy="28%" r="78%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="${lv>=8?'#ffe9a8':'color-mix(in srgb,var(--accent) 34%,#fff)'}"/><stop offset="1" stop-color="${lv>=8?'#e3a61b':'color-mix(in srgb,var(--accent) 62%,#8a94b8)'}"/></radialGradient>
     <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient></defs>
     <ellipse cx="60" cy="110" rx="34" ry="6" fill="#2f3446" opacity=".12"/>
+    ${mascotLvDeco(lv)}
     <rect x="20" y="24" width="80" height="82" rx="38" fill="url(#${id}b)"/>
     <rect x="20" y="24" width="80" height="82" rx="38" fill="url(#${id}s)"/>
     <ellipse cx="44" cy="40" rx="12" ry="7" fill="#fff" opacity=".55"/>
@@ -2564,15 +2583,19 @@ function mascotSVG(kind='home',cls=''){const id='mg'+(++MASC_N),P=MASC_PROPS[kin
     <circle cx="49" cy="61.5" r="1.9" fill="#fff"/><circle cx="75" cy="61.5" r="1.9" fill="#fff"/>
     <circle cx="38" cy="76" r="5" fill="#ff8fa3" opacity=".55"/><circle cx="82" cy="76" r="5" fill="#ff8fa3" opacity=".55"/>
     <path d="M52 78c3 4 13 4 16 0" fill="none" stroke="#2f3446" stroke-width="2.6" stroke-linecap="round"/>
-    ${P}</svg>`}
+    ${P}${mascotLvFront(lv)}</svg>`}
+function growthHTML(g){return `<div class="mgrow" title="XP = 학습일×10 + 완료 세트×6 + 외운 단어÷4 + 연속일×3"><b>Lv.${g.lv} ${g.name}</b><span class="bar"><i style="width:${g.pct}%"></i></span><small>${g.next?`다음 레벨까지 ${g.next-g.xp} XP`:'최고 레벨!'}</small></div>`}
 function clayDecor(){if(document.documentElement.dataset.ui!=='3d')return;
   const sec=document.documentElement.dataset.sec||'',K={r:'read',l:'listen',s:'speak',w:'write',v:'vocab'};let kind=K[sec]||'home';if(/^#bg/.test(location.hash))kind='bg';
   $$('.panel.welcome').forEach(w=>{if(!w.querySelector('.mascot'))w.insertAdjacentHTML('afterbegin',mascotSVG(kind))});
   const KC=[['연속','🔥'],['이번 주','📅'],['총 학습','🗓️'],['최근 밴드','📈'],['최고 밴드','🏆'],['완료','✅'],['횟수','🔁'],['오늘','☀️'],['외운','🧠'],['익힌','🧠'],['복습','🔔'],['모름','🤔'],['학습 중','📚'],['저장','⭐']];
   $$('.panel.kpi,.hmstats>div').forEach(k=>{if(k.querySelector('.kcoin'))return;const lab=(k.querySelector('.k')||k.querySelector('span')||k).textContent||'';const hit=KC.find(([t])=>lab.includes(t));k.insertAdjacentHTML('afterbegin',`<span class="kcoin" aria-hidden="true">${hit?hit[1]:'🎯'}</span>`)});
-  const h=$('.hmhero');if(h&&!h.querySelector('.mascot'))h.insertAdjacentHTML('afterbegin',mascotSVG('home'));
+  const g=window.hmGrowth?hmGrowth():null;
+  const h=$('.hmhero');if(h&&!h.querySelector('.mascot'))h.insertAdjacentHTML('afterbegin',`<div class="mwrap">${mascotSVG('home','',g&&g.lv)}${g?growthHTML(g):''}</div>`);
+  const H2C=[['학습 달력','📅'],['학습 플랜','🗺️'],['실전 모의고사','🎯'],['답변 템플릿','✍️'],['템플릿 연습','✍️'],['학습 기록','📊'],['바로 공부하기','🚀'],['점수 추이','📈'],['자주 틀리는','🔍'],['문법 교정','📝'],['최근 기록','🕘'],['오늘','✨'],['개요','📖'],['배경지식','💡'],['그림으로','🖼️'],['핵심 개념','🔑'],['어휘','🔤'],['영상','🎬'],['교재 지문','📚'],['단어장','🧠'],['공부할 범위','🎯']];
+  $$('#view .panel>h2,#view .plhead>h2,#view .cathead h1').forEach(t=>{if(t.querySelector('.h2coin'))return;const tx=(t.textContent||'').trim();const hit=H2C.find(([k])=>tx.startsWith(k)||tx.includes(k));if(hit)t.insertAdjacentHTML('afterbegin',`<span class="h2coin" aria-hidden="true">${hit[1]}</span>`)});
   const l=$('#lnb');if(l&&!l.querySelector('.lnbmas')){const b=l.querySelector('.brand');const hr=new Date().getHours(),hi=hr<6?'늦은 밤까지 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
-    if(b)b.insertAdjacentHTML('afterend',`<div class="lnbmas">${mascotSVG(kind)}<b>TOEFL Practice</b><small>${hi}</small></div>`)}}
+    if(b)b.insertAdjacentHTML('afterend',`<div class="lnbmas">${mascotSVG(kind,'',g&&g.lv)}<b>TOEFL Practice</b><small>${g?`Lv.${g.lv} ${g.name} · `:''}${hi}</small></div>`)}}
 (()=>{let t=0;const kick=()=>{cancelAnimationFrame(t);t=requestAnimationFrame(clayDecor)};
   const mo=new MutationObserver(kick);[$('#view'),$('#lnb')].forEach(e=>{if(e)mo.observe(e,{childList:true})});addEventListener('hashchange',kick);setTimeout(kick,0)})();
 
@@ -6451,7 +6474,8 @@ function vcQuiz(host,ws,opt={}){let dir=store.get('vcqdir','en');if(!VCQD[dir])d
       $$('.rlopt',host).forEach(x=>{if(x.dataset.ok==='1')x.classList.add('ok');else if(x===b)x.classList.add('bad')});
       if(good){ok++;try{SFX.ok()}catch(e){}}else{vcMark(w,false);if(!wrong.includes(w))wrong.push(w);try{SFX.bad()}catch(e){}}
       /* 정답이면 잠깐 보여 주고 저절로 다음 문제로, 오답이면 멈춰서 정답을 보여 줘요. 어느 쪽이든 카드 아무 곳이나 누르면 바로 넘어가요. */
-      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p><p class="small muted vcqtap">${good?'<span class="vcqbar" aria-hidden="true"><i></i></span>곧 다음 문제로':'카드 아무 곳이나 누르면 다음 문제로'} <button class="btn sm ${good?'quiet':'primary'}" id="vcqn">다음 →</button></p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'sm')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}`;
+      $('#vcqf',host).innerHTML=`<p class="${good?'okc':'badc'}"><b>${good?'정답!':'오답'}</b> · <b>${esc(w.word)}</b> = ${esc(vcKr(w))}</p><p class="small muted vcqtap">${good?'곧 다음 문제로 넘어가요':'카드 아무 곳이나 누르면 다음 문제로'} <button class="btn sm ${good?'quiet':'primary'}" id="vcqn">다음 →</button></p>${(w.senses||[]).map(s=>vcSynHTML(vcSyn(s),'quiz')).join('')}${w.senses[0]&&w.senses[0].ex?`<p class="small">${vcTx(w.senses[0].ex)}</p>`:''}`;
+      if(good){const pn=$('.vcq',host);if(pn)pn.insertAdjacentHTML('afterbegin','<span class="vcqline" aria-hidden="true"><i></i></span>')}
       const me=tk,go=()=>{if(me!==tk||!document.body.contains(host))return;i++;resumed=false;draw()};
       $('#vcqn').onclick=e=>{e.stopPropagation();go()};try{$('#vcqn').focus({preventScroll:true})}catch(e){}try{$('#vcqf',host).scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}
       setTimeout(()=>{if(me!==tk)return;const pn=$('.vcq',host);if(pn)pn.addEventListener('click',e=>{if(e.target.closest('[data-say],a,input,label'))return;go()})},0);
@@ -6546,6 +6570,15 @@ function hmEvents(){const E=[],add=(k,ts,n=1)=>{if(ts)E.push({k,ts,n})};
   try{W.hist.forEach(h=>add('w',h.ts));store.get('wplog',[]).forEach(l=>add('w',l.ts));store.get('wtylog',[]).forEach(l=>add('w',l.ts))}catch(_){}
   try{const L=store.get('vclog',{});Object.entries(L).forEach(([d,n])=>{if(n){const [y,m,dd]=d.split('-').map(Number);add('v',new Date(y,m-1,dd,12).getTime(),n)}})}catch(_){}
   return E}
+/* 성장 레벨: 공부할수록 마스코트가 자라요. XP = 학습일×10 + 완료 세트×6 + 외운 단어÷4 + 연속일×3 */
+const HM_LV=[0,30,80,160,280,450,700,1000],HM_LVN=['새싹','떡잎','꽃봉오리','활짝','반짝','별빛','달빛','전설'];
+function hmGrowth(){try{const E=hmEvents(),byDay={};E.forEach(e=>{byDay[hmKey(new Date(e.ts))]=1});const days=Object.keys(byDay).length;let sets=0,words=0;
+    HM_SUBJ.forEach(s=>{try{const t=hmStat(s.k);if(!t)return;if(t.vocab)words+=t.done||0;else sets+=t.done||0}catch(e){}});
+    let streak=0;{const d=new Date();if(!byDay[hmKey(d)])d.setDate(d.getDate()-1);while(byDay[hmKey(d)]){streak++;d.setDate(d.getDate()-1)}}
+    const xp=days*10+sets*6+Math.floor(words/4)+streak*3;let lv=1;while(lv<HM_LV.length&&xp>=HM_LV[lv])lv++;const cur=HM_LV[lv-1],next=HM_LV[lv]||null;
+    return {lv,name:HM_LVN[lv-1],xp,cur,next,pct:next?Math.min(100,Math.round((xp-cur)/(next-cur)*100)):100,days,sets,words,streak}}
+  catch(e){return {lv:1,name:'새싹',xp:0,cur:0,next:30,pct:0,days:0,sets:0,words:0,streak:0}}}
+window.hmGrowth=hmGrowth;
 function hmStat(k){
   const sp=(vals)=>vals.filter(v=>v!=null).slice(-12);
   if(k==='r'||k==='r2'||k==='l'){const H=RLH.hist.filter(x=>x.sec===k),sets=rlSets(k),P=RLSEC[k].pre,
