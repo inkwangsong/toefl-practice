@@ -1938,61 +1938,115 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 #test.has-tfoot .tmain{padding-bottom:104px}
 }
 
-/* ===== 입체(3D) 화면 스타일: 설정에서 켜요. 면은 떠 있고, 버튼과 보기는 눌려요 ===== */
-:root:root:root:root:root:root[data-ui="3d"]{--hi:rgba(255,255,255,.8);--edge:color-mix(in srgb,var(--line2) 55%,#8b94a7);--deep:rgba(15,23,42,.26);--deep2:rgba(15,23,42,.09);--pressd:rgba(0,0,0,.26)}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"]{--hi:rgba(255,255,255,.08);--edge:#06080c;--deep:rgba(0,0,0,.7);--deep2:rgba(0,0,0,.4);--pressd:rgba(0,0,0,.5)}
+/* ===== 입체(클레이) 화면 스타일: 설정에서 켜요. 부드러운 3D 면, 파스텔 숫자 타일, 눌리는 버튼, 마스코트 ===== */
+:root:root:root:root:root:root[data-ui="3d"]{--r3:22px;--r4:28px;--hi:rgba(255,255,255,1);--edge:#cfd5e4;--deep:rgba(60,70,110,.30);--deep2:rgba(60,70,110,.10);--pressd:rgba(0,0,0,.26);
+  --t1:#dff5ec;--t1i:#1d7a58;--t2:#ffe6d8;--t2i:#b8501f;--t3:#e8e3ff;--t3i:#5a47c8;--t4:#dcecff;--t4i:#2a63c9;
+  --paper:#eef1f8;--sunken:#e6eaf3;--line:#e3e7f0;--line2:#d5dae6}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"]{--hi:rgba(255,255,255,.07);--edge:#0b0e16;--deep:rgba(0,0,0,.65);--deep2:rgba(0,0,0,.35);--pressd:rgba(0,0,0,.5);
+  --t1:#1f3a33;--t1i:#7fe0b9;--t2:#3f2a22;--t2i:#ffb08a;--t3:#2c2850;--t3i:#bcaeff;--t4:#1f2e47;--t4i:#8cbcff;
+  --paper:#161a26;--surface:#1f2433;--sunken:#1a1f2c;--line:#2a3042;--line2:#363d52}
 :root:root:root:root:root:root[data-ui="3d"] body{background:
-  radial-gradient(1000px 520px at 50% -160px,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%),
-  linear-gradient(180deg,color-mix(in srgb,var(--paper) 94%,#fff),var(--paper) 480px)}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] body{background:
-  radial-gradient(1000px 520px at 50% -160px,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%),var(--paper)}
-/* 떠 있는 면 */
+  radial-gradient(900px 560px at 8% -5%,#e2e7ff 0%,transparent 60%),
+  radial-gradient(800px 520px at 102% 18%,#ffe9e0 0%,transparent 55%),
+  radial-gradient(760px 520px at 55% 108%,#e1f5ee 0%,transparent 60%),var(--paper);background-attachment:fixed}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] body{background:radial-gradient(900px 560px at 8% -5%,#232c4a 0%,transparent 60%),radial-gradient(800px 520px at 102% 18%,#3a2a3a 0%,transparent 55%),var(--paper);background-attachment:fixed}
+:root:root:root:root:root:root[data-ui="3d"] .topbar{background:transparent;border-bottom:0;backdrop-filter:none}
+@media (max-width:700px){:root:root:root:root:root:root[data-ui="3d"] .topbar{background:color-mix(in srgb,var(--paper) 80%,transparent);backdrop-filter:blur(10px)}}
+
+/* 클레이 면: 위는 밝고 아래는 살짝 어두운, 둥글고 두툼한 */
 :root:root:root:root:root:root[data-ui="3d"] .panel,:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .vccard,:root:root:root:root:root:root[data-ui="3d"] .hmbg,:root:root:root:root:root:root[data-ui="3d"] .wtpl,:root:root:root:root:root:root[data-ui="3d"] .plopt{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 93%,#fff) 0%,var(--surface) 44px);
-  border:1px solid color-mix(in srgb,var(--line) 70%,var(--edge));
-  box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 16px 30px -12px var(--deep),0 1px 2px var(--deep2)}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .tile,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmcard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .vccard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmbg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .plopt{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 88%,#fff) 0%,var(--surface) 48px);border-color:color-mix(in srgb,var(--line2) 70%,#fff 0%)}
-:root:root:root:root:root:root[data-ui="3d"] .panel .panel,:root:root:root:root:root:root[data-ui="3d"] .panel .tile,:root:root:root:root:root:root[data-ui="3d"] .panel .plopt{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 6px 12px -8px var(--deep)}  /* 면 안의 면은 얕게 */
-:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .plopt{transition:transform .1s ease,box-shadow .1s ease}
-:root:root:root:root:root:root[data-ui="3d"] .tile:active,:root:root:root:root:root:root[data-ui="3d"] .hmcard:active,:root:root:root:root:root:root[data-ui="3d"] .plopt:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge),0 4px 10px -8px var(--deep)}
-/* 환영/안내 면(색 깔린 면)도 같은 두께로 */
-:root:root:root:root:root:root[data-ui="3d"] .panel.welcome{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-soft) 55%,#fff),var(--accent-soft) 70px,color-mix(in srgb,var(--accent-soft) 55%,var(--surface)))}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel.welcome{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-soft) 60%,var(--surface)),var(--surface) 160px)}
-:root:root:root:root:root:root[data-ui="3d"] .panel.welcome,:root:root:root:root:root:root[data-ui="3d"] .hero2{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 0 var(--edge),0 18px 34px -14px var(--deep)}
-/* 숫자 칸·세그먼트는 움푹 */
-:root:root:root:root:root:root[data-ui="3d"] .panel.kpi,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div,:root:root:root:root:root:root[data-ui="3d"] .secsw,:root:root:root:root:root:root[data-ui="3d"] .rlrate,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div{
-  background:color-mix(in srgb,var(--paper) 55%,var(--sunken));border-color:color-mix(in srgb,var(--line) 70%,var(--edge));
-  box-shadow:inset 0 3px 6px -2px var(--deep2),inset 0 1px 0 rgba(0,0,0,.04),0 1px 0 var(--hi)}
-:root:root:root:root:root:root[data-ui="3d"] .secsw a[aria-current="page"],:root:root:root:root:root:root[data-ui="3d"] .rlrate button[aria-pressed="true"]{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 3px 8px -3px var(--deep)}
-/* 눌리는 버튼 */
-:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet){box-shadow:inset 0 1px 0 var(--hi),0 4px 0 var(--edge);transform:translateY(0);border-color:color-mix(in srgb,var(--line2) 70%,var(--edge));transition:transform .07s ease,box-shadow .07s ease,background .13s}
-:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):active{transform:translateY(4px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.primary,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child,:root:root:root:root:root:root[data-ui="3d"] .hmbtn{
-  background-image:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%);border-color:transparent;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 5px 0 var(--pressd)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.primary:active,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:active,:root:root:root:root:root:root[data-ui="3d"] .hmbtn:active{transform:translateY(5px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 var(--pressd)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet){box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet):active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 var(--pressd)}
-:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 var(--pressd)}
-/* 보기(선택지)도 눌리는 판 */
-:root:root:root:root:root:root[data-ui="3d"] .rlopt{background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge);transition:transform .07s,box-shadow .07s,border-color .15s,background .15s}
+  background:linear-gradient(168deg,#fff 0%,#f6f8fc 100%);border:0;border-radius:var(--r3);
+  box-shadow:inset 0 2px 0 var(--hi),inset 0 -2px 0 rgba(60,70,110,.06),0 1px 0 rgba(60,70,110,.10),0 16px 34px -16px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .tile,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmcard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .vccard,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmbg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .plopt{background:linear-gradient(168deg,#262c3d,#1d2230);box-shadow:inset 0 1px 0 var(--hi),0 1px 0 #0b0e16,0 16px 34px -16px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"] .panel .panel,:root:root:root:root:root:root[data-ui="3d"] .panel .tile,:root:root:root:root:root:root[data-ui="3d"] .panel .plopt{background:var(--surface);border:1px solid var(--line);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .plopt{transition:transform .12s ease,box-shadow .12s ease}
+:root:root:root:root:root:root[data-ui="3d"] .tile:active,:root:root:root:root:root:root[data-ui="3d"] .hmcard:active,:root:root:root:root:root:root[data-ui="3d"] .plopt:active{transform:translateY(2px) scale(.995)}
+
+/* 파스텔 숫자 타일 (4색 순환) + 클레이 동전 배지 */
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div{--tile:var(--t1);--tink:var(--t1i);position:relative;border:0;border-radius:20px;padding-top:50px;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--tile) 70%,#fff),var(--tile) 70%);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -3px 0 rgba(0,0,0,.05),0 1px 0 rgba(60,70,110,.12),0 14px 28px -16px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel.kpi,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmstats>div,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .vkpis>div{background:linear-gradient(165deg,color-mix(in srgb,var(--tile) 80%,#fff 0%),color-mix(in srgb,var(--tile) 70%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 0 #0b0e16,0 14px 28px -16px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n+2),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n+2),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n+2){--tile:var(--t2);--tink:var(--t2i)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n+3),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n+3),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n+3){--tile:var(--t3);--tink:var(--t3i)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi:nth-child(4n),:root:root:root:root:root:root[data-ui="3d"] .hmstats>div:nth-child(4n),:root:root:root:root:root:root[data-ui="3d"] .vkpis>div:nth-child(4n){--tile:var(--t4);--tink:var(--t4i)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi::before,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div::before,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div::before{content:"";position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:11px;
+  background:radial-gradient(circle at 32% 28%,#fff 0%,color-mix(in srgb,var(--tile) 55%,var(--tink)) 75%);
+  box-shadow:inset 0 -3px 5px rgba(0,0,0,.10),inset 0 2px 3px rgba(255,255,255,.7),0 5px 10px -4px rgba(0,0,0,.28)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi .k,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div span,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div .k{color:var(--tink);font-weight:700}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi .v,:root:root:root:root:root:root[data-ui="3d"] .hmstats>div b,:root:root:root:root:root:root[data-ui="3d"] .vkpis>div .v{font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+:root:root:root:root:root:root[data-ui="3d"] .panel.kpi .s{color:color-mix(in srgb,var(--tink) 70%,var(--ink))}
+:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmstats div{border-left:0;padding:50px 14px 12px;border-radius:18px;margin-right:10px}
+:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmstats b,:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmstats span{color:var(--ink)}:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmstats span{color:var(--tink)}
+
+/* 세그먼트·속도 등은 움푹 */
+:root:root:root:root:root:root[data-ui="3d"] .secsw,:root:root:root:root:root:root[data-ui="3d"] .rlrate,:root:root:root:root:root:root[data-ui="3d"] .seg{background:var(--sunken);border:0;box-shadow:inset 0 3px 6px -2px var(--deep2),inset 0 1px 0 rgba(0,0,0,.04),0 1px 0 var(--hi)}
+:root:root:root:root:root:root[data-ui="3d"] .secsw a[aria-current="page"],:root:root:root:root:root:root[data-ui="3d"] .rlrate button[aria-pressed="true"],:root:root:root:root:root:root[data-ui="3d"] .seg button[aria-pressed="true"]{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 4px 10px -4px var(--deep)}
+
+/* 버튼: 클레이 알약, 누르면 내려앉아요 */
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet){border:0;border-radius:14px;background:linear-gradient(180deg,#fff,#eef1f7);color:var(--ink);
+  box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -10px var(--deep);transform:translateY(0);transition:transform .07s ease,box-shadow .07s ease,background .13s}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .btn:not(.quiet){background:linear-gradient(180deg,#303749,#252b3a);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn:not(.quiet):active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child,:root:root:root:root:root:root[data-ui="3d"] .hmnext{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 72%,#fff),var(--accent) 60%);color:var(--accent-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 0 color-mix(in srgb,var(--accent) 65%,#000),0 12px 22px -10px var(--accent)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.primary:active,:root:root:root:root:root:root[data-ui="3d"] .welcome .row .btn:first-child:active,:root:root:root:root:root:root[data-ui="3d"] .hmnext:active{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 color-mix(in srgb,var(--accent) 65%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet){border-radius:12px;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge),0 6px 12px -8px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm:not(.quiet):active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary,:root:root:root:root:root:root[data-ui="3d"] .hmnext{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 0 color-mix(in srgb,var(--accent) 65%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .btn.sm.primary:active,:root:root:root:root:root:root[data-ui="3d"] .hmnext:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 color-mix(in srgb,var(--accent) 65%,#000)}
+
+/* 보기(선택지)·달력 날짜도 눌리는 판 */
+:root:root:root:root:root:root[data-ui="3d"] .rlopt{background:var(--surface);border:0;border-radius:14px;box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 8px 14px -10px var(--deep);transition:transform .07s,box-shadow .07s,background .15s}
 :root:root:root:root:root:root[data-ui="3d"] .rlopt:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-:root:root:root:root:root:root[data-ui="3d"] .rlopt:has(input:checked){box-shadow:inset 0 1px 0 var(--hi),0 3px 0 color-mix(in srgb,var(--accent) 55%,var(--edge))}
-:root:root:root:root:root:root[data-ui="3d"] .rlL{box-shadow:0 1px 0 var(--edge)}
-/* 달력 날짜 */
-:root:root:root:root:root:root[data-ui="3d"] .cd{box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);background:var(--surface);transition:transform .07s,box-shadow .07s}
+:root:root:root:root:root:root[data-ui="3d"] .rlopt:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--surface));box-shadow:inset 0 0 0 2px var(--accent),0 3px 0 color-mix(in srgb,var(--accent) 60%,var(--edge))}
+:root:root:root:root:root:root[data-ui="3d"] .rlL{border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
+:root:root:root:root:root:root[data-ui="3d"] .cd{border:0;border-radius:12px;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);transition:transform .07s,box-shadow .07s}
 :root:root:root:root:root:root[data-ui="3d"] .cd:active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 var(--edge)}
-/* 검은 히어로: 빛 받은 유리판 */
-:root:root:root:root:root:root[data-ui="3d"] .hmhero{background:linear-gradient(160deg,#2a3142,#10131a 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.4),0 4px 0 #05070b,0 22px 44px -18px rgba(0,0,0,.6)}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmhero{background:linear-gradient(160deg,#2a3858,#161c2c 70%);border-color:rgba(94,141,255,.22)}
-/* 하단 유리 바: 더 두껍고 더 떠 있게 */
-:root:root:root:root:root:root[data-ui="3d"] .lg{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(0,0,0,.06),0 0 0 .5px rgba(0,0,0,.08),0 18px 40px -10px rgba(0,0,0,.32),0 3px 6px rgba(0,0,0,.08)}
-:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 .5px rgba(255,255,255,.08),0 18px 40px -10px rgba(0,0,0,.75)}
-/* 칩 */
-:root:root:root:root:root:root[data-ui="3d"] .bgnav a{box-shadow:inset 0 1px 0 var(--hi),0 1px 0 var(--edge)}
-@media (min-width:701px){:root:root:root:root:root:root[data-ui="3d"] .lg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:none}}
+
+/* 환영 카드: 마스코트 + 인사 + 버튼 */
+:root:root:root:root:root:root[data-ui="3d"] .panel.welcome{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px 22px;padding:22px 26px;
+  background:linear-gradient(165deg,#fff 0%,color-mix(in srgb,var(--accent-soft) 55%,#fff) 100%)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .panel.welcome{background:linear-gradient(165deg,#2a3145,color-mix(in srgb,var(--accent-soft) 40%,#1d2230))}
+:root:root:root:root:root:root[data-ui="3d"] .panel.welcome .mascot{width:96px;height:96px;flex:none;align-self:center}
+:root:root:root:root:root:root[data-ui="3d"] .panel.welcome h1{font-size:24px;letter-spacing:-.03em}
+@media (max-width:640px){:root:root:root:root:root:root[data-ui="3d"] .panel.welcome{grid-template-columns:1fr;padding:20px;position:relative}:root:root:root:root:root:root[data-ui="3d"] .panel.welcome .mascot{position:absolute;right:14px;top:12px;width:72px;height:72px}:root:root:root:root:root:root[data-ui="3d"] .panel.welcome>div:nth-child(2){padding-right:76px}}
+:root:root:root:root:root:root[data-ui="3d"] .hmhero{background:linear-gradient(165deg,#fff,#f0f3fb);color:var(--ink);box-shadow:inset 0 2px 0 var(--hi),0 1px 0 rgba(60,70,110,.10),0 20px 40px -18px var(--deep);grid-template-columns:auto minmax(0,1fr) auto;position:relative}
+:root:root:root:root:root:root[data-ui="3d"] .hmhero .mascot{width:120px;height:120px}
+:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmk{color:var(--accent);font-weight:700}:root:root:root:root:root:root[data-ui="3d"] .hmhero h1,:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmsub b{color:var(--ink)}:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmsub{color:var(--mute)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .hmhero{background:linear-gradient(165deg,#2a3145,#1d2230);border:0}
+@media (max-width:860px){:root:root:root:root:root:root[data-ui="3d"] .hmhero{grid-template-columns:1fr}:root:root:root:root:root:root[data-ui="3d"] .hmhero .mascot{position:absolute;right:16px;top:14px;width:84px;height:84px}:root:root:root:root:root:root[data-ui="3d"] .hmhero .hmhi{padding-right:90px}}
+:root:root:root:root:root:root[data-ui="3d"] .hmrec{border:0;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -10px var(--deep);border-radius:16px;color:var(--ink);padding:10px 16px 10px 10px}
+:root:root:root:root:root:root[data-ui="3d"] .hmrec b{color:var(--ink)}:root:root:root:root:root:root[data-ui="3d"] .hmrec small{color:var(--mute)}:root:root:root:root:root:root[data-ui="3d"] .hmgo{color:var(--sc)}:root:root:root:root:root:root[data-ui="3d"] .hmrec:hover{background:var(--surface)}
+:root:root:root:root:root:root[data-ui="3d"] .hmbtn{background:var(--surface)!important;border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}:root:root:root:root:root:root[data-ui="3d"] .hmbtn[aria-current="page"]{color:var(--accent)}
+
+/* 왼쪽 메뉴(태블릿·PC): 떠 있는 클레이 패널 */
+@media (min-width:901px){
+:root:root:root:root:root:root[data-ui="3d"] .lnb{background:transparent;border-right:0;padding:16px 14px 16px max(14px,env(safe-area-inset-left,0px))}
+:root:root:root:root:root:root[data-ui="3d"] .lnb .brand{display:none}
+:root:root:root:root:root:root[data-ui="3d"] .lnbmas{display:grid;justify-items:center;gap:6px;padding:18px 12px 16px;margin-bottom:10px;border-radius:24px;background:linear-gradient(168deg,#fff,#f3f5fb);box-shadow:inset 0 2px 0 var(--hi),0 1px 0 rgba(60,70,110,.10),0 16px 30px -16px var(--deep);text-align:center}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lnbmas{background:linear-gradient(168deg,#262c3d,#1d2230)}
+:root:root:root:root:root:root[data-ui="3d"] .lnbmas .mascot{width:88px;height:88px}:root:root:root:root:root:root[data-ui="3d"] .lnbmas b{font-size:17px;letter-spacing:-.02em}:root:root:root:root:root:root[data-ui="3d"] .lnbmas small{color:var(--mute);font-size:12.5px}
+:root:root:root:root:root:root[data-ui="3d"] .nl{border-radius:14px;padding:9px 12px;color:var(--ink2,var(--ink));font-weight:600}
+:root:root:root:root:root:root[data-ui="3d"] .nl .ic,:root:root:root:root:root:root[data-ui="3d"] .nl>svg.i:first-child{width:30px;height:30px;padding:6px;box-sizing:border-box;border-radius:10px;background:var(--surface);box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge);color:var(--mute);flex:none}
+:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]{background:linear-gradient(180deg,#fff,#f2f4fa);color:var(--accent);box-shadow:inset 0 1px 0 var(--hi),0 3px 0 var(--edge),0 10px 18px -12px var(--deep)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .nl[aria-current="page"]{background:linear-gradient(180deg,#303749,#252b3a)}
+:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"] .ic,:root:root:root:root:root:root[data-ui="3d"] .nl[aria-current="page"]>svg.i:first-child{background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 65%,#000)}
+:root:root:root:root:root:root[data-ui="3d"] .navgrp>.gh{color:var(--mute);font-size:13px;font-weight:700;letter-spacing:.02em}
+:root:root:root:root:root:root[data-ui="3d"] .lnbfoot{color:var(--mute)}
+}
+@media (max-width:900px){:root:root:root:root:root:root[data-ui="3d"] .lnbmas{display:none}}
+
+/* 하단 유리 바: 클레이 알약 */
+:root:root:root:root:root:root[data-ui="3d"] .lg{background:rgba(255,255,255,.72);box-shadow:inset 0 1.5px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(60,70,110,.08),0 0 0 .5px rgba(60,70,110,.10),0 18px 40px -10px rgba(40,50,90,.35),0 3px 6px rgba(40,50,90,.08)}
+:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{background:rgba(31,36,51,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 .5px rgba(255,255,255,.08),0 18px 40px -10px rgba(0,0,0,.75)}
+@media (min-width:701px){:root:root:root:root:root:root[data-ui="3d"] .lg,:root:root:root:root:root:root[data-ui="3d"][data-theme="dark"] .lg{box-shadow:none;background:transparent}}
+:root:root:root:root:root:root[data-ui="3d"] .bgnav a{border:0;box-shadow:inset 0 1px 0 var(--hi),0 2px 0 var(--edge)}
+
+/* 마스코트 공통 */
+.mascot{display:block;pointer-events:none;user-select:none;filter:drop-shadow(0 10px 14px rgba(40,50,90,.25))}
+:root[data-ui="flat"] .mascot,:root[data-ui="flat"] .lnbmas{display:none}
 @media (prefers-reduced-motion:reduce){:root:root:root:root:root:root[data-ui="3d"] .btn,:root:root:root:root:root:root[data-ui="3d"] .rlopt,:root:root:root:root:root:root[data-ui="3d"] .tile,:root:root:root:root:root:root[data-ui="3d"] .hmcard,:root:root:root:root:root:root[data-ui="3d"] .cd{transition:none}}
 /* 설정의 스타일 고르기 */
 .uistyle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
@@ -2473,13 +2527,45 @@ const THEMQ=matchMedia('(prefers-color-scheme: dark)');THEMQ.addEventListener?.(
 /* 시험 화면은 실제 시험처럼 늘 밝게: 시험을 시작하면 잠깐 밝은 화면으로 바꾸고, 끝나면 고른 화면 모드로 돌아가요 */
 (function(){const run=()=>{const t=document.body.classList.contains('testing');if(t&&!window.__thHold){window.__thHold=1;document.documentElement.setAttribute('data-theme','light')}else if(!t&&window.__thHold){window.__thHold=0;applyTheme()}};
   const go=()=>{if(!document.body)return setTimeout(go,50);new MutationObserver(run).observe(document.body,{attributes:true,attributeFilter:['class']});run()};go()})();
-function applyTheme(){if(window.__thHold)return;const t=S.cfg.theme||'light',r=document.documentElement;r.dataset.ui=store.get('ui3d',true)?'3d':'flat';r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
+function applyTheme(){if(window.__thHold)return;const t=S.cfg.theme||'light',r=document.documentElement;r.dataset.ui=store.get('ui3d',true)?'3d':'flat';if(typeof clayDecor==='function')setTimeout(clayDecor,0);r.setAttribute('data-theme',t==='system'?(THEMQ.matches?'dark':'light'):t);r.dataset.mode=t;
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0c0e12':'#f2f4f6'}
 const THEMES=[['light','밝게','sun'],['dark','어둡게','moon'],['system','기기 설정 따라','theme']];
 function themeBtnSync(){const b=document.getElementById('themebtn');if(!b)return;const t=THEMES.find(x=>x[0]===S.cfg.theme)||THEMES[0];b.innerHTML=ICON(t[2]);b.title='화면 모드: '+t[1]+' (눌러서 바꾸기)'}
 document.addEventListener('click',e=>{const u=e.target.closest&&e.target.closest('[data-ui3d]');if(u){store.set('ui3d',u.dataset.ui3d==='3d');applyTheme();$$('[data-ui3d]').forEach(x=>x.setAttribute('aria-pressed',String(x===u)))}});
 document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#themebtn'))return;const i=THEMES.findIndex(x=>x[0]===S.cfg.theme),n=THEMES[(i+1)%THEMES.length];S.cfg.theme=n[0];saveCfg();applyTheme();themeBtnSync();try{toast('화면 모드: '+n[1])}catch(_){}});
 applyTheme();setTimeout(themeBtnSync,0);
+/* ===== 마스코트 '토피' (직접 그린 원본 캐릭터) + 입체 스타일 장식 ===== */
+const MASC_PROPS={
+ read:`<g transform="translate(66 80) rotate(-8)"><rect x="0" y="0" width="34" height="24" rx="4" fill="#fff" stroke="#c7cfe3" stroke-width="1.5"/><path d="M17 0v24" stroke="#c7cfe3" stroke-width="1.5"/><path d="M4 7h9M4 12h9M4 17h7M21 7h9M21 12h9M21 17h7" stroke="#aeb8d0" stroke-width="1.6" stroke-linecap="round"/></g>`,
+ listen:`<path d="M24 58c0-22 16-36 36-36s36 14 36 36" fill="none" stroke="#2f3446" stroke-width="7" stroke-linecap="round"/><rect x="12" y="52" width="18" height="26" rx="8" fill="#2f3446"/><rect x="90" y="52" width="18" height="26" rx="8" fill="#2f3446"/><rect x="15" y="56" width="6" height="18" rx="3" fill="#596179"/><rect x="99" y="56" width="6" height="18" rx="3" fill="#596179"/>`,
+ speak:`<g transform="translate(86 62) rotate(14)"><rect x="0" y="0" width="16" height="28" rx="8" fill="#2f3446"/><path d="M-4 20c0 8 5 12 12 12s12-4 12-12" fill="none" stroke="#596179" stroke-width="3" stroke-linecap="round"/><path d="M8 32v9M1 41h14" stroke="#596179" stroke-width="3" stroke-linecap="round"/><rect x="3" y="4" width="10" height="3" rx="1.5" fill="#596179"/><rect x="3" y="10" width="10" height="3" rx="1.5" fill="#596179"/></g>`,
+ write:`<g transform="translate(74 70) rotate(40)"><rect x="0" y="0" width="12" height="40" rx="2" fill="#ffd166"/><rect x="0" y="0" width="12" height="7" rx="2" fill="#ff8fa3"/><rect x="0" y="7" width="12" height="3" fill="#9aa3b8"/><path d="M0 40l6 10 6-10z" fill="#f4e2c0"/><path d="M4 46l2 4 2-4z" fill="#2f3446"/></g>`,
+ vocab:`<path d="M92 14l5.5 11 12 1.8-8.7 8.4 2 12-10.8-5.7-10.8 5.7 2-12-8.7-8.4 12-1.8z" fill="#ffd166" stroke="#f3b531" stroke-width="2" stroke-linejoin="round"/>`,
+ home:`<path d="M60 10l40 14-40 14-40-14z" fill="#2f3446"/><path d="M34 31v12c0 6 12 10 26 10s26-4 26-10V31" fill="none" stroke="#2f3446" stroke-width="7" stroke-linejoin="round"/><path d="M96 25v16" stroke="#ffd166" stroke-width="3" stroke-linecap="round"/><circle cx="96" cy="43" r="3.5" fill="#ffd166"/>`,
+ bg:`<g transform="translate(84 10)"><circle cx="14" cy="14" r="13" fill="#ffe08a" stroke="#f3b531" stroke-width="2"/><path d="M8 30h12M9 35h10" stroke="#9aa3b8" stroke-width="3" stroke-linecap="round"/><path d="M14 8v6l4 3" fill="none" stroke="#f3b531" stroke-width="2.5" stroke-linecap="round"/></g>`};
+let MASC_N=0;
+function mascotSVG(kind='home',cls=''){const id='mg'+(++MASC_N),P=MASC_PROPS[kind]||'';
+  return `<svg class="mascot ${cls}" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><defs>
+    <radialGradient id="${id}b" cx="36%" cy="28%" r="78%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="color-mix(in srgb,var(--accent) 34%,#fff)"/><stop offset="1" stop-color="color-mix(in srgb,var(--accent) 62%,#8a94b8)"/></radialGradient>
+    <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient></defs>
+    <ellipse cx="60" cy="110" rx="34" ry="6" fill="#2f3446" opacity=".12"/>
+    <rect x="20" y="24" width="80" height="82" rx="38" fill="url(#${id}b)"/>
+    <rect x="20" y="24" width="80" height="82" rx="38" fill="url(#${id}s)"/>
+    <ellipse cx="44" cy="40" rx="12" ry="7" fill="#fff" opacity=".55"/>
+    <ellipse cx="47" cy="64" rx="5" ry="6.5" fill="#2f3446"/><ellipse cx="73" cy="64" rx="5" ry="6.5" fill="#2f3446"/>
+    <circle cx="49" cy="61.5" r="1.9" fill="#fff"/><circle cx="75" cy="61.5" r="1.9" fill="#fff"/>
+    <circle cx="38" cy="76" r="5" fill="#ff8fa3" opacity=".55"/><circle cx="82" cy="76" r="5" fill="#ff8fa3" opacity=".55"/>
+    <path d="M52 78c3 4 13 4 16 0" fill="none" stroke="#2f3446" stroke-width="2.6" stroke-linecap="round"/>
+    ${P}</svg>`}
+function clayDecor(){if(document.documentElement.dataset.ui!=='3d')return;
+  const sec=document.documentElement.dataset.sec||'',K={r:'read',l:'listen',s:'speak',w:'write',v:'vocab'};let kind=K[sec]||'home';if(/^#bg/.test(location.hash))kind='bg';
+  $$('.panel.welcome').forEach(w=>{if(!w.querySelector('.mascot'))w.insertAdjacentHTML('afterbegin',mascotSVG(kind))});
+  const h=$('.hmhero');if(h&&!h.querySelector('.mascot'))h.insertAdjacentHTML('afterbegin',mascotSVG('home'));
+  const l=$('#lnb');if(l&&!l.querySelector('.lnbmas')){const b=l.querySelector('.brand');const hr=new Date().getHours(),hi=hr<6?'늦은 밤까지 수고 많아요':hr<12?'좋은 아침이에요':hr<18?'좋은 오후예요':'좋은 저녁이에요';
+    if(b)b.insertAdjacentHTML('afterend',`<div class="lnbmas">${mascotSVG(kind)}<b>TOEFL Practice</b><small>${hi}</small></div>`)}}
+(()=>{let t=0;const kick=()=>{cancelAnimationFrame(t);t=requestAnimationFrame(clayDecor)};
+  const mo=new MutationObserver(kick);[$('#view'),$('#lnb')].forEach(e=>{if(e)mo.observe(e,{childList:true})});addEventListener('hashchange',kick);setTimeout(kick,0)})();
+
 
 /* ---------- toast / modal (no alert/confirm) ---------- */
 let toastT;
@@ -3114,7 +3200,7 @@ function renderLnb(cur){
 
 /* ---------- LNB: desktop collapse + foldable groups (v18) ---------- */
 const NAVF=store.get('navfold',{});
-if(store.get('navmin',true))document.body.classList.add('navmin');
+if(store.get('navmin',!store.get('ui3d',true)))document.body.classList.add('navmin');
 $('#navtoggle').onclick=()=>{const m=!document.body.classList.contains('navmin');document.body.classList.toggle('navmin',m);store.set('navmin',m)};
 function lnbEnhance(){const l=$('#lnb');if(!l)return;
   $$('.navgrp',l).forEach(g=>{const gh=g.querySelector(':scope>.gh');if(!gh||gh.dataset.f)return;gh.dataset.f='1';
@@ -3731,7 +3817,7 @@ function renderSettings(){
       :`<input type="password" id="ghtok2" placeholder="github_pat_… (토큰)" autocomplete="off" style="width:100%;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit"><button class="btn primary" id="ghcon" style="margin-top:8px">연결하기</button><div class="hint">연결하면 교재 데이터를 GitHub 비공개 저장소에서 받고, 공부 기록이 기기끼리 이어져요.</div>`}<div class="hint" id="ghst"></div></div>`:''}
     ${window.PACKIO?`<div class="field"><label>데이터 파일 ${window.HASVOICES?'· 영국 목소리·기본 교재 녹음 있음':'· 영국 목소리·기본 교재 녹음 아직 없음 (toefl-voices.bin)'}</label><label class="btn">받은 파일 불러오기<input type="file" id="repack" accept=".bin,application/octet-stream" multiple hidden></label>
       <div class="hint">Claude 채팅에서 받은 파일을 <b>한 번에 여러 개 같이</b> 골라도 돼요. <b>toefl-pack.bin</b>(교재 데이터)이 있으면 먼저 넣고, <b>toefl-voices.bin</b>(목소리·한국어 녹음)을 그 위에 얹어요. 목소리 파일만 골라도 돼요. 응시 기록은 그대로 남아요.</div><div class="hint" id="repackst"></div></div>`:''}
-    <div class="field"><label>화면 스타일</label><div class="uistyle">${[['flat','기본','납작하고 조용한 면'],['3d','입체','면이 살짝 떠 있고, 버튼이 눌려요']].map(([k,t,d])=>`<button type="button" data-ui3d="${k}" aria-pressed="${(store.get('ui3d',true)?'3d':'flat')===k}"><span class="sw ${k==='3d'?'d3':''}"><i></i><i class="a"></i></span><b>${t}</b><small>${d}</small></button>`).join('')}</div></div>
+    <div class="field"><label>화면 스타일</label><div class="uistyle">${[['flat','기본','납작하고 조용한 면'],['3d','입체','부드러운 3D 면·파스텔 타일·마스코트']].map(([k,t,d])=>`<button type="button" data-ui3d="${k}" aria-pressed="${(store.get('ui3d',true)?'3d':'flat')===k}"><span class="sw ${k==='3d'?'d3':''}"><i></i><i class="a"></i></span><b>${t}</b><small>${d}</small></button>`).join('')}</div></div>
     ${rstHTML()}
     <div class="field"><label for="pers">Task 2 템플릿 · 내 페르소나 (Step 4)</label>
       <textarea id="pers" rows="3" style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)">${esc((S.cfg.persona||'').trim()||PERSONA_DEF)}</textarea>
